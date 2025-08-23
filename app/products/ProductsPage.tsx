@@ -66,7 +66,8 @@ function ProductCard({ product }: { product: Product }) {
       </p>
       <p className="text-sm text-gray-500">Type: {product.type}</p>
       <p className="text-sm text-gray-500">
-        Price: ₹{price.toFixed(2)} {product.type === "rental" ? "/ unit" : ""}
+        Price: ₹{price ? price.toFixed(2) : price}{" "}
+        {product.type === "rental" ? "/ unit" : ""}
       </p>
       <p className="text-sm text-gray-500">
         Availability: {product.avilablity ? "In Stock" : "Out of Stock"}

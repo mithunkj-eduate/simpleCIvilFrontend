@@ -43,6 +43,9 @@ export interface ProductInputType {
     type?: string;
     url: string;
   }[];
+  tags?: string[];
+  color?: string;
+  size?: string;
   latitude: number;
   longitude: number;
   avilablity?: boolean;
