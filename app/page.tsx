@@ -16,7 +16,7 @@ export default function Home() {
       <div className="relative isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
         <h2 className="text-2xl font-bold text-gray-900">Our Team</h2>
         <p className="mt-4 text-lg text-gray-600">
-          Meet the people behind our success.
+          Meet the people behind our success .
         </p>
         <Peoples />
       </div>
