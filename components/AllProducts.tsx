@@ -1,4 +1,3 @@
-import useGetApi from "@/hooks/useGetApi";
 import { useParams } from "next/navigation";
 
 /* eslint-disable @next/next/no-img-element */
@@ -87,7 +86,7 @@ const products = [
 export default function AllProducts() {
   const path = useParams()
   console.log("path",path)
-  const {response} = useGetApi( {apiPath: "/products"})
+  // const {response} = useGetApi( {apiPath: "/products"})
 
   return (
     <div className="bg-white">

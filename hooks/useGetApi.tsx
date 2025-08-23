@@ -6,14 +6,14 @@ interface Props {
   apiPath: string;
 }
 
-const useGetApi = ({ apiPath }: Props) => {
+const GetApi = ({ apiPath }: Props) => {
   const { TOKEN } = Api();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [response, setResponse] = useState<any>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [error, setError] = useState<any>(null);
 
-  const GetApi = async () => {
+  const GetApiFun = async () => {
     if (!apiPath) return;
     try {
       const res = await api.get(apiPath, {
@@ -30,10 +30,10 @@ const useGetApi = ({ apiPath }: Props) => {
   };
 
   useEffect(() => {
-    if (TOKEN) GetApi();
+    if (TOKEN) GetApiFun();
   }, [TOKEN, apiPath]);
 
   return { response, error };
 };
 
-export default useGetApi;
+export default GetApi;
