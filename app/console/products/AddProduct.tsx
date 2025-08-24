@@ -168,8 +168,8 @@ const AddProduct = ({ setModalFlag, onProductAdded }: AddProductProps) => {
       if (!selectedStore) {
         throw new Error("Please select a store");
       }
-      if (!selectedCategory) {
-        throw new Error("Please select a category");
+      if (!selectedGroup) {
+        throw new Error("Please select a group");
       }
       if (!selectedType) {
         throw new Error("Please select a product type");
@@ -180,7 +180,11 @@ const AddProduct = ({ setModalFlag, onProductAdded }: AddProductProps) => {
         description: formData.description,
         storeId: selectedStore.value as string,
         ownerId: state.user?.id as string,
-        categoryId: selectedCategory.value as string,
+        categoryId: selectedGroup
+          ? selectedGroup.value
+          : selectedCategory
+          ? selectedCategory.value
+          : (selectedSubsidiary?.value as string),
         latitude: formData.latitude,
         longitude: formData.longitude,
         avilablity: formData.avilablity,
@@ -331,7 +335,6 @@ const AddProduct = ({ setModalFlag, onProductAdded }: AddProductProps) => {
                 );
               }
             })}
-           
 
             <div className="sm:col-span-3">
               <div className="mt-2">

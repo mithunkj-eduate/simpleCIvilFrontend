@@ -22,7 +22,8 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import { productSortQuery } from "@/types/productSchemaTypes";
-import Api, { api } from "@/components/helpers/apiheader";
+import { api } from "@/components/helpers/apiheader";
+import Link from "next/link";
 
 // Sample ProductCard component
 interface Product {
@@ -91,6 +92,13 @@ function ProductCard({ product }: { product: Product }) {
           ))}
         </div>
       )}
+      <Link
+        href={`/products/${product._id}`}
+        className="text-indigo-600 hover:text-indigo-800"
+      >
+        {product.name}
+      </Link>
+      O
     </div>
   );
 }
@@ -231,7 +239,6 @@ function classNames(...classes: string[]) {
 }
 
 export default function ProductsPage() {
-  const { TOKEN } = Api();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [productsData, setProductsData] = useState<{
     data: Product[];
@@ -344,12 +351,9 @@ export default function ProductsPage() {
     queryParams.append("sort", selectedSort.value);
     console.log("Fetching products with query params:", queryParams.toString());
     try {
-      const response = await api.get(`/products?${queryParams.toString()}`, {
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await api.get(
+        `/commen/products?${queryParams.toString()}`
+      );
 
       if (response.status !== 200) {
         throw new Error("Failed to fetch products");
@@ -406,16 +410,12 @@ export default function ProductsPage() {
 
   // Initial fetch and refetch on filter/sort changes
   useEffect(() => {
-    if (!TOKEN || TOKEN == null || TOKEN == undefined) return;
+    const handler = setTimeout(() => {
+      fetchProducts();
+    }, 300); // Debounce API calls by 300ms
 
-    if (TOKEN) {
-      const handler = setTimeout(() => {
-        fetchProducts();
-      }, 300); // Debounce API calls by 300ms
-
-      return () => clearTimeout(handler);
-    }
-  }, [fetchProducts, TOKEN]);
+    return () => clearTimeout(handler);
+  }, [fetchProducts]);
 
   const updateFilter = (
     filterType: string,
