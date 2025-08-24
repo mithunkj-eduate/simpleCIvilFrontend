@@ -11,6 +11,7 @@ interface Props {
     event: React.SyntheticEvent<Element, Event>,
     newValue: AutoCompleteOption | null
   ) => void;
+  className?: string;
 }
 
 export default function AutocompleteSelect({
@@ -18,6 +19,7 @@ export default function AutocompleteSelect({
   options,
   value,
   onChange,
+  className,
 }: Props) {
   return (
     <Autocomplete
@@ -29,7 +31,7 @@ export default function AutocompleteSelect({
       sx={{ width: 300 }}
       renderInput={(params) => <TextField {...params} label={label} />}
       isOptionEqualToValue={(option, val) => option.value === val.value}
-      className=""
+      className= {className}
     />
   );
 }

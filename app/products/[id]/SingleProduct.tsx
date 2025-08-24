@@ -5,10 +5,10 @@ import { useRouter, useParams } from "next/navigation";
 import { StarIcon } from "@heroicons/react/20/solid";
 import Api, { api } from "@/components/helpers/apiheader";
 import { productType } from "@/types/product";
-import AddOrder from "../AddOrder";
+import AddOrder from "../../cart/AddOrder";
 import { Button } from "@/stories/Button/Button";
 
-interface Product {
+export interface Product {
   _id: string;
   name: string;
   description: string;
@@ -95,6 +95,39 @@ export default function SingleProduct() {
     { id: 1, name: "Products", href: "/products" },
     { id: 2, name: product.categoryId.name, href: "#" },
   ];
+
+  const addToCart = (product: Product) => {
+    if (!TOKEN) {
+      alert("Please login to add items to cart");
+      return;
+    }
+    try {
+      const body = {
+        productId: product._id,
+        quantity: 1,
+        color: selectedColor || null,
+        size: selectedSize || null,
+      };
+      api
+        .post("/carts", body, {
+          headers: { Authorization: `Bearer ${TOKEN}` },
+        })
+        .then((response) => {
+          if (response.data.data) {
+            alert("Item added to cart successfully");
+          } else {
+            alert("Failed to add item to cart");
+          }
+        })
+        .catch((error) => {
+          console.error("Error adding to cart:", error);
+          alert("Failed to add item to cart. Please try again.");
+        });
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      alert("Failed to add item to cart. Please try again.");
+    }
+  };
 
   return (
     <>
@@ -285,7 +318,7 @@ export default function SingleProduct() {
 
                 <Button
                   type="button"
-                  onClick={() => setIsAddOrderModalOpen(true)}
+                  onClick={() => addToCart(product)}
                   disabled={!product.avilablity}
                   mode="primary"
                   className="mt-10 flex w-full items-center justify-center"
