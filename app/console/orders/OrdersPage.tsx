@@ -298,7 +298,7 @@ export default function OrdersPage() {
         .filter((opt) => opt.checked)
         .map((opt) => opt.value),
     }),
-    [filters,filterVersion]
+    [filters, filterVersion]
   );
 
   const fetchOrders = useCallback(async () => {
@@ -330,12 +330,9 @@ export default function OrdersPage() {
     queryParams.append("sort", selectedSort.value);
 
     try {
-      const response = await api.get(
-        `/orders/all?${queryParams.toString()}`,
-        {
-          headers: { Authorization: `Bearer ${TOKEN}` },
-        }
-      );
+      const response = await api.get(`/orders/all?${queryParams.toString()}`, {
+        headers: { Authorization: `Bearer ${TOKEN}` },
+      });
       if (!response.data.data) {
         throw new Error("Failed to fetch orders");
       }
@@ -360,7 +357,7 @@ export default function OrdersPage() {
   }, [fetchOrders]);
 
   const updateFilter = (
-    filterType: string,
+    filterType: 'orderStatus' | 'paymentMethod' | 'deliveryStatus',
     value: string,
     checked: boolean
   ) => {
@@ -398,8 +395,8 @@ export default function OrdersPage() {
   ) => {
     try {
       const endpoint = updates.orderStatus
-        ? `/api/orders/${orderId}`
-        : `/api/orders/${orderId}`;
+        ? `/orders/${orderId}`
+        : `/orders/${orderId}`;
       const response = await api.patch(endpoint, updates, {
         headers: { Authorization: `Bearer ${TOKEN}` },
       });
@@ -492,8 +489,9 @@ export default function OrdersPage() {
                     </h3>
                     <DisclosurePanel className="pt-6">
                       <div className="space-y-4">
-                        {section.options.map((option, optionIdx) => (
+                        {filters[section.id].map((option, optionIdx) => (
                           <div key={option.value} className="flex gap-3">
+                            
                             <input
                               id={`filter-mobile-${section.id}-${optionIdx}`}
                               name={`${section.id}[]`}
@@ -626,7 +624,7 @@ export default function OrdersPage() {
                     </h3>
                     <DisclosurePanel className="pt-6">
                       <div className="space-y-4">
-                        {section.options.map((option, optionIdx) => (
+                        {filters[section.id].map((option, optionIdx) => (
                           <div key={option.value} className="flex gap-3">
                             <input
                               id={`filter-${section.id}-${optionIdx}`}

@@ -1,7 +1,7 @@
 export enum OrderStatus {
-  PENDING = "pending",
-  CONFIRMED = "confirmed",
-  CANCELLED = "cancelled",
+  PENDING = "PENDING",
+  CONFIRMED = "CONFIRMED",
+  CANCELLED = "CANCELLED",
 }
 
 export enum PaymentMethod {
@@ -11,8 +11,8 @@ export enum PaymentMethod {
 }
 
 export enum DeliveryStatus {
-  PENDING = "pending",
-  SHIPPED = "shipped",
-  DELIVERED = "delivered",
-  RETURNED = "returned",
+  PENDING = "PENDING",
+  SHIPPED = "SHIPPED",
+  DELIVERED = "DELIVERED",
+  RETURNED = "RETURNED",
 }
