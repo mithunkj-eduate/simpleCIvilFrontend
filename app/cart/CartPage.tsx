@@ -1,29 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import Api, { api } from "@/components/helpers/apiheader";
 import { Button } from "@/stories/Button/Button";
 import AddOrder from "./AddOrder";
+import { AppContext } from "@/context/context";
+import { payloadTypes } from "@/context/reducer";
 
-interface CartItem {
-  _id: string;
-  name: string;
-  saleTerms?: { salePrice: number; stock: number };
-  rentalTerms?: { pricePerUnit: number; minduration: string }[];
-  type: string;
-  image: { url: string }[];
-  quantity: number;
-  storeId: { _id: string; name: string; address: string };
-  ownerId: { _id: string; name: string };
-}
+
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { dispatch } = useContext(AppContext);
   const [isAddOrderModalOpen, setIsAddOrderModalOpen] = useState(false);
   const { TOKEN } = Api();
   const router = useRouter();
@@ -180,7 +173,7 @@ export default function CartPage() {
                     </p>
                   </div>
                 </div>
-                <Button
+                {/* <Button
                   type="button"
                   onClick={() => setIsAddOrderModalOpen(true)}
                   disabled={cartItems.length === 0}
@@ -188,6 +181,22 @@ export default function CartPage() {
                   className="mt-6 w-full"
                 >
                   Place Order
+                </Button> */}
+
+                <Button
+                  type="button"
+                  onClick={() => {
+                    dispatch({
+                      type: payloadTypes.SET_CART,
+                      payload: { cart: cartItems },
+                    });
+
+                    router.push("/checkout");
+                  }}
+                  mode="primary"
+                  className="mt-6 w-full"
+                >
+                  Proceed to Checkout
                 </Button>
               </div>
             </div>
@@ -195,7 +204,7 @@ export default function CartPage() {
         )}
       </div>
 
-      {isAddOrderModalOpen && (
+      {/* {isAddOrderModalOpen && (
         <AddOrder
           product={{
             _id: cartItems[0]?._id || "",
@@ -213,7 +222,7 @@ export default function CartPage() {
           setModalFlag={setIsAddOrderModalOpen}
           onOrderAdded={handleOrderAdded}
         />
-      )}
+      )} */}
     </div>
   );
 }

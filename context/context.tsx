@@ -5,13 +5,16 @@ import axios from "axios";
 import { payloadTypes, reducer } from "./reducer";
 import { User } from "@/commenType/commenTypes";
 import api from "@/components/helpers/apiheader";
+import { CartItem } from "@/types/cart";
 
 export type InitialStateType = {
   user: User | null;
+  cart: CartItem[];
 };
 
 export const initialState: InitialStateType = {
   user: null,
+  cart: [],
 };
 
 const AppContext = createContext<{

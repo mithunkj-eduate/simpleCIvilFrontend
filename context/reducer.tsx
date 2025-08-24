@@ -3,6 +3,7 @@ import { Actions } from "./types";
 
 export enum payloadTypes {
   SET_USER = "SET_USER",
+  SET_CART = "SET_CART",
   RESET = "RESET",
 }
 export const reducer = (state: InitialStateType, action: Actions) => {
@@ -11,6 +12,11 @@ export const reducer = (state: InitialStateType, action: Actions) => {
       return {
         ...state,
         user: action.payload.user,
+      };
+    case payloadTypes.SET_CART:
+      return {
+        ...state,
+        cart: action.payload.cart,
       };
    
     case payloadTypes.RESET:

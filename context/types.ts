@@ -6,6 +6,9 @@ type reducerPayload = {
   [payloadTypes.SET_USER]: {
     user: User | null;
   };
+  [payloadTypes.SET_CART]: {
+    cart: InitialStateType["cart"];
+  };
 
   [payloadTypes.RESET]: {
     resetState: InitialStateType;
