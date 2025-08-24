@@ -50,8 +50,23 @@ export default function CartPage() {
     if (TOKEN) fetchCart();
   }, [TOKEN]);
 
-  const handleRemoveItem = (itemId: string) => {
-    setCartItems((prev) => prev.filter((item) => item._id !== itemId));
+  const handleRemoveItem = async (productId: string) => {
+    try {
+      if (!TOKEN) throw new Error("Authentication token is missing");
+      const response = await api.delete(`/carts/${productId}`, {
+        headers: { Authorization: `Bearer ${TOKEN}` },
+      });
+      console.log(response.data);
+      if (response.data) {
+        setCartItems((prev) => prev.filter((item) => item._id !== productId));
+      } else {
+        throw new Error("Failed to remove item from cart");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error removing item from cart. Please try again.");
+    }
+
     // Add API call to remove from backend cart
   };
 
@@ -94,7 +109,9 @@ export default function CartPage() {
                     <li key={item._id} className="flex py-6">
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img
-                          src={"https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"}
+                          src={
+                            "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"
+                          }
                           alt={item.name}
                           className="h-full w-full object-cover object-center"
                         />
