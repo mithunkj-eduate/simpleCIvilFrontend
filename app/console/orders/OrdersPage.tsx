@@ -357,7 +357,7 @@ export default function OrdersPage() {
   }, [fetchOrders]);
 
   const updateFilter = (
-    filterType: 'orderStatus' | 'paymentMethod' | 'deliveryStatus',
+    filterType: "orderStatus" | "paymentMethod" | "deliveryStatus",
     value: string,
     checked: boolean
   ) => {
@@ -395,9 +395,9 @@ export default function OrdersPage() {
   ) => {
     try {
       const endpoint = updates.orderStatus
-        ? `/orders/${orderId}`
-        : `/orders/${orderId}`;
-      const response = await api.patch(endpoint, updates, {
+        ? `/orders/${orderId}/status`
+        : `/orders/${orderId}/deliveryStatus`;
+      const response = await api.put(endpoint, updates, {
         headers: { Authorization: `Bearer ${TOKEN}` },
       });
       if (response.data.data) {
@@ -491,7 +491,6 @@ export default function OrdersPage() {
                       <div className="space-y-4">
                         {filters[section.id].map((option, optionIdx) => (
                           <div key={option.value} className="flex gap-3">
-                            
                             <input
                               id={`filter-mobile-${section.id}-${optionIdx}`}
                               name={`${section.id}[]`}
