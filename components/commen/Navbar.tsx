@@ -14,13 +14,14 @@ import Link from "next/link";
 interface NavProps {
   NavType: LicenseTypes;
   AdminDashboard?: boolean;
+  className?: string;
 }
 
-// function classNames(...classes: string[]) {
-//   return classes.filter(Boolean).join(" ");
-// }
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
 
-export default function Navbar({ NavType }: NavProps) {
+export default function Navbar({ NavType, className }: NavProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [items, setItems] = useState<
     { name: string; href: string; current: boolean }[]
@@ -36,6 +37,7 @@ export default function Navbar({ NavType }: NavProps) {
       { name: "Marketplace", href: "#", current: false },
       { name: "Company", href: "/aboutus", current: false },
       { name: "Orders", href: "/orders", current: false },
+      { name: "Blog", href: "/blog", current: false },
 
       state.user && state.user.id
         ? { name: "Console", href: "/console", current: false }
@@ -100,7 +102,11 @@ export default function Navbar({ NavType }: NavProps) {
             <a
               key={index}
               href={item.href}
-              className={`text-sm/6 font-semibold text-gray-900`}
+              // className={`text-sm/6 font-semibold text-gray-900 text-white`}
+              className={classNames(
+                className ? className : "",
+                `text-sm/6 font-semibold text-gray-900`
+              )}
               // className={classNames(
               //   item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white',
               //   'block rounded-md px-3 py-2 text-base font-medium',
@@ -115,7 +121,10 @@ export default function Navbar({ NavType }: NavProps) {
           {state.user && state.user.id ? (
             <Link
               href="/cart"
-              className="text-sm/6 font-semibold text-gray-900 me-2"
+              className={classNames(
+                className ? className : "",
+                "text-sm/6 font-semibold text-gray-900 me-2"
+              )}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +143,13 @@ export default function Navbar({ NavType }: NavProps) {
             </Link>
           ) : null}
 
-          <a href="/login" className="text-sm/6 font-semibold text-gray-900">
+          <a
+            href="/login"
+            className={classNames(
+              className ? className : "",
+              "text-sm/6 font-semibold text-gray-900"
+            )}
+          >
             Log in <span aria-hidden="true">&rarr;</span>
           </a>
         </div>

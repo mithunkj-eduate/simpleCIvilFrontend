@@ -18,7 +18,7 @@ const links = [
   export default function Example() {
     return (
       <>
-      <NavBar NavType={LicenseTypes.USER}/>
+      <NavBar NavType={LicenseTypes.USER} className="text-white"/>
       
       <div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32">
         <img

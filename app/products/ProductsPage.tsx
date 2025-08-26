@@ -98,7 +98,6 @@ function ProductCard({ product }: { product: Product }) {
       >
         {product.name}
       </Link>
-      O
     </div>
   );
 }
@@ -1054,7 +1053,7 @@ export default function ProductsPage() {
               </form>
 
               {/* Product grid */}
-              <div className="lg:col-span-3">
+              <div className="lg:col-span-3 ">
                 {loading ? (
                   <p className="text-gray-500 text-center py-10">
                     Loading products...
