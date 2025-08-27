@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { StarIcon } from "@heroicons/react/20/solid";
 import Api, { api } from "@/components/helpers/apiheader";
 import { productType } from "@/types/product";
 import AddOrder from "../../cart/AddOrder";
 import { Button } from "@/stories/Button/Button";
+import { AppContext } from "@/context/context";
 
 export interface Product {
   _id: string;
@@ -39,6 +40,7 @@ export default function SingleProduct() {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const { TOKEN } = Api();
+  const { state } = useContext(AppContext);
   const params = useParams();
   const router = useRouter();
 
@@ -97,7 +99,7 @@ export default function SingleProduct() {
   ];
 
   const addToCart = (product: Product) => {
-    if (!TOKEN) {
+    if (!TOKEN && !state.user) {
       alert("Please login to add items to cart");
       return;
     }
@@ -132,7 +134,7 @@ export default function SingleProduct() {
   return (
     <>
       <div className="bg-white">
-        <div className="pt-6">
+        <div className="pt-6 mx-4">
           {/* Breadcrumb */}
           <nav aria-label="Breadcrumb">
             <ol
@@ -141,7 +143,7 @@ export default function SingleProduct() {
             >
               {breadcrumbs.map((breadcrumb) => (
                 <li key={breadcrumb.id}>
-                  <div className="flex items-center">
+                    <div className="flex items-center">
                     <a
                       href={breadcrumb.href}
                       className="mr-2 text-sm font-medium text-gray-900"

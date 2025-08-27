@@ -49,9 +49,10 @@ export default function OrderHistoryPage() {
       setLoading(true);
       setError(null);
       try {
-        if (!TOKEN || !state.user?.id)
-          throw new Error("Authentication required");
-        const response = await api.get(`/api/orders/history?days=30`, {
+        if (!TOKEN || !state.user?.id) return;
+        // throw new Error("Authentication required");
+
+        const response = await api.get(`/orders/history?days=30`, {
           headers: { Authorization: `Bearer ${TOKEN}` },
         });
         if (!response.data.data)
@@ -65,19 +66,21 @@ export default function OrderHistoryPage() {
       }
     };
 
+    fetchOrderHistory();
+  }, [TOKEN, state.user?.id]);
+
+  useEffect(() => {
     const fetchSimilarProducts = async () => {
       if (orders.length > 0) {
         const productId = orders[0].productId._id; // Use first order's product as an example
-        const response = await api.get(`/api/products/similar/${productId}`, {
+        const response = await api.get(`/products/similar/${productId}`, {
           headers: { Authorization: `Bearer ${TOKEN}` },
         });
         setSimilarProducts(response.data.data || []);
       }
     };
-
-    fetchOrderHistory();
     fetchSimilarProducts();
-  }, [TOKEN, state.user?.id, orders]);
+  }, [orders]);
 
   const handleReturnRequest = (orderId: string) => {
     // Mock return request - integrate with backend API
@@ -94,7 +97,7 @@ export default function OrderHistoryPage() {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900 border-b border-gray-200 pt-2 pb-6 sticky top-0 bg-white z-10">
           Order History
         </h1>
 
@@ -143,21 +146,20 @@ export default function OrderHistoryPage() {
                   <div className="flex-shrink-0">
                     <img
                       src={
-                        order.productId.image[0]?.url ||
-                        "https://via.placeholder.com/96"
+                        "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-05.jpg"
                       }
                       alt={order.productId.name}
                       className="h-20 w-20 rounded-md object-cover"
                     />
                   </div>
                 </div>
-                <div className="mt-4 flex space-x-4">
+                <div className="mt-4 space-x-4">
                   {(order.deliveryStatus === DeliveryStatus.DELIVERED ||
                     order.deliveryStatus === DeliveryStatus.SHIPPED) && (
                     <Button
                       onClick={() => handleReturnRequest(order._id)}
                       mode="secondary"
-                      className="text-sm"
+                      className="text-sm m-2"
                     >
                       Request Return
                     </Button>

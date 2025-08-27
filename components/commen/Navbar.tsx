@@ -33,14 +33,16 @@ export default function Navbar({ NavType, className }: NavProps) {
     () => [
       { name: "Home", href: "/", current: true },
       { name: "Product", href: "/products", current: false },
-      { name: "Contact", href: "/contactus", current: false },
-      { name: "Marketplace", href: "#", current: false },
+      // { name: "Contact", href: "/contactus", current: false },
+      // { name: "Marketplace", href: "#", current: false },
       { name: "Company", href: "/aboutus", current: false },
-      { name: "Orders", href: "/orders", current: false },
       { name: "Blog", href: "/blog", current: false },
 
       state.user && state.user.id
-        ? { name: "Console", href: "/console", current: false }
+        ? [
+            { name: "Orders", href: "/orders", current: false },
+            { name: "Console", href: "/console", current: false },
+          ]
         : { name: "", href: "", current: false },
     ],
     [state.user]

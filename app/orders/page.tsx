@@ -1,6 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import React from "react";
+import OrderHistoryPage from "./OrderHistoryPage";
+import Navbar from "@/components/commen/Navbar";
+import { LicenseTypes } from "@/utils/enum.types";
+// import OrderHistoryPage from "./OrderHistoryPage";
 
 interface OrderItem {
   id: string;
@@ -18,37 +22,44 @@ interface Order {
   items: OrderItem[];
 }
 
-const orders: Order[] = [
-  {
-    orderNumber: "WU88191111",
-    datePlaced: "Jul 6, 2021",
-    totalAmount: 160,
-    items: [
-      {
-        id: "1",
-        name: "Micro Backpack",
-        description:
-          "Are you a minimalist looking for a compact carry option? The Micro Backpack is the perfect size for your essential everyday carry items. Wear it like a backpack or carry it like a satchel for all-day use.",
-        price: 70,
-        image: "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-05.jpg",
-        deliveredDate: "July 12, 2021",
-      },
-      {
-        id: "2",
-        name: "Nomad Shopping Tote",
-        description:
-          "This durable shopping tote is perfect for the world traveler. Its yellow canvas construction is water, fray, tear resistant. The matching handle, backpack straps, and shoulder loops provide multiple carry options for a day out on your next adventure.",
-        price: 90,
-        image: "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-05.jpg",
-        deliveredDate: "July 12, 2021",
-      },
-    ],
-  },
-];
+// const orders: Order[] = [
+//   {
+//     orderNumber: "WU88191111",
+//     datePlaced: "Jul 6, 2021",
+//     totalAmount: 160,
+//     items: [
+//       {
+//         id: "1",
+//         name: "Micro Backpack",
+//         description:
+//           "Are you a minimalist looking for a compact carry option? The Micro Backpack is the perfect size for your essential everyday carry items. Wear it like a backpack or carry it like a satchel for all-day use.",
+//         price: 70,
+//         image:
+//           "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-05.jpg",
+//         deliveredDate: "July 12, 2021",
+//       },
+//       {
+//         id: "2",
+//         name: "Nomad Shopping Tote",
+//         description:
+//           "This durable shopping tote is perfect for the world traveler. Its yellow canvas construction is water, fray, tear resistant. The matching handle, backpack straps, and shoulder loops provide multiple carry options for a day out on your next adventure.",
+//         price: 90,
+//         image:
+//           "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-05.jpg",
+//         deliveredDate: "July 12, 2021",
+//       },
+//     ],
+//   },
+// ];
 
 const OrderHistory = () => {
   return (
-    <div className="max-w-5xl mx-auto p-6">
+    <>
+      <Navbar NavType={LicenseTypes.USER} />
+      <div className="mt-12">
+        <OrderHistoryPage />
+      </div>
+      {/* <div className="max-w-5xl mx-auto p-6 mt-16">
       <h1 className="text-2xl font-bold mb-2">Order history</h1>
       <p className="text-gray-500 mb-6">
         Check the status of recent orders, manage returns, and discover similar
@@ -60,7 +71,6 @@ const OrderHistory = () => {
           key={order.orderNumber}
           className="border border-gray-300 rounded-lg shadow-sm mb-6 bg-white"
         >
-          {/* Order header */}
           <div className="flex justify-between items-center p-4 border-b border-gray-300 text-sm text-gray-700">
             <div>
               <p>
@@ -86,13 +96,11 @@ const OrderHistory = () => {
             </div>
           </div>
 
-          {/* Order items */}
           {order.items.map((item) => (
             <div
               key={item.id}
               className="flex flex-col sm:flex-row gap-4 p-4 border-t border-gray-300"
             >
-              {/* Product image */}
               <div className="w-24 h-24 relative flex-shrink-0">
                 <img
                   src={item.image}
@@ -102,7 +110,6 @@ const OrderHistory = () => {
                 />
               </div>
 
-              {/* Product details */}
               <div className="flex-1">
                 <div className="flex justify-between items-start">
                   <div>
@@ -112,7 +119,6 @@ const OrderHistory = () => {
                   <p className="font-medium">${item.price.toFixed(2)}</p>
                 </div>
 
-                {/* Delivery info */}
                 <div className="flex items-center mt-2 text-green-500 text-sm text-xs/5">
                   <svg
                     className="w-4 h-4 mr-1"
@@ -130,7 +136,6 @@ const OrderHistory = () => {
                   Delivered on {item.deliveredDate}
                 </div>
 
-                {/* Action buttons */}
                 <div className="flex gap-4 mt-2 text-sm">
                   <button className="text-purple-600 hover:underline">
                     View product
@@ -145,8 +150,8 @@ const OrderHistory = () => {
           ))}
         </div>
       ))}
-      {/* <OrderHistory /> */}
-    </div>
+    </div> */}
+    </>
   );
 };
 
