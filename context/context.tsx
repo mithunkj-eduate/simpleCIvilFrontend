@@ -1,10 +1,9 @@
 "use client";
 import React, { createContext, useEffect, useReducer } from "react";
 import { Actions } from "./types";
-import axios from "axios";
 import { payloadTypes, reducer } from "./reducer";
 import { User } from "@/commenType/commenTypes";
-import api from "@/components/helpers/apiheader";
+import Api, { api } from "@/components/helpers/apiheader";
 import { CartItem } from "@/types/cart";
 
 export type InitialStateType = {
@@ -30,14 +29,17 @@ interface Props {
 }
 const AppProvider: React.FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [token, setToken] = React.useState<string | null>(null);
-  const { BASE_URL, API_HEADER } = api();
+  const { TOKEN: token } = Api();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const getUser = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/user/verify`, API_HEADER);
-   
+      const res = await api.get(`/user/verify`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       // const user = {
       //   id: "6884c59286b465a7ee0a0fe0",
       //   name: "mithun",
@@ -54,10 +56,8 @@ const AppProvider: React.FC<Props> = ({ children }) => {
       //     },
       //   },
       // });
-   
-      if (res.status === 200 && res.data) {
 
-     
+      if (res.status === 200 && res.data) {
         if (res.data && res.data.data) {
           dispatch({
             type: payloadTypes.SET_USER,
@@ -83,16 +83,6 @@ const AppProvider: React.FC<Props> = ({ children }) => {
       });
     }
   };
-
-  useEffect(() => {
-    // This code runs only on the client-side
-    if (typeof window !== "undefined") {
-      const storedData = localStorage.getItem("token");
-      if (storedData) {
-        setToken(storedData);
-      }
-    }
-  }, []);
 
   useEffect(() => {
     if (token) {

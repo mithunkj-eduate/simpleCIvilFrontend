@@ -1,13 +1,14 @@
 "use client";
 import NavBar from "@/components/commen/Navbar";
-import api from "@/components/helpers/apiheader";
-import { Button } from "@/stories/Button/Button";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
 import { LicenseTypes } from "@/utils/enum.types";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { api } from "@/components/helpers/apiheader";
+
+// import Cookies from "js-cookie";
 
 export const LoginFormJson = [
   {
@@ -26,7 +27,6 @@ export const LoginFormJson = [
 ];
 
 const Login = () => {
-  const { BASE_URL } = api();
   const [formData, setFormData] = useState({
     phoneNumber: "",
     password: "",
@@ -35,8 +35,8 @@ const Login = () => {
 
   const handleSubmit = async () => {
     try {
-      if (BASE_URL && formData) {
-        const res = await axios.post(`${BASE_URL}/users/login`, formData, {
+      if (formData) {
+        const res = await api.post(`/users/login`, formData, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -44,6 +44,7 @@ const Login = () => {
         if (res.status === 200) {
           // Handle successful login, e.g., redirect or show a success message
           localStorage.setItem("token", res.data.token);
+          // Cookies.set("token", res.data.token, { expires: 7 }); //7 days
           nav.push("/");
         } else {
           console.error("Login failed:", res.data);

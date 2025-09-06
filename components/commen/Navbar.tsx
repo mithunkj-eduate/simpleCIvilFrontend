@@ -28,7 +28,6 @@ export default function Navbar({ NavType, className }: NavProps) {
   >([]);
 
   const { state } = useContext(AppContext);
-
   const Navigation = useMemo(
     () => [
       { name: "Home", href: "/", current: true },
@@ -39,11 +38,12 @@ export default function Navbar({ NavType, className }: NavProps) {
       { name: "Blog", href: "/blog", current: false },
 
       state.user && state.user.id
-        ? [
-            { name: "Orders", href: "/orders", current: false },
-            { name: "Console", href: "/console", current: false },
-          ]
+        ? { name: "Orders", href: "/orders", current: false }
         : { name: "", href: "", current: false },
+      state.user && state.user.role === "admin"
+        ? { name: "Console", href: "/console", current: false }
+        : { name: "", href: "", current: false },
+
     ],
     [state.user]
   );
@@ -191,9 +191,9 @@ export default function Navbar({ NavType, className }: NavProps) {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                {items.map((item) => (
+                {items.map((item, index) => (
                   <a
-                    key={item.name}
+                    key={index}
                     href={item.href}
                     className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                   >

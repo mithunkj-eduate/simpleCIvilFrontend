@@ -1,4 +1,5 @@
 "use client";
+
 import { GetProductData, Products } from "@/commenType/commenTypes";
 import NavBar from "@/components/commen/Navbar";
 import AddModal from "@/components/helpers/AddModal";
@@ -18,15 +19,14 @@ const ProductsPage = () => {
   const productsTableHeader = [
     {
       name: "Name",
-      className:
-        "md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate",
+      className: "md:px-6 pl-4 py-3 flex items-center space-x-3 truncate",
     },
-    { name: "Description", className: "max-sm:hidden" },
-    { name: "Price", className: "max-sm:hidden" },
-    { name: "Category", className: "" },
-    { name: "Stock", className: "max-sm:hidden" },
-    { name: "Created At", className: "max-sm:hidden" },
-    { name: "Action", className: "" },
+    { name: "Description", className: "hidden sm:table-cell" },
+    { name: "Price", className: "hidden sm:table-cell" },
+    { name: "Category", className: "px-6 py-3" },
+    { name: "Stock", className: "hidden sm:table-cell" },
+    { name: "Created At", className: "hidden sm:table-cell" },
+    { name: "Action", className: "px-6 py-3" },
   ];
 
   const GetUsers = async () => {
@@ -48,7 +48,9 @@ const ProductsPage = () => {
             price: product.price || 0,
             category: product.categoryId.name || "N/A",
             stock: product.saleTerms?.stock || 0,
-            createdAt: product.createdAt || "N/A",
+            createdAt: product.createdAt
+              ? new Date(product.createdAt).toLocaleDateString()
+              : "N/A",
           }))
         );
       } else {
@@ -75,77 +77,87 @@ const ProductsPage = () => {
         {loading ? (
           <Loading />
         ) : (
-          <div className="w-full md:p-10 p-4">
-            <div className="flex">
-              <h2 className="pb-4 text-lg font-medium">All Users</h2>
+          <div className="w-full p-4 md:p-6 lg:p-10">
+            <div className="flex items-center justify-between pb-4">
+              <h2 className="text-lg font-semibold text-gray-900 md:text-xl">
+                All Products
+              </h2>
               <Button
                 mode="primary"
-                className="ms-auto m-2"
+                className="ml-auto px-4 py-2 text-sm md:text-base rounded-md bg-orange-600 hover:bg-orange-700 text-white transition-colors"
                 onClick={() => setModalFlag(true)}
               >
-                Add{" "}
+                Add Product
               </Button>
             </div>
-            <div className="flex flex-col items-center max-w-6xl w-full overflow-hidden rounded-md bg-white border border-gray-500/20">
-              <table className="table-fixed w-full overflow-hidden">
-                <thead className="text-gray-900 text-sm text-left">
+            <div className="overflow-x-auto rounded-md bg-white border border-gray-200 shadow-sm">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
                   <tr>
                     {productsTableHeader.map((header, index) => (
                       <th
                         key={index}
-                        className={`${header.className} px-4 py-3`}
+                        className={`${header.className} text-xs font-medium text-gray-500 uppercase tracking-wider`}
                       >
                         {header.name}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="text-sm text-gray-500">
-                  {products &&
+                <tbody className="divide-y divide-gray-200">
+                  {products.length > 0 ? (
                     products.map((product, index) => (
-                      <tr key={index} className="border-t border-gray-500/20">
-                        <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
-                          <div className="bg-gray-500/10 rounded p-2">
-                            {/* <Image
-                        src={product ? "" : "/placeholder.png"}
-                        alt="product Image"
-                        className="w-16"
-                        width={1280}
-                        height={720}
-                      /> */}
-                            {product.name
-                              ? product.name.charAt(0).toUpperCase()
-                              : "N/A"}
+                      <tr
+                        key={index}
+                        className="hover:bg-gray-50 transition-colors cursor-pointer"
+                      >
+                        <td className="px-4 py-4 flex items-center space-x-3 truncate">
+                          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
+                            {product.name.charAt(0).toUpperCase() || "N/A"}
                           </div>
-                          <span className="truncate w-full">
+                          <span className="text-sm text-gray-900 truncate w-full">
                             {product.name}
                           </span>
                         </td>
-                        <td className="px-4 py-3 max-sm:hidden">
+                        <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {product.description}
                         </td>
-                        <td className="px-4 py-3 max-sm:hidden">
-                          {product.price}
+                        <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
+                          ₹{product.price.toFixed(2)}
                         </td>
-                        <td className="px-4 py-3">{product.category}</td>
-                        <td className="px-4 py-3 max-sm:hidden">
+                        <td className="px-6 py-4 text-sm text-gray-500">
+                          {product.category}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {product.stock}
                         </td>
-                        <td className="px-4 py-3 max-sm:hidden">
+                        <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {product.createdAt}
                         </td>
-                        <td className="px-4 py-3 max-sm:hidden">
-                          <button className="flex items-center gap-1 px-1.5 md:px-3.5 py-2 bg-orange-600 text-white rounded-md">
-                            <span className="hidden md:block">Visit</span>
-                            {/* <Image
-                              className="h-3.5"
-                              src={"/"}
-                              alt="redirect_icon"
-                            /> */}
-                          </button>
+                        <td className="px-6 py-4 text-sm text-gray-500">
+                          <Button
+                            mode="secondary"
+                            className="px-3 py-1 text-xs md:text-sm bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent row navigation
+                              // Add edit/delete logic here
+                            }}
+                          >
+                            Manage
+                          </Button>
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="px-6 py-4 text-center text-gray-500"
+                      >
+                        No products found.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -156,7 +168,6 @@ const ProductsPage = () => {
       <AddModal
         modalFlag={modalFlag}
         setModalFlag={setModalFlag}
-        // eslint-disable-next-line react/no-children-prop
         children={<AddProduct setModalFlag={setModalFlag} />}
       />
     </>
