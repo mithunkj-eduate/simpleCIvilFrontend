@@ -7,8 +7,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { api } from "@/components/helpers/apiheader";
-
-// import Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 export const LoginFormJson = [
   {
@@ -44,7 +43,7 @@ const Login = () => {
         if (res.status === 200) {
           // Handle successful login, e.g., redirect or show a success message
           localStorage.setItem("token", res.data.token);
-          // Cookies.set("token", res.data.token, { expires: 7 }); //7 days
+          Cookies.set("token", res.data.token, { expires: 7 }); //7 days
           nav.push("/");
         } else {
           console.error("Login failed:", res.data);

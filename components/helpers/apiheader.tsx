@@ -1,26 +1,26 @@
 "use client";
 import axios from "axios";
 import { useEffect, useState } from "react";
-// import Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 const Api = () => {
-  // const token1 = Cookies.get("token") ?? "";
+  const token1 = Cookies.get("token") ?? "";
   const token2 =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODg0YzU5Mjg2YjQ2NWE3ZWUwYTBmZTAiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NTQwNjM3MzQsImV4cCI6MTc1OTI0NzczNH0.0QIgoY6EiK4CkktDaALRRs7kJ8zkcfYpMLZWMdhLcUE";
 
-  const [token, setToken] = useState<string | null>(null);
+  // const [token, setToken] = useState<string | null>(null);
 
-  useEffect(() => {
-    // This code runs only on the client-side
-    if (typeof window !== "undefined") {
-      // const storedData = localStorage.getItem("token");
-      const storedData =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODg0YzU5Mjg2YjQ2NWE3ZWUwYTBmZTAiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NTQwNjM3MzQsImV4cCI6MTc1OTI0NzczNH0.0QIgoY6EiK4CkktDaALRRs7kJ8zkcfYpMLZWMdhLcUE";
-      if (storedData) {
-        setToken(storedData);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   // This code runs only on the client-side
+  //   if (typeof window !== "undefined") {
+  //     // const storedData = localStorage.getItem("token");
+  //     const storedData =
+  //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODg0YzU5Mjg2YjQ2NWE3ZWUwYTBmZTAiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NTQwNjM3MzQsImV4cCI6MTc1OTI0NzczNH0.0QIgoY6EiK4CkktDaALRRs7kJ8zkcfYpMLZWMdhLcUE";
+  //     if (storedData) {
+  //       setToken(storedData);
+  //     }
+  //   }
+  // }, []);
 
   // let API_HEADER;
   // if (token)
@@ -32,7 +32,7 @@ const Api = () => {
   //   };
 
   return {
-    TOKEN: token2,
+    TOKEN: token1 ? token1 : token2,
   };
 };
 

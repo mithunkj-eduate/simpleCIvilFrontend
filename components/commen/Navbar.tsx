@@ -43,20 +43,18 @@ export default function Navbar({ NavType, className }: NavProps) {
       state.user && state.user.role === "admin"
         ? { name: "Console", href: "/console", current: false }
         : { name: "", href: "", current: false },
-
     ],
     [state.user]
   );
 
   const ConsoleNavigation = useMemo(
     () => [
-      { name: "Dashboard", href: "/console/dashboard", current: true },
+      { name: "Dashboard", href: "/console", current: true },
       { name: "Stores", href: "/console/stores", current: false },
       { name: "Users", href: "/console/users", current: false },
       { name: "Products", href: "/console/products", current: false },
       { name: "Orders", href: "/console/orders", current: false },
       { name: "Categories", href: "/console/categories", current: false },
-      { name: "Settings", href: "/console/settings", current: false },
     ],
     []
   );
