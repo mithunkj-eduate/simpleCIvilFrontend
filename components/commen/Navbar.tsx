@@ -55,6 +55,7 @@ export default function Navbar({ NavType, className }: NavProps) {
       { name: "Products", href: "/console/products", current: false },
       { name: "Orders", href: "/console/orders", current: false },
       { name: "Categories", href: "/console/categories", current: false },
+      { name: "Payments", href: "/console/payments", current: false },
     ],
     []
   );
