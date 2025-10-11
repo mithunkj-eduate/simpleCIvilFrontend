@@ -7,7 +7,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/20/solid";
 
 import Image from "next/image";
 import icon from "@/assets/icon.png";
-import { LicenseTypes } from "@/utils/enum.types";
+import { LicenseTypes, UserType } from "@/utils/enum.types";
 import { AppContext } from "@/context/context";
 import Link from "next/link";
 
@@ -40,7 +40,13 @@ export default function Navbar({ NavType, className }: NavProps) {
       state.user && state.user.id
         ? { name: "Orders", href: "/orders", current: false }
         : { name: "", href: "", current: false },
-      state.user && state.user.role === "admin"
+      state.user &&
+      (state.user.role === UserType.ADMIN ||
+        state.user.role === UserType.PICE_WORKER ||
+        state.user.role === UserType.PROJECT_MANAGER ||
+        state.user.role === UserType.RESELLER ||
+        state.user.role === UserType.SELLER ||
+        state.user.role === UserType.SYSTEM_ADMIN)
         ? { name: "Console", href: "/console", current: false }
         : { name: "", href: "", current: false },
     ],

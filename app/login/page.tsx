@@ -32,7 +32,8 @@ const Login = () => {
   });
   const nav = useRouter();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e:React.FormEvent) => {
+    e.preventDefault()
     try {
       if (formData) {
         const res = await api.post(`/users/login`, formData, {
@@ -125,6 +126,7 @@ const Login = () => {
               Login
             </button>
           </div>
+          <p>Not a member? <a href="/signup">signup</a></p>
         </form>
       </div>
     </>

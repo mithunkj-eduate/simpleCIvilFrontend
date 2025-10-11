@@ -20,7 +20,7 @@ interface Payment {
 }
 
 export default function PaymentPage() {
-  const { TOKEN } = Api()
+  const { TOKEN } = Api();
   const { orderId } = useParams();
   const [payment, setPayment] = useState<Payment | null>(null);
   const [loading, setLoading] = useState(true);
@@ -32,7 +32,8 @@ export default function PaymentPage() {
       setLoading(true);
       setError(null);
       try {
-        if (!TOKEN || !orderId) throw new Error("Authentication or order ID is missing");
+        if (!TOKEN || !orderId)
+          throw new Error("Authentication or order ID is missing");
         const response = await api.get(`/payments/${orderId}`, {
           headers: { Authorization: `Bearer ${TOKEN}` },
         });
@@ -53,11 +54,19 @@ export default function PaymentPage() {
     setLoading(true);
     try {
       if (!payment?._id) throw new Error("Payment ID is missing");
-      const response = await api.post(`/payments/${payment._id}/action`, { action }, {
-        headers: { Authorization: `Bearer ${TOKEN}` },
-      });
+      const response = await api.post(
+        `/payments/${payment._id}/action`,
+        { action },
+        {
+          headers: { Authorization: `Bearer ${TOKEN}` },
+        }
+      );
       setPayment(response.data.data);
-      alert(`Payment ${action} ${action === "refund" ? "requested" : "successfully"}`);
+      alert(
+        `Payment ${action} ${
+          action === "refund" ? "requested" : "successfully"
+        }`
+      );
     } catch (err: any) {
       setError(err.response?.data?.message || `Failed to ${action} payment.`);
       console.error(err);
@@ -66,7 +75,10 @@ export default function PaymentPage() {
     }
   };
 
-  const getAvailableActions = (method: PaymentMethod, status: PaymentStatus) => {
+  const getAvailableActions = (
+    method: PaymentMethod,
+    status: PaymentStatus
+  ) => {
     if (method === PaymentMethod.CASH) {
       return status === PaymentStatus.CAPTURED ? (
         <Button
@@ -107,25 +119,57 @@ export default function PaymentPage() {
   };
 
   if (loading) return <Loading />;
-  if (error || !payment) return <p className="text-red-500 text-center py-10">{error || "Payment not found"}</p>;
+  if (error || !payment)
+    return (
+      <p className="text-red-500 text-center py-10">
+        {error || "Payment not found"}
+      </p>
+    );
 
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Payment Details</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+          Payment Details
+        </h1>
 
         <div className="mt-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h2 className="text-lg font-medium text-gray-900">Payment Information</h2>
+            <h2 className="text-lg font-medium text-gray-900">
+              Payment Information
+            </h2>
             <div className="mt-4 space-y-4">
-              <p className="text-sm text-gray-600">User: {payment.userId.name} ({payment.userId.email})</p>
-              <p className="text-sm text-gray-600">Order Amount: ₹{payment.orderId.totalPrice.toFixed(2)}</p>
-              <p className="text-sm text-gray-600">Delivery Address: {payment.orderId.deliveryAddress}</p>
-              <p className="text-sm text-gray-600">Paid Amount: ₹{payment.amount.toFixed(2)}</p>
-              <p className="text-sm text-gray-600">Method: {payment.method.charAt(0).toUpperCase() + payment.method.slice(1)}</p>
-              <p className="text-sm text-gray-600">Status: {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}</p>
-              <p className="text-sm text-gray-600">Transaction ID: {payment.transactionId}</p>
-              <p className="text-sm text-gray-600">Created At: {new Date(payment.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
+              <p className="text-sm text-gray-600">
+                User: {payment.userId.name} ({payment.userId.email})
+              </p>
+              <p className="text-sm text-gray-600">
+                Order Amount: ₹{payment.orderId.totalPrice.toFixed(2)}
+              </p>
+              <p className="text-sm text-gray-600">
+                Delivery Address: {payment.orderId.deliveryAddress}
+              </p>
+              <p className="text-sm text-gray-600">
+                Paid Amount: ₹{payment.amount.toFixed(2)}
+              </p>
+              <p className="text-sm text-gray-600">
+                Method:{" "}
+                {payment.method.charAt(0).toUpperCase() +
+                  payment.method.slice(1)}
+              </p>
+              <p className="text-sm text-gray-600">
+                Status:{" "}
+                {payment.status.charAt(0).toUpperCase() +
+                  payment.status.slice(1)}
+              </p>
+              <p className="text-sm text-gray-600">
+                Transaction ID: {payment.transactionId}
+              </p>
+              <p className="text-sm text-gray-600">
+                Created At:{" "}
+                {new Date(payment.createdAt).toLocaleString("en-IN", {
+                  timeZone: "Asia/Kolkata",
+                })}
+              </p>
             </div>
             {getAvailableActions(payment.method, payment.status)}
             {error && <p className="text-red-500 text-sm mt-2">{error}</p>}

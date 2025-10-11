@@ -173,7 +173,7 @@ export default function SingleProduct() {
 
           {/* Image gallery */}
           <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-8 lg:px-8">
-            {[1].map((img, index) => (
+            {[0,1,2,3].map((img, index) => (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 key={index}

@@ -68,13 +68,13 @@ export default function AllPaymentsPage() {
     }
   };
 
-  const getAvailableActions = (method: PaymentMethod, status: PaymentStatus) => {
+  const getAvailableActions = (method: PaymentMethod, status: PaymentStatus,paymentId: string) => {
     if (method === PaymentMethod.CASH) {
       return status === PaymentStatus.CAPTURED ? (
         <Button
           mode="secondary"
           className="px-2 py-1 text-xs md:text-sm bg-orange-600 hover:bg-orange-700 text-white rounded-md"
-          onClick={() => handleAction(payment._id, "refund")}
+          onClick={() => handleAction(paymentId, "refund")}
         >
           Request Refund
         </Button>
@@ -86,7 +86,7 @@ export default function AllPaymentsPage() {
             <Button
               mode="primary"
               className="px-2 py-1 text-xs md:text-sm bg-orange-600 hover:bg-orange-700 text-white rounded-md"
-              onClick={() => handleAction(payment._id, "capture")}
+              onClick={() => handleAction(paymentId, "capture")}
             >
               Capture
             </Button>
@@ -96,7 +96,7 @@ export default function AllPaymentsPage() {
             <Button
               mode="secondary"
               className="px-2 py-1 text-xs md:text-sm bg-orange-600 hover:bg-orange-700 text-white rounded-md"
-              onClick={() => handleAction(payment._id, "refund")}
+              onClick={() => handleAction(paymentId, "refund")}
             >
               Refund
             </Button>
@@ -144,7 +144,7 @@ export default function AllPaymentsPage() {
                 <tr
                   key={payment._id}
                   className="hover:bg-gray-50 transition-colors cursor-pointer"
-                  onClick={() => router.push(`/payment/${payment.orderId._id}`)}
+                  onClick={() => router.push(`/console/payments/${payment.orderId._id}`)}
                 >
                   <td className="px-6 py-4 text-sm text-gray-900">
                     {payment.orderId._id}
@@ -165,7 +165,7 @@ export default function AllPaymentsPage() {
                     {new Date(payment.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    {getAvailableActions(payment.method, payment.status)}
+                    {getAvailableActions(payment.method, payment.status,payment._id)}
                   </td>
                 </tr>
               ))}
