@@ -23,6 +23,7 @@ import {
 import { OrderStatus, PaymentMethod, DeliveryStatus } from "@/types/order";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
+import { UserType } from "@/utils/enum.types";
 
 interface Order {
   _id: string;
@@ -49,7 +50,12 @@ function OrderRow({
 }) {
   const { state } = useContext(AppContext);
   const isVendorOrAdmin =
-    state.user?.role === "vendor" || state.user?.role === "admin";
+    state.user?.role === UserType.ADMIN ||
+    state.user?.role === UserType.PICE_WORKER ||
+    state.user?.role === UserType.PROJECT_MANAGER ||
+    state.user?.role === UserType.RESELLER ||
+    state.user?.role === UserType.SELLER ||
+    state.user?.role === UserType.SYSTEM_ADMIN;
 
   return (
     <tr className="border-b">
@@ -70,81 +76,99 @@ function OrderRow({
       </td>
       {isVendorOrAdmin && (
         <td className="py-4 px-6">
-          <Menu as="div" className="relative inline-block text-left">
-            <MenuButton className="inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-              Actions
-              <ChevronDownIcon
-                className="-mr-1 ml-1 h-5 w-5 text-gray-400"
-                aria-hidden="true"
-              />
-            </MenuButton>
-            <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5">
-              <MenuItem>
-                {({ active }) => (
-                  <button
-                    onClick={() =>
-                      onUpdateStatus(order._id, {
-                        orderStatus: OrderStatus.CONFIRMED,
-                      })
-                    }
-                    className={`${
-                      active ? "bg-gray-100" : ""
-                    } block w-full px-4 py-2 text-left text-sm text-gray-700`}
-                  >
-                    Confirm Order
-                  </button>
-                )}
-              </MenuItem>
-              <MenuItem>
-                {({ active }) => (
-                  <button
-                    onClick={() =>
-                      onUpdateStatus(order._id, {
-                        orderStatus: OrderStatus.CANCELLED,
-                      })
-                    }
-                    className={`${
-                      active ? "bg-gray-100" : ""
-                    } block w-full px-4 py-2 text-left text-sm text-gray-700`}
-                  >
-                    Cancel Order
-                  </button>
-                )}
-              </MenuItem>
-              <MenuItem>
-                {({ active }) => (
-                  <button
-                    onClick={() =>
-                      onUpdateStatus(order._id, {
-                        deliveryStatus: DeliveryStatus.SHIPPED,
-                      })
-                    }
-                    className={`${
-                      active ? "bg-gray-100" : ""
-                    } block w-full px-4 py-2 text-left text-sm text-gray-700`}
-                  >
-                    Mark as Shipped
-                  </button>
-                )}
-              </MenuItem>
-              <MenuItem>
-                {({ active }) => (
-                  <button
-                    onClick={() =>
-                      onUpdateStatus(order._id, {
-                        deliveryStatus: DeliveryStatus.DELIVERED,
-                      })
-                    }
-                    className={`${
-                      active ? "bg-gray-100" : ""
-                    } block w-full px-4 py-2 text-left text-sm text-gray-700`}
-                  >
-                    Mark as Delivered
-                  </button>
-                )}
-              </MenuItem>
-            </MenuItems>
-          </Menu>
+          {order.orderStatus === OrderStatus.PENDING ? (
+            <Menu as="div" className="relative inline-block text-left">
+              <MenuButton className="inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                Actions
+                <ChevronDownIcon
+                  className="-mr-1 ml-1 h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
+              </MenuButton>
+
+              <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5">
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() =>
+                        onUpdateStatus(order._id, {
+                          orderStatus: OrderStatus.CONFIRMED,
+                        })
+                      }
+                      className={`${
+                        active ? "bg-gray-100" : ""
+                      } block w-full px-4 py-2 text-left text-sm text-gray-700`}
+                    >
+                      Confirm Order
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() =>
+                        onUpdateStatus(order._id, {
+                          orderStatus: OrderStatus.CANCELLED,
+                        })
+                      }
+                      className={`${
+                        active ? "bg-gray-100" : ""
+                      } block w-full px-4 py-2 text-left text-sm text-gray-700`}
+                    >
+                      Cancel Order
+                    </button>
+                  )}
+                </MenuItem>
+
+                {/* <MenuItem>
+                 {({ active }) => (
+                   <button
+                     onClick={() =>
+                       onUpdateStatus(order._id, {
+                         deliveryStatus: DeliveryStatus.DELIVERED,
+                       })
+                     }
+                     className={`${
+                       active ? "bg-gray-100" : ""
+                     } block w-full px-4 py-2 text-left text-sm text-gray-700`}
+                   >
+                     Mark as Delivered
+                   </button>
+                 )}
+               </MenuItem> */}  
+              </MenuItems>
+            </Menu>
+          ) : order.deliveryStatus === DeliveryStatus.PENDING ||
+            order.deliveryStatus === DeliveryStatus.RETURNED ? (
+            <Menu as="div" className="relative inline-block text-left">
+              <MenuButton className="inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                Actions
+                <ChevronDownIcon
+                  className="-mr-1 ml-1 h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
+              </MenuButton>
+
+              <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5">
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() =>
+                        onUpdateStatus(order._id, {
+                          deliveryStatus: DeliveryStatus.SHIPPED,
+                        })
+                      }
+                      className={`${
+                        active ? "bg-gray-100" : ""
+                      } block w-full px-4 py-2 text-left text-sm text-gray-700`}
+                    >
+                      Mark as Shipped
+                    </button>
+                  )}
+                </MenuItem>
+              </MenuItems>
+            </Menu>
+          ) : null}
         </td>
       )}
     </tr>
@@ -322,9 +346,16 @@ export default function OrdersPage() {
         memoizedFilters.deliveryStatus.join(",")
       );
     }
-    if (state.user?.role === "buyer") {
+
+    if (state.user?.role === UserType.USER) {
       queryParams.append("buyerId", state.user.id);
-    } else if (state.user?.role === "vendor") {
+    } else if (
+      state.user &&
+      (state.user.role === UserType.PICE_WORKER ||
+        state.user.role === UserType.PROJECT_MANAGER ||
+        state.user.role === UserType.RESELLER ||
+        state.user.role === UserType.SELLER)
+    ) {
       queryParams.append("venderId", state.user.id);
     }
     queryParams.append("sort", selectedSort.value);

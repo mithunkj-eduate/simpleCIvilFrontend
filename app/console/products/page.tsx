@@ -16,15 +16,16 @@ const ProductsPage = () => {
   const [loading, setLoading] = React.useState(false);
   const [products, setProducts] = React.useState<Products[]>([]);
   const [modalFlag, setModalFlag] = React.useState(false);
-  const { state } = useContext(AppContext)
-console.log(state,"state user")
+  const { state } = useContext(AppContext);
+
   const productsTableHeader = [
     {
       name: "Name",
       className: "md:px-6 pl-4 py-3 flex items-center space-x-3 truncate",
     },
     { name: "Description", className: "hidden sm:table-cell" },
-    { name: "Price", className: "hidden sm:table-cell" },
+    { name: "Mrp Price", className: "hidden sm:table-cell" },
+    { name: "Sale Price", className: "hidden sm:table-cell" },
     { name: "Category", className: "px-6 py-3" },
     { name: "Stock", className: "hidden sm:table-cell" },
     { name: "Created At", className: "hidden sm:table-cell" },
@@ -34,33 +35,33 @@ console.log(state,"state user")
   const GetUsers = async () => {
     setLoading(true);
     try {
-      console.log(state.user,state.user?.id,"id")
-      if(state.user && state.user.id){
-      const res = await api.get(`/products?ownerId=${state.user.id}`, {
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      });
+      if (state.user && state.user.id) {
+        const res = await api.get(`/products?ownerId=${state.user.id}`, {
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        });
 
-      if (res) {
-        setProducts(
-          res.data.data.map((product: GetProductData) => ({
-            id: product.id,
-            name: product.name || "N/A",
-            description: product.description || "N/A",
-            price: product.price || 0,
-            category: product.categoryId.name || "N/A",
-            stock: product.saleTerms?.stock || 0,
-            createdAt: product.createdAt
-              ? new Date(product.createdAt).toLocaleDateString()
-              : "N/A",
-          }))
-        );
-      } else {
-        console.error("Failed to fetch users:", res);
+        if (res) {
+          setProducts(
+            res.data.data.map((product: GetProductData) => ({
+              id: product.id,
+              name: product.name || "N/A",
+              description: product.description || "N/A",
+              mrpPrice: product.saleTerms?.mrpPrice || 0,
+              salePrice: product.saleTerms?.salePrice || 0,
+              category: product.categoryId.name || "N/A",
+              stock: product.saleTerms?.stock || 0,
+              createdAt: product.createdAt
+                ? new Date(product.createdAt).toLocaleDateString()
+                : "N/A",
+            }))
+          );
+        } else {
+          console.error("Failed to fetch users:", res);
+        }
       }
-    }
       setLoading(false);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -72,7 +73,7 @@ console.log(state,"state user")
     if (TOKEN) {
       GetUsers();
     }
-  }, [TOKEN]);
+  }, [TOKEN, state.user?.id]);
 
   return (
     <>
@@ -128,7 +129,10 @@ console.log(state,"state user")
                           {product.description}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
-                          ₹{product.price.toFixed(2)}
+                          ₹{product.mrpPrice.toFixed(2)}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
+                          ₹{product.salePrice.toFixed(2)}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500">
                           {product.category}
