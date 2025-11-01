@@ -49,6 +49,7 @@ export const UserTypeData = [
   UserType.SELLER,
   UserType.SYSTEM_ADMIN,
   UserType.USER,
+  UserType.DELIVERY_BOY
 ];
 
 export default function Signup() {

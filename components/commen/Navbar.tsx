@@ -48,6 +48,8 @@ export default function Navbar({ NavType, className }: NavProps) {
         state.user.role === UserType.SELLER ||
         state.user.role === UserType.SYSTEM_ADMIN)
         ? { name: "Console", href: "/console", current: false }
+        : state.user && state.user.role === UserType.DELIVERY_BOY
+        ? { name: "Console", href: "/dashboard", current: false }
         : { name: "", href: "", current: false },
     ],
     [state.user]
@@ -66,11 +68,20 @@ export default function Navbar({ NavType, className }: NavProps) {
     []
   );
 
+  const ConsoleDelveryBoyNavigation = useMemo(
+    () => [{ name: "Dashboard", href: "/dashboard", current: true },
+    { name: "Products", href: "/dashboard/products", current: false },
+    ],
+    []
+  );
+
   useEffect(() => {
     if (NavType === LicenseTypes.ADMIN && state.user) {
       setItems(ConsoleNavigation);
     } else if (NavType === LicenseTypes.USER) {
       setItems(Navigation);
+    } else if (NavType === LicenseTypes.DELIVERY_BOY) {
+      setItems(ConsoleDelveryBoyNavigation);
     } else if (NavType === LicenseTypes.NONE) {
       setItems([]);
     }
