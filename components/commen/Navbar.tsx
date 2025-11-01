@@ -69,8 +69,9 @@ export default function Navbar({ NavType, className }: NavProps) {
   );
 
   const ConsoleDelveryBoyNavigation = useMemo(
-    () => [{ name: "Dashboard", href: "/dashboard", current: true },
-    { name: "Products", href: "/dashboard/products", current: false },
+    () => [
+      { name: "Dashboard", href: "/dashboard", current: true },
+      { name: "Orders", href: "/dashboard/orders", current: false },
     ],
     []
   );

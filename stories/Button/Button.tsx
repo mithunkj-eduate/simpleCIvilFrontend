@@ -14,7 +14,8 @@ interface ButtonProps {
     | "warning"
     | "info"
     | "light"
-    | "dark";
+    | "dark"
+    | "accept";
 
   onClick?: () => void;
   disabled?: boolean;
@@ -62,6 +63,8 @@ export const Button = ({
           ? "bg-red-600 text-white hover:bg-red-500 focus-visible:outline-red-600"
           : mode === "cancel"
           ? "inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto"
+          : mode === "accept"
+          ? "bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600"
           : ""
       } ${className}`}
     >

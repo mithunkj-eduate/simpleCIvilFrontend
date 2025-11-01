@@ -3,6 +3,7 @@ import Navbar from "@/components/commen/Navbar";
 import Loading from "@/components/helpers/Loading";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
+import { Button } from "@/stories/Button/Button";
 import { LicenseTypes } from "@/utils/enum.types";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -11,7 +12,7 @@ interface Orders {
   name: string;
 }
 
-const DeliveryProductPage = () => {
+const GetOrderPage = () => {
   const { TOKEN } = Api();
   const [loading, setLoading] = useState(false);
   const [Orders, setOrders] = useState<Orders[]>([]);
@@ -62,6 +63,10 @@ const DeliveryProductPage = () => {
       GetUsers();
     }
   }, [TOKEN, state.user?.id]);
+
+  const handleSubmit = (stateus:string) =>{
+
+  }
   return (
     <>
       <Navbar NavType={LicenseTypes.DELIVERY_BOY} />
@@ -72,7 +77,10 @@ const DeliveryProductPage = () => {
           <div className="mt-16">Get near confomerd Orders</div>
           <div>
             {Orders.map((item, index) => {
-              return <div key={index}>{item.name}</div>;
+              return <div key={index}>{item.name}
+              <Button mode="accept"  className="m-2" onClick={() => handleSubmit("Accept")}>Accept </Button>
+              <Button mode="cancel" className="m-2" onClick={() => handleSubmit("cancel")}> cancel</Button>
+              </div>;
             })}
           </div>
         </>
@@ -81,4 +89,4 @@ const DeliveryProductPage = () => {
   );
 };
 
-export default DeliveryProductPage;
+export default GetOrderPage;
