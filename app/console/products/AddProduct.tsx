@@ -51,18 +51,21 @@ export const StoreFormJson = [
     inputName: "mrpPrice",
     dataType: "number",
     required: false,
+    minNum: 1
   },
   {
     labelName: "Sale Price",
     inputName: "salePrice",
     dataType: "number",
     required: false,
+    minNum: 1
   },
   {
     labelName: "Stock",
     inputName: "stock",
     dataType: "number",
     required: false,
+    minNum: 1
   },
   {
     labelName: "Color",
@@ -99,12 +102,14 @@ export const StoreFormJson = [
     inputName: "rentalMinDuration",
     dataType: "number",
     required: false,
+    min: "!"
   },
   {
     labelName: "Product Type",
     inputName: "type",
     dataType: "type",
     required: true,
+    min: 1
   },
 ];
 
@@ -329,6 +334,7 @@ const AddProduct = ({ setModalFlag, onProductAdded }: AddProductProps) => {
                           })
                         }
                         required={item.required}
+                        min={item.minNum}
                       />
                     </div>
                   </div>

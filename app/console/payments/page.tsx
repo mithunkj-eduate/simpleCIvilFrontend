@@ -36,16 +36,16 @@ export default function AllPaymentsPage() {
       setError(null);
       try {
         if (!TOKEN) throw new Error("Authentication token is missing");
-        if (state.user && state.user.id) {
+        
           const response = await api.get(
-            `/payments?ownerId=${state.user.id}`,
+            `/payments`,
             {
               headers: { Authorization: `Bearer ${TOKEN}` },
             }
           );
           if (!response.data.data) throw new Error("No payments found");
           setPayments(response.data.data);
-        }
+        
       } catch (err: any) {
         setError(err.message || "Failed to fetch payments.");
         console.error(err);

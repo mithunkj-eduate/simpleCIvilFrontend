@@ -7,15 +7,17 @@ import Loading from "@/components/helpers/Loading";
 import Api, { api } from "@/components/helpers/apiheader";
 import { Button } from "@/stories/Button/Button";
 import { LicenseTypes } from "@/utils/enum.types";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import AddProduct from "./AddProduct";
+import { AppContext } from "@/context/context";
 
 const ProductsPage = () => {
   const { TOKEN } = Api();
   const [loading, setLoading] = React.useState(false);
   const [products, setProducts] = React.useState<Products[]>([]);
   const [modalFlag, setModalFlag] = React.useState(false);
-
+  const { state } = useContext(AppContext)
+console.log(state,"state user")
   const productsTableHeader = [
     {
       name: "Name",
@@ -32,7 +34,9 @@ const ProductsPage = () => {
   const GetUsers = async () => {
     setLoading(true);
     try {
-      const res = await api.get(`/products`, {
+      console.log(state.user,state.user?.id,"id")
+      if(state.user && state.user.id){
+      const res = await api.get(`/products?ownerId=${state.user.id}`, {
         headers: {
           Authorization: `Bearer ${TOKEN}`,
           "Content-Type": "application/json",
@@ -56,6 +60,7 @@ const ProductsPage = () => {
       } else {
         console.error("Failed to fetch users:", res);
       }
+    }
       setLoading(false);
     } catch (error) {
       console.error("Error fetching users:", error);
