@@ -4,7 +4,7 @@ import Loading from "@/components/helpers/Loading";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { Button } from "@/stories/Button/Button";
-import { OrderAcceptStatus } from "@/types/order";
+import { DeliveryStatus, OrderAcceptStatus } from "@/types/order";
 import { LicenseTypes } from "@/utils/enum.types";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
@@ -23,6 +23,16 @@ interface Orders {
   buyerId: string;
 }
 
+interface itemType {
+  orderId: string;
+  buyerId: string;
+}
+
+const initialItem: itemType = {
+  buyerId: "",
+  orderId: "",
+};
+
 const DeliveryOrderPage = () => {
   const { TOKEN } = Api();
   const [loading, setLoading] = useState(false);
@@ -30,6 +40,7 @@ const DeliveryOrderPage = () => {
   const { state } = useContext(AppContext);
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [item, setItem] = useState<itemType>(initialItem);
 
   const GetUsers = async () => {
     setLoading(true);
@@ -76,9 +87,9 @@ const DeliveryOrderPage = () => {
     }
   }, [TOKEN, state.user?.id]);
 
-  const handleGenerateCode = async (orderId: string, buyerId: string) => {
+  const handleGenerateCode = async () => {
     try {
-      if (!orderId || !buyerId) {
+      if (!item.orderId || !item.buyerId) {
         alert("orderID && buyerId requied");
         return;
       }
@@ -86,8 +97,8 @@ const DeliveryOrderPage = () => {
         const res = await api.post(
           `/raider/order/code`,
           {
-            orderId,
-            buyerId,
+            orderId: item.orderId,
+            buyerId: item.buyerId,
           },
           {
             headers: {
@@ -151,17 +162,20 @@ const DeliveryOrderPage = () => {
                           Selivery Address: {person.deliveryAddress}
                         </p>
                         {person.orderAcceptStatus ===
-                        OrderAcceptStatus.ACCEPTED ? (
+                          OrderAcceptStatus.ACCEPTED &&
+                        person.deliveryStatus !== DeliveryStatus.DELIVERED ? (
                           <div>
                             <Button
                               mode="accept"
                               className="m-2"
-                              onClick={() =>
-                                handleGenerateCode(
-                                  person.orderId,
-                                  person.buyerId
-                                )
-                              }
+                              onClick={() => {
+                                setItem({
+                                  buyerId: person.buyerId,
+                                  orderId: person.orderId,
+                                });
+
+                                handleGenerateCode();
+                              }}
                             >
                               Pick Up
                             </Button>
@@ -202,9 +216,8 @@ const DeliveryOrderPage = () => {
             <ConfirmDelivery
               open={open}
               setOpen={setOpen}
-              buyerId={"1"}
-              code={1}
-              orderId={"1"}
+              buyerId={item.buyerId}
+              orderId={item.orderId}
             />
           ) : null}
         </>

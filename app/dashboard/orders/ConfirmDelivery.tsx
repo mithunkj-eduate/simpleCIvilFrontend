@@ -17,53 +17,53 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { Button } from "@/stories/Button/Button";
+import { Input } from "@/stories/Input/Input";
 
 interface Props {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   orderId: string;
   buyerId: string;
-  code: number;
 }
-
 
 export default function ConfirmDelivery({
   open,
   setOpen,
   orderId,
   buyerId,
-  code,
 }: Props) {
   const { state } = useContext(AppContext);
   const { TOKEN } = Api();
+  const [code, setCode] = useState(0);
 
-  useEffect(() => {
-    const fetchOrderHistory = async () => {
-      try {
-        if (!TOKEN || !state.user?.id) return;
-        // throw new Error("Authentication required");
+  const handleSubmit = async () => {
+    try {
+      if (!TOKEN || !state.user?.id) return;
+      // throw new Error("Authentication required");
 
-        const response = await api.put(
-          `/raider/orders/delivery`,
-          {
-            orderId,
-            buyerId,
-            code,
-          },
-          {
-            headers: { Authorization: `Bearer ${TOKEN}` },
-          }
-        );
-
-        if (!response.data.data)
-          throw new Error("Failed to fetch order history");
-      } catch (err) {
-        console.error(err);
+      if (!code) {
+        alert("required code");
+        return;
       }
-    };
-
-    fetchOrderHistory();
-  }, [TOKEN, state.user?.id, open]);
+      const res = await api.put(
+        `/raider/orders/delivery`,
+        {
+          orderId,
+          buyerId,
+          code,
+        },
+        {
+          headers: { Authorization: `Bearer ${TOKEN}` },
+        }
+      );
+      console.log("res", res);
+      if (res) {
+        alert("Delivery Successfuly");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div>
@@ -100,11 +100,21 @@ export default function ConfirmDelivery({
                     >
                       Genarated Code
                     </DialogTitle>
-                    <div className="mt-2"></div>
+                    <div className="mt-2">
+                      <Input onChange={(e) => setCode(e.target.value)} />
+                    </div>
                   </div>
                 </div>
               </div>
               <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <Button
+                  type="button"
+                  data-autofocus
+                  onClick={() => handleSubmit()}
+                  mode="submit"
+                >
+                  Submit
+                </Button>
                 <Button
                   type="button"
                   data-autofocus
