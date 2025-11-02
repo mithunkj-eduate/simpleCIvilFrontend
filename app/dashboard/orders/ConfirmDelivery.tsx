@@ -98,7 +98,7 @@ export default function ConfirmDelivery({
                       as="h3"
                       className="text-base font-semibold text-gray-900"
                     >
-                      Genarated Code
+                     Submit Genarated Code
                     </DialogTitle>
                     <div className="mt-2">
                       <Input onChange={(e) => setCode(e.target.value)} />
