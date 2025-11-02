@@ -17,7 +17,7 @@ const DashBord = () => {
   }
   return (
     <>
-      <Navbar NavType={LicenseTypes.DELIVERY_BOY} />
+      <Navbar NavType={LicenseTypes.RAIDER} />
       <div className="mt-24">DashBord</div>
       <GetOrderPage />
     </>

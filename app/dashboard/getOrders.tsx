@@ -4,6 +4,7 @@ import Loading from "@/components/helpers/Loading";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { Button } from "@/stories/Button/Button";
+import { OrderAcceptStatus } from "@/types/order";
 import { LicenseTypes } from "@/utils/enum.types";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -28,7 +29,7 @@ const GetOrderPage = () => {
     try {
       if (state.user && state.user.id) {
         const res = await api.get(
-          `/delivery/orders?lat=${location.lat}&&lng=${location.lng}`,
+          `/raider/orders?lat=${location.lat}&&lng=${location.lng}`,
           {
             headers: {
               Authorization: `Bearer ${TOKEN}`,
@@ -51,25 +52,57 @@ const GetOrderPage = () => {
           console.error("Failed to fetch users:", res);
         }
       }
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching users:", error);
+    } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    setLoading(false);
+
     if (TOKEN) {
       GetUsers();
     }
   }, [TOKEN, state.user?.id]);
 
-  const handleSubmit = (stateus:string) =>{
+  const handleSubmit = async (
+    orderId: string,
+    orderAcceptStatus: OrderAcceptStatus
+  ) => {
+    setLoading(true);
+    try {
+      if (state.user && state.user.id) {
+        const res = await api.post(
+          `/raider/orders`,
+          {
+            orderId,
+            orderAcceptStatus,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${TOKEN}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-  }
+        if (res.status) {
+          alert("Update successfully");
+        } else {
+          console.error("Failed to fetch users:", res);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <>
-      <Navbar NavType={LicenseTypes.DELIVERY_BOY} />
+      <Navbar NavType={LicenseTypes.RAIDER} />
       {loading ? (
         <Loading />
       ) : (
@@ -77,10 +110,30 @@ const GetOrderPage = () => {
           <div className="mt-16">Get near confomerd Orders</div>
           <div>
             {Orders.map((item, index) => {
-              return <div key={index}>{item.name}
-              <Button mode="accept"  className="m-2" onClick={() => handleSubmit("Accept")}>Accept </Button>
-              <Button mode="cancel" className="m-2" onClick={() => handleSubmit("cancel")}> cancel</Button>
-              </div>;
+              return (
+                <div key={index}>
+                  {item.name}
+                  <Button
+                    mode="accept"
+                    className="m-2"
+                    onClick={() =>
+                      handleSubmit(item.id, OrderAcceptStatus.ACCEPTED)
+                    }
+                  >
+                    Accept{" "}
+                  </Button>
+                  <Button
+                    mode="cancel"
+                    className="m-2"
+                    onClick={() =>
+                      handleSubmit(item.id, OrderAcceptStatus.CANCELLED)
+                    }
+                  >
+                    {" "}
+                    cancel
+                  </Button>
+                </div>
+              );
             })}
           </div>
         </>

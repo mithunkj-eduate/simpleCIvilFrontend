@@ -27,7 +27,7 @@ const DeliveryOrderPage = () => {
     try {
       if (state.user && state.user.id) {
         const res = await api.get(
-          `/orders/all?deliveryBoyId=${state.user.id}`,
+          `/raider/orders/all`,
           {
             headers: {
               Authorization: `Bearer ${TOKEN}`,
@@ -40,7 +40,7 @@ const DeliveryOrderPage = () => {
           setOrders(
             res.data.data.map((product: any) => ({
               id: product._id,
-              name: product.productId.name || "N/A",
+              name: product.orderId.productId.name || "N/A",
               // createdAt: product.createdAt
               //   ? new Date(product.createdAt).toLocaleDateString()
               // : "N/A",
@@ -64,7 +64,7 @@ const DeliveryOrderPage = () => {
   }, [TOKEN, state.user?.id]);
   return (
     <>
-      <Navbar NavType={LicenseTypes.DELIVERY_BOY} />
+      <Navbar NavType={LicenseTypes.RAIDER} />
       {loading ? (
         <Loading />
       ) : (

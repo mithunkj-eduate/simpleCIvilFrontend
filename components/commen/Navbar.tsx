@@ -48,7 +48,7 @@ export default function Navbar({ NavType, className }: NavProps) {
         state.user.role === UserType.SELLER ||
         state.user.role === UserType.SYSTEM_ADMIN)
         ? { name: "Console", href: "/console", current: false }
-        : state.user && state.user.role === UserType.DELIVERY_BOY
+        : state.user && state.user.role === UserType.RAIDER
         ? { name: "Console", href: "/dashboard", current: false }
         : { name: "", href: "", current: false },
     ],
@@ -81,7 +81,7 @@ export default function Navbar({ NavType, className }: NavProps) {
       setItems(ConsoleNavigation);
     } else if (NavType === LicenseTypes.USER) {
       setItems(Navigation);
-    } else if (NavType === LicenseTypes.DELIVERY_BOY) {
+    } else if (NavType === LicenseTypes.RAIDER) {
       setItems(ConsoleDelveryBoyNavigation);
     } else if (NavType === LicenseTypes.NONE) {
       setItems([]);

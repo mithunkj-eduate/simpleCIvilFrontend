@@ -7,7 +7,7 @@ export enum LicenseTypes {
   PROJECT_MANAGER = "PROJECT_MANAGER",
   SYSTEM_ADMIN = "SYSTEM_ADMIN",
   PICE_WORKER = "PICE_WORKER",
-  DELIVERY_BOY = "delivery_boy"
+  RAIDER = "raider"
 }
 
 export enum AuthMethod {
@@ -25,7 +25,7 @@ export enum UserType {
   PROJECT_MANAGER = "project_manager",
   SYSTEM_ADMIN = "system_admin",
   PICE_WORKER = "pice_worker",
-  DELIVERY_BOY = "delivery_boy"
+  RAIDER = "raider"
 }
 
 export enum CategoryLevelType {
