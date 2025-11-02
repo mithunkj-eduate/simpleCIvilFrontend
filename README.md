@@ -34,3 +34,19 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+Raider delivery flow:
+saller register -> login -> console page -> create store -> create products
+
+buyer register -> login -> products page -> add to cart -> procced to buy
+
+saller -> orders page -> change order status confirmed 
+
+raider register -> login -> console page -> get near all store confirmed  and pending delivery status orders -> accept witch order want  -> Orders page -> accepted orders is dispay -> click pickup button order deliveryStatus update to shipped -> when reach the buyer -> click delivery button generate 30 scondes code and show to input and submit button
+
+buyer -> orders page ->Click Button Genearted Code Display the Generated code that code give to Raider
+
+raider -> fill the Genereted code click submit button -> message Order Delivered successfully 
+ 
+

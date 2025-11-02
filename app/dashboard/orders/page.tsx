@@ -9,6 +9,7 @@ import { LicenseTypes } from "@/utils/enum.types";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import ConfirmDelivery from "./ConfirmDelivery";
+import AddModal from "@/components/helpers/AddModal";
 
 interface Orders {
   id: string;
@@ -26,11 +27,13 @@ interface Orders {
 interface itemType {
   orderId: string;
   buyerId: string;
+  deliveryStatus: DeliveryStatus;
 }
 
 const initialItem: itemType = {
   buyerId: "",
   orderId: "",
+  deliveryStatus: DeliveryStatus.PENDING,
 };
 
 const DeliveryOrderPage = () => {
@@ -87,9 +90,10 @@ const DeliveryOrderPage = () => {
     }
   }, [TOKEN, state.user?.id]);
 
-  const handleGenerateCode = async () => {
+  const handleGenerateCode = async (orderId: string, buyerId: string) => {
     try {
-      if (!item.orderId || !item.buyerId) {
+      console.log(orderId,buyerId, "item");
+      if (!orderId || !buyerId) {
         alert("orderID && buyerId requied");
         return;
       }
@@ -97,8 +101,8 @@ const DeliveryOrderPage = () => {
         const res = await api.post(
           `/raider/order/code`,
           {
-            orderId: item.orderId,
-            buyerId: item.buyerId,
+            orderId,
+            buyerId,
           },
           {
             headers: {
@@ -153,32 +157,57 @@ const DeliveryOrderPage = () => {
                           {person.productName}
                         </p>
                         <p className="mt-1 truncate text-xs/5 text-gray-500">
-                          store: {person.store}
+                          Store: {person.store}
                         </p>
                         <p className="mt-1 truncate text-xs/5 text-gray-500">
-                          store Address: {person.storeAddress}
+                          Store Address: {person.storeAddress}
                         </p>
                         <p className="mt-1 truncate text-xs/5 text-gray-500">
-                          Selivery Address: {person.deliveryAddress}
+                          Delivery Address: {person.deliveryAddress}
                         </p>
                         {person.orderAcceptStatus ===
                           OrderAcceptStatus.ACCEPTED &&
                         person.deliveryStatus !== DeliveryStatus.DELIVERED ? (
                           <div>
-                            <Button
-                              mode="accept"
-                              className="m-2"
-                              onClick={() => {
-                                setItem({
-                                  buyerId: person.buyerId,
-                                  orderId: person.orderId,
-                                });
+                            {person.deliveryStatus ===
+                            DeliveryStatus.PENDING ? (
+                              <Button
+                                mode="accept"
+                                className="m-2"
+                                onClick={() => {
+                                  setItem({
+                                    buyerId: person.buyerId,
+                                    orderId: person.orderId,
+                                    deliveryStatus:
+                                      person.deliveryStatus as DeliveryStatus,
+                                  });
+                                  setOpen(true);
+                                }}
+                              >
+                                PICKED UP
+                              </Button>
+                            ) : (
+                              <Button
+                                mode="accept"
+                                className="m-2"
+                                onClick={() => {
+                                  setItem({
+                                    buyerId: person.buyerId,
+                                    orderId: person.orderId,
+                                    deliveryStatus:
+                                      person.deliveryStatus as DeliveryStatus,
+                                  });
 
-                                handleGenerateCode();
-                              }}
-                            >
-                              Pick Up
-                            </Button>
+                                  handleGenerateCode(
+                                    person.orderId,
+                                    person.buyerId
+                                  );
+                                }}
+                              >
+                                DELIVERY
+                              </Button>
+                            )}
+
                             <Button mode="cancel" className="m-2">
                               {" "}
                               cancel
@@ -218,6 +247,7 @@ const DeliveryOrderPage = () => {
               setOpen={setOpen}
               buyerId={item.buyerId}
               orderId={item.orderId}
+              deliveryStatus={item.deliveryStatus}
             />
           ) : null}
         </>

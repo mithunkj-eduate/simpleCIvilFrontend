@@ -18,12 +18,14 @@ import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { Button } from "@/stories/Button/Button";
 import { Input } from "@/stories/Input/Input";
+import { DeliveryStatus } from "@/types/order";
 
 interface Props {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   orderId: string;
   buyerId: string;
+  deliveryStatus: DeliveryStatus;
 }
 
 export default function ConfirmDelivery({
@@ -31,6 +33,7 @@ export default function ConfirmDelivery({
   setOpen,
   orderId,
   buyerId,
+  deliveryStatus,
 }: Props) {
   const { state } = useContext(AppContext);
   const { TOKEN } = Api();
@@ -42,7 +45,7 @@ export default function ConfirmDelivery({
       // throw new Error("Authentication required");
 
       if (!code) {
-        alert("required code");
+        alert("Required Genarated Code");
         return;
       }
       const res = await api.put(
@@ -59,6 +62,28 @@ export default function ConfirmDelivery({
       console.log("res", res);
       if (res) {
         alert("Delivery Successfuly");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Please enter correct generated code");
+    }
+  };
+
+  const handleUpdateStatus = async () => {
+    try {
+      if (!TOKEN || !state.user?.id || !orderId) return;
+
+      const endpoint = `/orders/${orderId}/deliveryStatus`;
+      const response = await api.put(
+        endpoint,
+        { deliveryStatus: DeliveryStatus.SHIPPED },
+        {
+          headers: { Authorization: `Bearer ${TOKEN}` },
+        }
+      );
+      if (response.data.data) {
+        setOpen(false);
+        alert("Order Picked Successfully");
       }
     } catch (err) {
       console.error(err);
@@ -98,28 +123,53 @@ export default function ConfirmDelivery({
                       as="h3"
                       className="text-base font-semibold text-gray-900"
                     >
-                     Submit Genarated Code
+                      {deliveryStatus === DeliveryStatus.PENDING
+                        ? "PICKED UP"
+                        : "Enter Genarated Code"}
                     </DialogTitle>
                     <div className="mt-2">
-                      <Input onChange={(e) => setCode(e.target.value)} />
+                      {deliveryStatus === DeliveryStatus.PENDING ? (
+                        "Are you sure you want to picked up order?"
+                      ) : (
+                        <Input
+                          type="number"
+                          max={6}
+                          placeholder="Ask to customer to genrated code"
+                          onChange={(e) => setCode(Number(e.target.value))}
+                          required
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
               <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                <Button
-                  type="button"
-                  data-autofocus
-                  onClick={() => handleSubmit()}
-                  mode="submit"
-                >
-                  Submit
-                </Button>
+                {deliveryStatus === DeliveryStatus.PENDING ? (
+                  <Button
+                    type="button"
+                    data-autofocus
+                    onClick={() => handleUpdateStatus()}
+                    mode="dark"
+                  >
+                    OK
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    data-autofocus
+                    onClick={() => handleSubmit()}
+                    mode="save"
+                  >
+                    Submit
+                  </Button>
+                )}
+
                 <Button
                   type="button"
                   data-autofocus
                   onClick={() => setOpen(false)}
                   mode="cancel"
+                  className="mx-2"
                 >
                   Cancel
                 </Button>
