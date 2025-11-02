@@ -7,6 +7,7 @@ import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { OrderStatus, DeliveryStatus } from "@/types/order";
 import { Button } from "@/stories/Button/Button";
+import GenerateCode from "./GenerateCode";
 
 interface Order {
   _id: string;
@@ -43,6 +44,7 @@ export default function OrderHistoryPage() {
   const { state } = useContext(AppContext);
   const router = useRouter();
   const { TOKEN } = Api();
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const fetchOrderHistory = async () => {
@@ -97,9 +99,15 @@ export default function OrderHistoryPage() {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 border-b border-gray-200 pt-2 pb-6 sticky top-0 bg-white z-10">
-          Order History
-        </h1>
+        <div className="flex align-items-center">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 border-b border-gray-200 pt-2 pb-6 sticky top-0 bg-white z-10">
+            Order History
+          </h1>
+          <div className="ms-auto">
+            <GenerateCode open={open} setOpen={setOpen} />
+            
+          </div>
+        </div>
 
         {/* Recent Orders */}
         <h2 className="text-xl font-medium text-gray-900 mt-8">

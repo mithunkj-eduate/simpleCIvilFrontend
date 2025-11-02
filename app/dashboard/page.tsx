@@ -18,7 +18,6 @@ const DashBord = () => {
   return (
     <>
       <Navbar NavType={LicenseTypes.RAIDER} />
-      <div className="mt-24">DashBord</div>
       <GetOrderPage />
     </>
   );
