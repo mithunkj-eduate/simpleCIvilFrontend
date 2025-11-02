@@ -8,6 +8,7 @@ import { OrderAcceptStatus } from "@/types/order";
 import { LicenseTypes } from "@/utils/enum.types";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
+import ConfirmDelivery from "./ConfirmDelivery";
 
 interface Orders {
   id: string;
@@ -28,6 +29,7 @@ const DeliveryOrderPage = () => {
   const [Orders, setOrders] = useState<Orders[]>([]);
   const { state } = useContext(AppContext);
   const router = useRouter();
+  const [open, setOpen] = useState(false);
 
   const GetUsers = async () => {
     setLoading(true);
@@ -74,18 +76,18 @@ const DeliveryOrderPage = () => {
     }
   }, [TOKEN, state.user?.id]);
 
-  const handleGenerateCode = async (orderId: string,buyerId:string) => {
+  const handleGenerateCode = async (orderId: string, buyerId: string) => {
     try {
-      if(!orderId || !buyerId){
-        alert("orderID && buyerId requied")
-        return
+      if (!orderId || !buyerId) {
+        alert("orderID && buyerId requied");
+        return;
       }
       if (state.user && state.user.id) {
         const res = await api.post(
           `/raider/order/code`,
           {
             orderId,
-            buyerId
+            buyerId,
           },
           {
             headers: {
@@ -96,7 +98,8 @@ const DeliveryOrderPage = () => {
         );
 
         if (res) {
-          alert("Generate Otp Successfully");
+          setOpen(true);
+          // alert("Generate Otp Successfully");
         } else {
           console.error("Failed to fetch users:", res);
         }
@@ -153,7 +156,12 @@ const DeliveryOrderPage = () => {
                             <Button
                               mode="accept"
                               className="m-2"
-                              onClick={() => handleGenerateCode(person.orderId,person.buyerId)}
+                              onClick={() =>
+                                handleGenerateCode(
+                                  person.orderId,
+                                  person.buyerId
+                                )
+                              }
                             >
                               Pick Up
                             </Button>
@@ -190,6 +198,15 @@ const DeliveryOrderPage = () => {
               </Button>
             </div>
           </div>
+          {open ? (
+            <ConfirmDelivery
+              open={open}
+              setOpen={setOpen}
+              buyerId={"1"}
+              code={1}
+              orderId={"1"}
+            />
+          ) : null}
         </>
       )}
     </div>
