@@ -72,6 +72,8 @@ export default function Navbar({ NavType, className }: NavProps) {
     () => [
       { name: "Dashboard", href: "/dashboard", current: true },
       { name: "Orders", href: "/dashboard/orders", current: false },
+      { name: "Map", href: "/dashboard/routemap", current: false },
+
     ],
     []
   );

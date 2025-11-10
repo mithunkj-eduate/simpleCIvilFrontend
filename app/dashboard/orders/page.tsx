@@ -20,6 +20,7 @@ interface Orders {
   orderAcceptStatus: string;
   deliveryAddress: string;
   deliveryStatus: string;
+  location: number[];
   orderId: string;
   buyerId: string;
 }
@@ -68,6 +69,7 @@ const DeliveryOrderPage = () => {
               deliveryStatus: product?.orderId.deliveryStatus || "N/A",
               orderId: product?.orderId._id || "N/A",
               buyerId: product?.orderId?.buyerId._id || "N/A",
+              location: product?.orderId?.storeId?.location?.coordinates || [],
               createdAt: product.createdAt
                 ? new Date(product.createdAt).toLocaleDateString()
                 : "N/A",
@@ -92,7 +94,7 @@ const DeliveryOrderPage = () => {
 
   const handleGenerateCode = async (orderId: string, buyerId: string) => {
     try {
-      console.log(orderId,buyerId, "item");
+      console.log(orderId, buyerId, "item");
       if (!orderId || !buyerId) {
         alert("orderID && buyerId requied");
         return;
@@ -210,7 +212,7 @@ const DeliveryOrderPage = () => {
 
                             <Button mode="cancel" className="m-2">
                               {" "}
-                              cancel
+                              CANCLE
                             </Button>
                           </div>
                         ) : null}
@@ -226,6 +228,20 @@ const DeliveryOrderPage = () => {
                           {person.createdAt}
                         </time>
                       </p>
+                      {person.deliveryStatus === DeliveryStatus.PENDING && (
+                        <div className="text-sm/6 text-gray-900">
+                          <Button
+                            onClick={() => {
+                              if (person.location.length)
+                                router.push(
+                                  `/dashboard/orders/lat=${person.location[0]}&&lng=${person.location[1]}`
+                                );
+                            }}
+                          >
+                            Map
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </li>
                 ))}
