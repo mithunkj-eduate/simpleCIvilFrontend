@@ -55,7 +55,7 @@ export default function PaymentPage() {
     try {
       if (!payment?._id) throw new Error("Payment ID is missing");
       const response = await api.post(
-        `/payments/${payment._id}/action`,
+        `/payments/${payment?._id}/action`,
         { action },
         {
           headers: { Authorization: `Bearer ${TOKEN}` },

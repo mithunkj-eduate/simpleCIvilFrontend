@@ -66,7 +66,7 @@ const DeliveryOrderPage = () => {
               orderAcceptStatus: product.orderAcceptStatus,
               store: product?.orderId?.storeId.name || "N/A",
               storeAddress: product?.orderId?.storeId.address || "N/A",
-              deliveryAddress: product.deliveryAddress || "N/A",
+              deliveryAddress: product?.orderId?.deliveryAddress || "N/A",
               deliveryStatus: product?.orderId.deliveryStatus || "N/A",
               orderId: product?.orderId._id || "N/A",
               buyerId: product?.orderId?.buyerId._id || "N/A",

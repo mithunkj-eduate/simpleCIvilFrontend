@@ -36,16 +36,12 @@ export default function AllPaymentsPage() {
       setError(null);
       try {
         if (!TOKEN) throw new Error("Authentication token is missing");
-        
-          const response = await api.get(
-            `/payments`,
-            {
-              headers: { Authorization: `Bearer ${TOKEN}` },
-            }
-          );
-          if (!response.data.data) throw new Error("No payments found");
-          setPayments(response.data.data);
-        
+
+        const response = await api.get(`/payments`, {
+          headers: { Authorization: `Bearer ${TOKEN}` },
+        });
+        if (!response.data.data) throw new Error("No payments found");
+        setPayments(response.data.data);
       } catch (err: any) {
         setError(err.message || "Failed to fetch payments.");
         console.error(err);
@@ -164,18 +160,18 @@ export default function AllPaymentsPage() {
                   key={payment._id}
                   className="hover:bg-gray-50 transition-colors cursor-pointer"
                   onClick={() =>
-                    router.push(`/console/payments/${payment.orderId._id}`)
+                    router.push(`/console/payments/${payment.orderId?._id}`)
                   }
                 >
                   <td className="px-6 py-4 text-sm text-gray-900">
-                    {payment.orderId._id}
+                    {payment.orderId?._id}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    ₹{payment.amount.toFixed(2)}
+                    ₹{payment?.amount.toFixed(2)}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     {payment.method.charAt(0).toUpperCase() +
-                      payment.method.slice(1)}
+                      payment?.method.slice(1)}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     {payment.status.charAt(0).toUpperCase() +
