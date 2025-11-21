@@ -52,6 +52,7 @@ export default function AddOrder({
   const [formData, setFormData] = useState({
     quantity: 1,
     deliveryAddress: "",
+    location: [],
   });
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<AutoCompleteOption | null>(null);
@@ -61,7 +62,7 @@ export default function AddOrder({
 
   const handleAddOrder = async () => {
     setLoading(true);
-    setError(null);
+    setError(null);  
 
     try {
       if (!TOKEN) throw new Error("Authentication token is missing");

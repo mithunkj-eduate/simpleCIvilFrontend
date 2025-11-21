@@ -20,6 +20,8 @@ interface Orders {
   storeName: string;
   storeAddress: string;
   createdAt: string;
+  location: number[];
+  deliveryLocation: number[];
 }
 
 const GetOrderPage = () => {
@@ -47,7 +49,6 @@ const GetOrderPage = () => {
             },
           }
         );
-
         if (res) {
           setOrders(
             res.data.data.map((product: any) => ({
@@ -63,6 +64,8 @@ const GetOrderPage = () => {
               createdAt: product.createdAt
                 ? new Date(product.createdAt).toLocaleDateString()
                 : "N/A",
+              location: product?.storeId?.location?.coordinates || [],
+              deliveryLocation: product?.location?.coordinates || [],
             }))
           );
         } else {
@@ -117,6 +120,7 @@ const GetOrderPage = () => {
       setLoading(false);
     }
   };
+  console.log(Orders);
   return (
     <div className="bg-white ">
       <Navbar NavType={LicenseTypes.RAIDER} />
@@ -188,6 +192,18 @@ const GetOrderPage = () => {
                           {person.createdAt}
                         </time>
                       </p>
+                      <Button
+                        className=""
+                        onClick={() => {
+                          console.log(person.location, "location");
+                          if (person.location.length)
+                            router.push(
+                              `/dashboard/orders/map?lat=${person.location[0]}&lng=${person.location[1]}`
+                            );
+                        }}
+                      >
+                        Map
+                      </Button>
                     </div>
                   </li>
                 ))}

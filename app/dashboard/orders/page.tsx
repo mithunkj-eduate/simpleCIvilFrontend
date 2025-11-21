@@ -23,6 +23,7 @@ interface Orders {
   location: number[];
   orderId: string;
   buyerId: string;
+  deliveryLocation: number[];
 }
 
 interface itemType {
@@ -73,6 +74,7 @@ const DeliveryOrderPage = () => {
               createdAt: product.createdAt
                 ? new Date(product.createdAt).toLocaleDateString()
                 : "N/A",
+              deliveryLocation: product?.orderId?.location?.coordinates || [],
             }))
           );
         } else {
@@ -228,14 +230,23 @@ const DeliveryOrderPage = () => {
                           {person.createdAt}
                         </time>
                       </p>
-                      {person.deliveryStatus === DeliveryStatus.PENDING && (
+                      {(person.deliveryStatus === DeliveryStatus.PENDING ||
+                        person.deliveryStatus === DeliveryStatus.SHIPPED) && (
                         <div className="text-sm/6 text-gray-900">
                           <Button
                             onClick={() => {
-                              if (person.location.length)
+                              if (
+                                person.location.length &&
+                                person.deliveryStatus === DeliveryStatus.PENDING
+                              )
                                 router.push(
-                                  `/dashboard/orders/lat=${person.location[0]}&&lng=${person.location[1]}`
+                                  `/dashboard/orders/map?lat=${person.location[0]}&lng=${person.location[1]}`
                                 );
+                              else if (person.deliveryLocation.length) {
+                                router.push(
+                                  `/dashboard/orders/map?lat=${person.deliveryLocation[0]}&lng=${person.deliveryLocation[1]}`
+                                );
+                              }
                             }}
                           >
                             Map

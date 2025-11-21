@@ -34,12 +34,35 @@ export default function CheckoutPage() {
   const { TOKEN } = Api();
   const cartItems: CartItem[] = state.cart || [];
 
+  // USER'S LIVE SOURCE LOCATION
+  const [source, setSource] = useState<{ lat: number; lng: number } | null>(
+    null
+  );
+
   const totalPrice = cartItems.reduce((sum, item) => {
     const price = item.saleTerms
       ? item.saleTerms.salePrice * item.quantity
       : item.rentalTerms?.[0]?.pricePerUnit || 0;
     return sum + price;
   }, 0);
+
+  // GET USER'S CURRENT LOCATION
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setSource({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          });
+        },
+        (err) => {
+          console.error("Error getting location:", err);
+          alert("Unable to get your location");
+        }
+      );
+    }
+  }, [loading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,6 +94,7 @@ export default function CheckoutPage() {
             : item.rentalTerms?.[0].pricePerUnit || 0,
           paymentMethod: selectedPaymentMethod.value,
           deliveryAddress: formData.deliveryAddress,
+          location: source ? [source.lat, source.lng] : [],
         };
 
         const response = await api.post("/orders", body, {

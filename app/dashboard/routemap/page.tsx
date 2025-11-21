@@ -19,11 +19,11 @@ const destination = { lat: 13.10044809921541, lng: 77.56643661112027 }; // Tumak
 
 export default function RouteMap() {
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyADsDeet4Re2Yt-lGU83dyLeMmXeaXrPfg", // process.env.REACT_APP_GOOGLE_MAPS_API_KEY,,
+    googleMapsApiKey: process.env.GOOGLE_API_KEY ?? "AIzaSyADsDeet4Re2Yt-lGU83dyLeMmXeaXrPfg", // process.env.REACT_APP_GOOGLE_MAPS_API_KEY,,
   });
 
-  // const [directions, setDirections] = useState<google.maps.DirectionsResult>();
-  const [directions, setDirections] = useState();
+  const [directions, setDirections] = useState<google.maps.DirectionsResult>();
+  // const [directions, setDirections] = useState();
 
   useEffect(() => {
     if (isLoaded && !directions) {
