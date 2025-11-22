@@ -8,6 +8,7 @@ import { AppContext } from "@/context/context";
 import { OrderStatus, DeliveryStatus } from "@/types/order";
 import { Button } from "@/stories/Button/Button";
 import GenerateCode from "./GenerateCode";
+import { DeliveryProgress } from "./DeliveryProgress";
 
 interface Order {
   _id: string;
@@ -105,7 +106,6 @@ export default function OrderHistoryPage() {
           </h1>
           <div className="ms-auto">
             <GenerateCode open={open} setOpen={setOpen} />
-            
           </div>
         </div>
 
@@ -161,6 +161,11 @@ export default function OrderHistoryPage() {
                     />
                   </div>
                 </div>
+
+                <DeliveryProgress
+                  status={order.deliveryStatus as DeliveryStatus}
+                />
+
                 <div className="mt-4 space-x-4">
                   {(order.deliveryStatus === DeliveryStatus.DELIVERED ||
                     order.deliveryStatus === DeliveryStatus.SHIPPED) && (
