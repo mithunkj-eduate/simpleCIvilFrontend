@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
@@ -46,58 +47,146 @@ interface Product {
   tags: string[];
   color?: string;
   size?: string;
+  image: string[];
 }
+
+// function ProductCard({ product }: { product: Product }) {
+//   const price = product.saleTerms
+//     ? product.saleTerms.salePrice || product.saleTerms.price
+//     : product.rentalTerms && product.rentalTerms.length > 0
+//     ? product.rentalTerms[0].pricePerUnit
+//     : 0;
+
+//   return (
+//     <div className="border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow bg-white">
+//       <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
+//       <p className="text-sm text-gray-600 mt-1">{product.description}</p>
+//       <p className="text-sm text-gray-500 mt-2">
+//         Store: {product.storeId.name}
+//       </p>
+//       <p className="text-sm text-gray-500">
+//         Category: {product.categoryId.name}
+//       </p>
+//       <p className="text-sm text-gray-500">Type: {product.type}</p>
+//       <p className="text-sm text-gray-500">
+//         Price: ₹{price ? price.toFixed(2) : price}{" "}
+//         {product.type === "rental" ? "/ unit" : ""}
+//       </p>
+//       <p className="text-sm text-gray-500">
+//         Availability: {product.avilablity ? "In Stock" : "Out of Stock"}
+//       </p>
+//       <p className="text-sm text-gray-500">Rating: {product.rating} / 5</p>
+//       {product.color && (
+//         <p className="text-sm text-gray-500">Color: {product.color}</p>
+//       )}
+//       {product.size && (
+//         <p className="text-sm text-gray-500">Size: {product.size}</p>
+//       )}
+//       {product.tags.length > 0 && (
+//         <div className="flex flex-wrap gap-2 mt-2">
+//           {product.tags.map((tag) => (
+//             <span
+//               key={tag}
+//               className="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded"
+//             >
+//               {tag}
+//             </span>
+//           ))}
+//         </div>
+//       )}
+//       <Link
+//         href={`/products/${product._id}`}
+//         className="text-indigo-600 hover:text-indigo-800"
+//       >
+//         {product.name}
+//       </Link>
+//     </div>
+//   );
+// }
 
 function ProductCard({ product }: { product: Product }) {
   const price = product.saleTerms
     ? product.saleTerms.salePrice || product.saleTerms.price
-    : product.rentalTerms && product.rentalTerms.length > 0
-    ? product.rentalTerms[0].pricePerUnit
-    : 0;
+    : product.rentalTerms?.[0]?.pricePerUnit || 0;
+
+  const image = product.image.length
+    ? product.image[0]
+    : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
 
   return (
-    <div className="border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow bg-white">
-      <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
-      <p className="text-sm text-gray-600 mt-1">{product.description}</p>
-      <p className="text-sm text-gray-500 mt-2">
-        Store: {product.storeId.name}
-      </p>
-      <p className="text-sm text-gray-500">
-        Category: {product.categoryId.name}
-      </p>
-      <p className="text-sm text-gray-500">Type: {product.type}</p>
-      <p className="text-sm text-gray-500">
-        Price: ₹{price ? price.toFixed(2) : price}{" "}
-        {product.type === "rental" ? "/ unit" : ""}
-      </p>
-      <p className="text-sm text-gray-500">
-        Availability: {product.avilablity ? "In Stock" : "Out of Stock"}
-      </p>
-      <p className="text-sm text-gray-500">Rating: {product.rating} / 5</p>
-      {product.color && (
-        <p className="text-sm text-gray-500">Color: {product.color}</p>
-      )}
-      {product.size && (
-        <p className="text-sm text-gray-500">Size: {product.size}</p>
-      )}
-      {product.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-2">
-          {product.tags.map((tag) => (
-            <span
-              key={tag}
-              className="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded"
-            >
-              {tag}
-            </span>
-          ))}
+    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-300 group cursor-pointer overflow-hidden">
+      {/* Product Image */}
+      <div className="w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+        <img
+          src={image}
+          alt={product.name}
+          className="h-full w-full object-cover group-hover:scale-105 transition-transform"
+        />
+      </div>
+
+      {/* Content */}
+      <div className="p-4">
+        <h3 className="text-lg font-semibold text-gray-900 line-clamp-1">
+          {product.name}
+        </h3>
+
+        <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+          {product.description}
+        </p>
+
+        {/* Rating */}
+        <div className="mt-2 flex items-center gap-2">
+          <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-md">
+            ⭐ {product.rating}
+          </span>
         </div>
-      )}
-      <Link
-        href={`/products/${product._id}`}
-        className="text-indigo-600 hover:text-indigo-800"
-      >
-        {product.name}
-      </Link>
+
+        {/* Category & Store */}
+        <div className="text-xs text-gray-500 mt-2 flex flex-col gap-1">
+          <p>Store: {product.storeId.name}</p>
+          <p>Category: {product.categoryId.name}</p>
+          <p>Type: {product.type}</p>
+        </div>
+
+        {/* Price */}
+        <p className="text-xl font-bold text-indigo-600 mt-3">
+          ₹{price?.toFixed(2)}
+          {product.type === "rental" && (
+            <span className="text-sm text-gray-500"> / unit</span>
+          )}
+        </p>
+
+        {/* Availability */}
+        <p
+          className={`text-sm mt-1 ${
+            product.avilablity ? "text-green-600" : "text-red-500"
+          }`}
+        >
+          {product.avilablity ? "In Stock" : "Out of Stock"}
+        </p>
+
+        {/* Tags */}
+        {product.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {product.tags.map((tag) => (
+              <span
+                key={tag}
+                className="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-md"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Button / Link */}
+        <Link
+          href={`/products/${product._id}`}
+          className="block mt-4 text-center bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-all"
+        >
+          View Product
+        </Link>
+      </div>
     </div>
   );
 }
