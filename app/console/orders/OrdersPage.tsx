@@ -69,11 +69,11 @@ function OrderRow({
       <td className="py-4 px-6">{order.paymentMethod}</td>
       <td className="py-4 px-6">{order.deliveryStatus}</td>
       <td className="py-4 px-6">{order.deliveryAddress}</td>
-      <td className="py-4 px-6">
+      {/* <td className="py-4 px-6">
         {order.deliveryDate
           ? new Date(order.deliveryDate).toLocaleDateString()
           : "N/A"}
-      </td>
+      </td> */}
       {isVendorOrAdmin && (
         <td className="py-4 px-6">
           {order.orderStatus === OrderStatus.PENDING ? (
@@ -217,9 +217,9 @@ function OrdersTable({
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Delivery Address
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Delivery Date
-            </th>
+            </th> */}
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
             </th>

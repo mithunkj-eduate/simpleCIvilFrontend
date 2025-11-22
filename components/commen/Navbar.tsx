@@ -59,15 +59,27 @@ export default function Navbar({ NavType, className }: NavProps) {
     () => [
       { name: "Dashboard", href: "/console", current: true },
       { name: "Stores", href: "/console/stores", current: false },
+      // { name: "Categories", href: "/console/categories", current: false },
+
       { name: "Products", href: "/console/products", current: false },
       { name: "Orders", href: "/console/orders", current: false },
-      { name: "Categories", href: "/console/categories", current: false },
       { name: "Payments", href: "/console/payments", current: false },
       state.user &&
       state.user.id &&
       (state.user.role === UserType.ADMIN ||
         state.user.role === UserType.SYSTEM_ADMIN)
         ? { name: "Users", href: "/console/users", current: false }
+        : { name: "", href: "", current: false },
+
+      state.user &&
+      state.user.id &&
+      (state.user.role === UserType.ADMIN ||
+        state.user.role === UserType.SYSTEM_ADMIN)
+        ? {
+            name: "Categories",
+            href: "/console/categories",
+            current: false,
+          }
         : { name: "", href: "", current: false },
     ],
     []
