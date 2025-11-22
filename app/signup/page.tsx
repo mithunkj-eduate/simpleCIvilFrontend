@@ -1,47 +1,45 @@
 "use client";
+
+import React from "react";
 import { Label } from "@/stories/Label/Label";
 import { Input } from "@/stories/Input/Input";
-import { Button } from "@/stories/Button/Button";
 import NavBar from "@/components/commen/Navbar";
-import React, { useState } from "react";
 import { AuthMethod, LicenseTypes, UserType } from "@/utils/enum.types";
 import { api } from "@/components/helpers/apiheader";
+import { useFormik, FormikHelpers } from "formik";
+import * as Yup from "yup";
+import { SignupSchema } from "@/validations/validationSchemas";
+
+// -----------------------
+// 🔹 Strictly Typed Form
+// -----------------------
+export interface SignupFormValues {
+  name: string;
+  password: string;
+  email: string;
+  phoneNumber: string;
+  role: UserType;
+}
 
 export const SignupFormJson = [
-  {
-    labelName: "Name",
-    inputName: "name",
-    dataType: "text",
-    autoFocus: true,
-    required: true,
-  },
+  { labelName: "Name", inputName: "name", dataType: "text", required: true },
   {
     labelName: "Password",
     inputName: "password",
     dataType: "password",
     required: true,
   },
-  {
-    labelName: "Email",
-    inputName: "email",
-    dataType: "email",
-    required: true,
-  },
+  { labelName: "Email", inputName: "email", dataType: "email", required: true },
   {
     labelName: "Phone Number",
     inputName: "phoneNumber",
     dataType: "number",
     required: true,
   },
-  {
-    labelName: "Role",
-    inputName: "role",
-    dataType: "role",
-    required: true,
-  },
-];
+  { labelName: "Role", inputName: "role", dataType: "role", required: true },
+] as const;
 
-export const UserTypeData = [
+export const UserTypeData: UserType[] = [
   UserType.ADMIN,
   UserType.PICE_WORKER,
   UserType.PROJECT_MANAGER,
@@ -49,52 +47,62 @@ export const UserTypeData = [
   UserType.SELLER,
   UserType.SYSTEM_ADMIN,
   UserType.USER,
-  UserType.RAIDER
+  UserType.RAIDER,
 ];
 
-export default function Signup() {
-  const [formData, setFormData] = useState({
+// ----------------------------
+// 🔹 Yup Schema With Type Help
+// ----------------------------
+// const SignupSchema = Yup.object({
+//   name: Yup.string().required("Name is required"),
+//   password: Yup.string().min(6, "Min 6 chars").required("Password is required"),
+//   email: Yup.string().email("Invalid email").required("Email is required"),
+//   phoneNumber: Yup.string()
+//     .matches(/^[0-9]{10}$/, "Must be 10 digits")
+//     .required("Phone number required"),
+//   role: Yup.mixed<UserType>()
+//     .oneOf(UserTypeData, "Invalid role")
+//     .required("Role required"),
+// });
+
+const Signup: React.FC = () => {
+  const initialValues: SignupFormValues = {
     name: "",
     password: "",
     email: "",
     phoneNumber: "",
     role: UserType.USER,
+  };
+
+  const formik = useFormik<SignupFormValues>({
+    initialValues,
+    validationSchema: SignupSchema,
+    onSubmit: async (
+      values: SignupFormValues,
+      _: FormikHelpers<SignupFormValues>
+    ) => {
+      try {
+        const body = {
+          ...values,
+          authMethod: AuthMethod.EMAIL_AUTH,
+        };
+
+        const res = await api.post(`/users/register`, body, {
+          headers: { "Content-Type": "application/json" },
+        });
+
+        alert("Signup successful!");
+      } catch (error) {
+        console.error("Signup error:", error);
+      }
+    },
   });
 
-  const handleSubmit = async (e:React.FormEvent) => {
-    e.preventDefault()
-   
-    try {
-      if (
-        !formData.name ||
-        !formData.password ||
-        !formData.email ||
-        !formData.phoneNumber ||
-        !formData.role
-      ) {
-        return;
-      }
-      const body = {
-        ...formData,
-        authMethod: AuthMethod.EMAIL_AUTH,
-      };
-
-      const res = await api.post(`/users/register`, body, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      console.log("res",res)
-      alert("Signup successful!");
-    } catch (error) {
-      console.error("Error during form submission:", error);
-    }
-  };
   return (
     <>
       <NavBar NavType={LicenseTypes.USER} />
 
-      <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+      <div className="isolate bg-white px-6 sm:py-8 lg:px-8">
         <div
           aria-hidden="true"
           className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -107,15 +115,16 @@ export default function Signup() {
             className="relative left-1/2 -z-10 aspect-1155/678 w-144.5 max-w-none -translate-x-1/2 rotate-30 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-288.75"
           />
         </div>
+
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">
+          <h2 className="text-4xl font-semibold text-gray-900">
             Signup Your Account
           </h2>
-          <p className="mt-2 text-lg/8 text-gray-600"></p>
         </div>
+
+        {/* FORM START */}
         <form
-          action="#"
-          method="POST"
+          onSubmit={formik.handleSubmit}
           className="mx-auto mt-16 max-w-xl sm:mt-20"
         >
           <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
@@ -123,76 +132,82 @@ export default function Signup() {
               if (item.inputName === "role") {
                 return (
                   <fieldset key={index}>
-                    <Label htmlFor="role"> User Role </Label>
+                    <Label>User Role</Label>
 
-                    <div className="mt-6 space-y-6">
-                      {UserTypeData.map((role) => {
-                        return (
-                          <div key={role} className="flex items-center gap-x-3">
-                            <input
-                              id={`role-${role}`}
-                              name="role"
-                              type="radio"
-                              value={role}
-                              checked={formData.role === role}
-                              onChange={(e) => {
-                                setFormData({
-                                  ...formData,
-                                  role: e.target.value as UserType,
-                                });
-                              }}
-                              className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden"
-                              required={item.required}
-                            />
-                            <Label htmlFor={`role-${role}`}>{role}</Label>
-                          </div>
-                        );
-                      })}
+                    <div className="mt-6 space-y-3">
+                      {UserTypeData.map((role) => (
+                        <div key={role} className="flex items-center gap-x-3">
+                          <input
+                            id={`role-${role}`}
+                            name="role"
+                            type="radio"
+                            value={role}
+                            checked={formik.values.role === role}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            className="size-4 rounded-full border border-gray-300"
+                          />
+                          <Label htmlFor={`role-${role}`}>{role}</Label>
+                        </div>
+                      ))}
                     </div>
+
+                    {formik.touched.role && formik.errors.role && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formik.errors.role}
+                      </p>
+                    )}
                   </fieldset>
                 );
-              } else {
-                return (
-                  <div key={index} className="sm:col-span-3">
-                    <Label
-                      htmlFor="email"
-                      className="block text-sm/6 font-semibold text-gray-900"
-                    >
-                      {item.labelName}
-                    </Label>
-                    <div className="mt-2">
-                      <Input
-                        type={item.dataType}
-                        name={item.inputName}
-                        onChange={(e) => {
-                          setFormData({
-                            ...formData,
-                            [item.inputName]: e.target.value,
-                          });
-                        }}
-                        required={item.required}
-                      />
-                    </div>
-                  </div>
-                );
               }
+
+              return (
+                <div key={index} className="sm:col-span-3">
+                  <Label className="block text-sm font-semibold text-gray-900">
+                    {item.labelName}
+                  </Label>
+
+                  <div className="mt-2">
+                    <Input
+                      type={item.dataType}
+                      name={item.inputName}
+                      value={formik.values[item.inputName]}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                  </div>
+
+                  {formik.touched[item.inputName] &&
+                    formik.errors[item.inputName] && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formik.errors[item.inputName]}
+                      </p>
+                    )}
+                </div>
+              );
             })}
           </div>
 
           <div className="mt-10">
             <button
               type="submit"
-              className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              onClick={handleSubmit}
+              className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500"
             >
               Signup
             </button>
           </div>
-          <p>
-            You are member? <a href="/login">Login</a>
+
+          <p className="mt-4 text-center text-sm">
+            Already a member?{" "}
+            <a href="/login" className="text-indigo-600">
+              Login
+            </a>
           </p>
         </form>
+        {/* FORM END */}
       </div>
     </>
   );
-}
+};
+
+export default Signup;
