@@ -121,7 +121,7 @@ export default function AllPaymentsPage() {
   return (
     <div className="bg-white ">
       <Navbar NavType={LicenseTypes.ADMIN} />
-      <div className="mx-auto max-w-7xl mt-16 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold tracking-tight text-gray-900">
           All Payments
         </h1>

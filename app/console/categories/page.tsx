@@ -69,15 +69,16 @@ const CategoriesPage = () => {
     <>
       <NavBar NavType={LicenseTypes.ADMIN} />
 
-      <div className="mt-16 flex-1 min-h-screen flex flex-col justify-between">
+      <div className="flex-1 min-h-screen flex flex-col justify-between">
         {loading ? (
           <Loading />
         ) : (
-          <div className="w-full p-4 md:p-6 lg:p-10">
+          <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between pb-4">
-              <h2 className="text-lg font-semibold text-gray-900 md:text-xl">
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900">
                 All Categories
-              </h2>
+              </h1>
+
               <Button
                 mode="primary"
                 className="ml-auto px-4 py-2 text-sm md:text-base rounded-md bg-orange-600 hover:bg-orange-700 text-white transition-colors"

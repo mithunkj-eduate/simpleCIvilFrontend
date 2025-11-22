@@ -55,18 +55,19 @@ const StorePage = () => {
     }
   }, [TOKEN]);
 
-
   return (
     <>
       <Navbar NavType={LicenseTypes.ADMIN} />
 
-      <div className="mt-16 flex-1 min-h-screen flex flex-col justify-between">
+      <div className="flex-1 min-h-screen flex flex-col justify-between">
         {loading ? (
           <Loading />
         ) : (
-          <div className="w-full md:p-10 p-4">
+          <div className="mx-auto max-w-7xl px-4  sm:px-6 lg:px-8">
             <div className="flex">
-              <h2 className="pb-4 text-lg font-medium">All Stores</h2>
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+                All Stores
+              </h1>
               <Button
                 mode="primary"
                 className="ms-auto m-2"
@@ -76,7 +77,7 @@ const StorePage = () => {
               </Button>
             </div>
             <div>
-<StoresList  stores={stores}/>
+              <StoresList stores={stores} />
             </div>
           </div>
         )}
