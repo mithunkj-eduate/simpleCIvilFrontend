@@ -29,7 +29,7 @@ const callouts = [
   },
 ];
 
-export default function Card() {
+export default function   Card() {
   return (
     <div className="bg-gray-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -50,7 +50,7 @@ export default function Card() {
                     {callout.name}
                   </a>
                 </h3>
-                <p className="text-base font-semibold text-gray-900">
+                <p className="text-base font-semibold  ">
                   {callout.description}
                 </p>
               </div>

@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import NavBar from "@/components/commen/Navbar";
 import { LicenseTypes } from "@/utils/enum.types";
 
@@ -187,6 +188,8 @@ export default function Example() {
           </a>
         </div>
       </section>
+
+      <Footer />
     </>
   );
 }

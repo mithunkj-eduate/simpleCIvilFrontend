@@ -2,6 +2,7 @@ import Navbar from "@/components/commen/Navbar";
 import { LicenseTypes } from "@/utils/enum.types";
 import React from "react";
 import CartPage from "./CartPage";
+import Footer from "@/components/Footer";
 
 const page = () => {
   return (
@@ -10,6 +11,8 @@ const page = () => {
       <div className="flex flex-col items-center justify-center min-h-screen mt-2">
         <CartPage />
       </div>
+
+      <Footer />
     </>
   );
 };

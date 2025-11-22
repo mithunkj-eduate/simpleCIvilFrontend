@@ -4,6 +4,7 @@ import React from "react";
 import OrderHistoryPage from "./OrderHistoryPage";
 import Navbar from "@/components/commen/Navbar";
 import { LicenseTypes } from "@/utils/enum.types";
+import Footer from "@/components/Footer";
 // import OrderHistoryPage from "./OrderHistoryPage";
 
 interface OrderItem {
@@ -59,6 +60,8 @@ const OrderHistory = () => {
       <div className="mt-12">
         <OrderHistoryPage />
       </div>
+
+      <Footer />
       {/* <div className="max-w-5xl mx-auto p-6 mt-16">
       <h1 className="text-2xl font-bold mb-2">Order history</h1>
       <p className="text-gray-500 mb-6">
