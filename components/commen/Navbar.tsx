@@ -206,13 +206,20 @@ export default function Navbar({ NavType, className }: NavProps) {
           <div className="flex items-center justify-between">
             <a href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
-              <Image
+              {/* <Image
                 alt=""
                 src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
                 className="h-8 w-auto"
                 width={32} // Adjust width as needed
                 height={32} // Adjust height as needed
-              />
+              /> */}
+              <Image
+              alt=""
+              src={icon ? icon : ""} // Adjust the path to your logo
+              className="h-8 w-auto"
+              width={32} // Adjust width as needed
+              height={32} // Adjust height as needed
+            />
             </a>
             <button
               type="button"
