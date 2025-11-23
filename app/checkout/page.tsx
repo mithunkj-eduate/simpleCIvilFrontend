@@ -91,12 +91,15 @@ export default function CheckoutPage() {
         message: "Order placed successfully",
         operation: Operation.CREATE,
       });
-
-      state.cart = [];
-      router.push("/orders");
     } catch (err: any) {
       alert(err.message);
     }
+  };
+
+  const handleClose = () => {
+    setMessage(emptyMessage);
+    state.cart = [];
+    router.push("/orders");
   };
 
   return (
@@ -265,7 +268,7 @@ export default function CheckoutPage() {
       </div>
 
       <MessageModal
-        handleClose={() => setMessage(emptyMessage)}
+        handleClose={handleClose}
         modalFlag={message.flag}
         operation={message.operation}
         value={message.message}

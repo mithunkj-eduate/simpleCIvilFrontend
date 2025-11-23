@@ -36,3 +36,18 @@ export const checkoutValidation = Yup.object({
 
   paymentMethod: Yup.string().required("Select payment method"),
 });
+
+//  VALIDATION SCHEMA ADD STORE
+export const AddStoreValidation = Yup.object().shape({
+  name: Yup.string().required("Store name is required"),
+  address: Yup.string().required("Address is required"),
+  latitude: Yup.number()
+    .typeError("Latitude must be a number")
+    .required("Latitude is required"),
+  longitude: Yup.number()
+    .typeError("Longitude must be a number")
+    .required("Longitude is required"),
+  pincode: Yup.string()
+    .matches(/^[1-9][0-9]{5}$/, "Enter a valid 6-digit pincode")
+    .required("Pincode is required"),
+});
