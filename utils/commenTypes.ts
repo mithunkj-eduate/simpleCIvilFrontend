@@ -27,7 +27,9 @@ export interface ProductInputType {
   description?: string;
   storeId: string;
   ownerId: string;
-  categoryId: string;
+  groupId: string;
+  categoryId: string; 
+  subsidiaryId: string
   rentalTerms?: {
     unit?: number;
     pricePerUnit?: number;

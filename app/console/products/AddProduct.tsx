@@ -236,18 +236,21 @@ const AddProduct = ({
           value: data.type,
         });
 
-        setSelectedCategory({
-          label: data.categoryId.name,
-          value: data.categoryId._id,
-        });
-        setSelectedGroup({
-          label: data.categoryId.name,
-          value: data.categoryId._id,
-        });
-        setSelectedSubsidiary({
-          label: data.categoryId.name,
-          value: data.categoryId._id,
-        });
+        if (data.categoryId?._id)
+          setSelectedCategory({
+            label: data.categoryId.name,
+            value: data.categoryId._id,
+          });
+        if (data.groupId?._id)
+          setSelectedGroup({
+            label: data.groupId.name,
+            value: data.groupId._id,
+          });
+        if (data.subsidiaryId?._id)
+          setSelectedSubsidiary({
+            label: data.subsidiaryId.name,
+            value: data.subsidiaryId._id,
+          });
       }
     } catch (error) {
       console.error("Failed to fetch product:", error);
@@ -313,11 +316,9 @@ const AddProduct = ({
         description: formData.description.trim(),
         storeId: selectedStore.value as string,
         ownerId: state.user?.id as string,
-        categoryId:
-          selectedSubsidiary?.value ||
-          selectedCategory?.value ||
-          selectedGroup?.value ||
-          "",
+        groupId: selectedGroup?.value ?? "",
+        categoryId: selectedCategory?.value ?? "",
+        subsidiaryId: selectedSubsidiary?.value ?? "",
         latitude: formData.latitude,
         longitude: formData.longitude,
         avilablity: true, // now safe and correct
@@ -372,11 +373,10 @@ const AddProduct = ({
           operations.operation === Operation.UPDATE
             ? "Product updated successfully!"
             : "Product added successfully!",
-        operation: Operation.NONE,
+        operation: Operation.CREATE,
       });
 
       onProductAdded?.();
-      setModalFlag(false);
     } catch (err: any) {
       setError(err.response?.data?.message || "Operation failed");
       console.error(err);

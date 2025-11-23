@@ -29,7 +29,9 @@ const ProductsPage = () => {
     { name: "Description", className: "hidden sm:table-cell" },
     { name: "Mrp Price", className: "hidden sm:table-cell" },
     { name: "Sale Price", className: "hidden sm:table-cell" },
+    { name: "Group", className: "px-6 py-3" },
     { name: "Category", className: "px-6 py-3" },
+    { name: "Subcategory", className: "px-6 py-3" },
     { name: "Stock", className: "hidden sm:table-cell" },
     { name: "Created At", className: "hidden sm:table-cell" },
     { name: "Action", className: "px-6 py-3" },
@@ -54,7 +56,9 @@ const ProductsPage = () => {
               description: product.description || "N/A",
               mrpPrice: product.saleTerms?.mrpPrice || 0,
               salePrice: product.saleTerms?.salePrice || 0,
-              category: product.categoryId.name || "N/A",
+              group: product.groupId?.name || "N/A",
+              category: product.categoryId?.name || "N/A",
+              subsidiary: product.subsidiaryId?.name || "N/A",
               stock: product.saleTerms?.stock || 0,
               createdAt: product.createdAt
                 ? new Date(product.createdAt).toLocaleDateString()
@@ -141,7 +145,13 @@ const ProductsPage = () => {
                           ₹{product.salePrice.toFixed(2)}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500">
+                          {product.group}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-500">
                           {product.category}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-500">
+                          {product.subsidiary}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {product.stock}

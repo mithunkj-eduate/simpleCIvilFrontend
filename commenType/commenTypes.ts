@@ -20,7 +20,9 @@ export interface Products {
   description: string;
   mrpPrice: number;
   salePrice: number;
+  group: string;
   category: string;
+  subsidiary: string;
   stock: number;
   createdAt: string;
   updatedAt: string;
@@ -32,7 +34,15 @@ export interface GetProductData {
   name: string;
   description: string;
   price: number;
+  groupId: {
+    _id: string;
+    name: string;
+  };
   categoryId: {
+    _id: string;
+    name: string;
+  };
+  subsidiaryId: {
     _id: string;
     name: string;
   };
