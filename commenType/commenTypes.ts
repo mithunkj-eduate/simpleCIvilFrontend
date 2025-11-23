@@ -14,6 +14,7 @@ export interface User {
 }
 
 export interface Products {
+  _id?: string;
   id: string;
   name: string;
   description: string;
@@ -26,6 +27,7 @@ export interface Products {
 }
 
 export interface GetProductData {
+  _id?: string;
   id: string;
   name: string;
   description: string;

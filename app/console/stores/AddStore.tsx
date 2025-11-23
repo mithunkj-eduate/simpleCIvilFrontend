@@ -115,27 +115,28 @@ const AddStore = ({ setModalFlag, selectedId, operations }: AddStoreProps) => {
         ...values,
         ownerId: state.user.id,
       };
-      let path = "";
-      let message = "";
-      if (operations.operation === Operation.UPDATE) {
-        path = `/stores/${selectedId}`;
-        message = "Store Update Successfully";
-      } else {
-        path = "/stores";
-        message = "Store Added Successfully";
-      }
 
-      const res = await api.post(path, body, {
+      const path =
+        operations.operation === Operation.UPDATE
+          ? `/stores/${selectedId}`
+          : "/stores";
+
+      const res = await api({
+        method: operations.operation === Operation.UPDATE ? "put" : "post",
+        url: path,
+        data: body,
         headers: {
           Authorization: `Bearer ${TOKEN}`,
-          "Content-Type": "application/json",
         },
       });
 
       if (res.status === 200 && res.data.data) {
         setMessage({
           flag: true,
-          message: message,
+          message:
+            operations.operation === Operation.UPDATE
+              ? "Store updated successfully!"
+              : "Store added successfully!",
           operation: Operation.CREATE,
         });
       }

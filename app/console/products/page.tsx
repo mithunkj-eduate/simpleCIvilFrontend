@@ -6,10 +6,11 @@ import AddModal from "@/components/helpers/AddModal";
 import Loading from "@/components/helpers/Loading";
 import Api, { api } from "@/components/helpers/apiheader";
 import { Button } from "@/stories/Button/Button";
-import { LicenseTypes } from "@/utils/enum.types";
-import React, { useContext, useEffect } from "react";
+import { LicenseTypes, Operation } from "@/utils/enum.types";
+import React, { useContext, useEffect, useState } from "react";
 import AddProduct from "./AddProduct";
 import { AppContext } from "@/context/context";
+import Image from "next/image";
 
 const ProductsPage = () => {
   const { TOKEN } = Api();
@@ -17,6 +18,8 @@ const ProductsPage = () => {
   const [products, setProducts] = React.useState<Products[]>([]);
   const [modalFlag, setModalFlag] = React.useState(false);
   const { state } = useContext(AppContext);
+  const [operation, setOperation] = useState<Operation>(Operation.NONE);
+  const [selectedId, setSelectedId] = useState("");
 
   const productsTableHeader = [
     {
@@ -46,7 +49,7 @@ const ProductsPage = () => {
         if (res) {
           setProducts(
             res.data.data.map((product: GetProductData) => ({
-              id: product.id,
+              id: product._id,
               name: product.name || "N/A",
               description: product.description || "N/A",
               mrpPrice: product.saleTerms?.mrpPrice || 0,
@@ -91,7 +94,10 @@ const ProductsPage = () => {
               <Button
                 mode="primary"
                 className="ml-auto px-4 py-2 text-sm md:text-base rounded-md bg-orange-600 hover:bg-orange-700 text-white transition-colors"
-                onClick={() => setModalFlag(true)}
+                onClick={() => {
+                  setOperation(Operation.CREATE);
+                  setModalFlag(true);
+                }}
               >
                 Add Product
               </Button>
@@ -144,16 +150,18 @@ const ProductsPage = () => {
                           {product.createdAt}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500">
-                          <Button
-                            mode="secondary"
-                            className="px-3 py-1 text-xs md:text-sm bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
-                            onClick={(e) => {
-                              e.stopPropagation(); // Prevent row navigation
-                              // Add edit/delete logic here
+                          <Image
+                            width={50}
+                            height={50}
+                            src={"/Edit.svg"}
+                            alt="productEdit"
+                            className="size-5"
+                            onClick={() => {
+                              setSelectedId(product.id);
+                              setOperation(Operation.UPDATE);
+                              setModalFlag(true);
                             }}
-                          >
-                            Manage
-                          </Button>
+                          />
                         </td>
                       </tr>
                     ))
@@ -174,11 +182,16 @@ const ProductsPage = () => {
         )}
       </div>
 
-      <AddModal
-        modalFlag={modalFlag}
-        setModalFlag={setModalFlag}
-        children={<AddProduct setModalFlag={setModalFlag} />}
-      />
+      <AddModal modalFlag={modalFlag} setModalFlag={setModalFlag}>
+        <AddProduct
+          setModalFlag={setModalFlag}
+          operations={{
+            operation,
+            setOperation,
+          }}
+          selectedId={selectedId}
+        />
+      </AddModal>
     </>
   );
 };
