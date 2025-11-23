@@ -1,11 +1,12 @@
 "use client";
 
+import { Operation } from "@/utils/commenTypes";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 
 interface TostifyProps {
   modalFlag: boolean;
   setModalFlag: (open: boolean) => void;
-  operation: "success" | "error";
+  operation: Operation;
   value?: string;
 }
 
@@ -16,9 +17,12 @@ export default function Tostify({
   value,
 }: TostifyProps) {
   const colorClass =
-    operation === "success"
+    operation === Operation.CREATE ||
+    operation === Operation.UPDATE ||
+    operation === Operation.DELETE
       ? "bg-green-100 text-green-800"
       : "bg-red-100 text-red-800";
+      
   return (
     <div>
       <Dialog open={modalFlag} onClose={setModalFlag} className="relative z-10">

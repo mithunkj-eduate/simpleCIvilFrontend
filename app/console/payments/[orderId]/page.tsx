@@ -7,6 +7,10 @@ import { PaymentMethod } from "@/types/order";
 import { Button } from "@/stories/Button/Button";
 import Loading from "@/components/helpers/Loading";
 import { PaymentStatus } from "@/types/payment";
+import { Operation } from "@/utils/enum.types";
+import { msgType } from "@/utils/commenTypes";
+import { emptyMessage } from "@/utils/constants";
+import MessageModal from "@/customComponents/MessageModal";
 
 interface Payment {
   _id: string;
@@ -26,6 +30,8 @@ export default function PaymentPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const [message, setMessage] = useState<msgType>(emptyMessage);
+
 
   useEffect(() => {
     const fetchPayment = async () => {
@@ -62,11 +68,15 @@ export default function PaymentPage() {
         }
       );
       setPayment(response.data.data);
-      alert(
-        `Payment ${action} ${
+      
+
+      setMessage({
+        flag: true,
+        message: `Payment ${action} ${
           action === "refund" ? "requested" : "successfully"
-        }`
-      );
+        }`,
+        operation: Operation.CREATE,
+      });
     } catch (err: any) {
       setError(err.response?.data?.message || `Failed to ${action} payment.`);
       console.error(err);
@@ -186,6 +196,14 @@ export default function PaymentPage() {
           </Button>
         </div>
       </div>
+      <MessageModal
+        handleClose={() => {
+          setMessage(emptyMessage);
+        }}
+        modalFlag={message.flag}
+        operation={message.operation}
+        value={message.message}
+      />
     </div>
   );
 }

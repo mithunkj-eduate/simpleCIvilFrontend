@@ -7,8 +7,11 @@ import { Label } from "@/stories/Label/Label";
 import { TextArea } from "@/stories/TextArea/TextArea";
 import Api, { api } from "@/components/helpers/apiheader";
 import { PaymentMethod } from "@/types/order";
-import { AutoCompleteOption } from "@/utils/commenTypes";
+import { AutoCompleteOption, msgType } from "@/utils/commenTypes";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
+import { emptyMessage } from "@/utils/constants";
+import MessageModal from "@/customComponents/MessageModal";
+import { Operation } from "@/utils/enum.types";
 
 interface AddOrderProps {
   product: {
@@ -59,6 +62,8 @@ export default function AddOrder({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { TOKEN } = Api();
+  const [message, setMessage] = useState<msgType>(emptyMessage);
+
 
   const handleAddOrder = async () => {
     setLoading(true);
@@ -95,7 +100,11 @@ export default function AddOrder({
       });
 
       if (response.data.data) {
-        alert("Order placed successfully");
+        setMessage({
+          flag: true,
+          message: "Order placed successfully",
+          operation: Operation.CREATE,
+        });
         onOrderAdded?.();
         setModalFlag(false);
       }
@@ -217,6 +226,14 @@ export default function AddOrder({
           Cancel
         </Button>
       </div>
+      <MessageModal
+        handleClose={() => {
+          setMessage(emptyMessage);
+        }}
+        modalFlag={message.flag}
+        operation={message.operation}
+        value={message.message}
+      />
     </div>
   );
 }

@@ -5,11 +5,14 @@ import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { Button } from "@/stories/Button/Button";
 import { DeliveryStatus, OrderAcceptStatus } from "@/types/order";
-import { LicenseTypes } from "@/utils/enum.types";
+import { LicenseTypes, Operation } from "@/utils/enum.types";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import ConfirmDelivery from "./ConfirmDelivery";
 import AddModal from "@/components/helpers/AddModal";
+import MessageModal from "@/customComponents/MessageModal";
+import { msgType } from "@/utils/commenTypes";
+import { emptyMessage } from "@/utils/constants";
 
 interface Orders {
   id: string;
@@ -46,6 +49,7 @@ const DeliveryOrderPage = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [item, setItem] = useState<itemType>(initialItem);
+  const [message, setMessage] = useState<msgType>(emptyMessage);
 
   const GetUsers = async () => {
     setLoading(true);
@@ -98,7 +102,11 @@ const DeliveryOrderPage = () => {
     try {
       console.log(orderId, buyerId, "item");
       if (!orderId || !buyerId) {
-        alert("orderID && buyerId requied");
+        setMessage({
+          flag: true,
+          message: "orderID && buyerId requied",
+          operation: Operation.NONE,
+        });
         return;
       }
       if (state.user && state.user.id) {
@@ -279,6 +287,15 @@ const DeliveryOrderPage = () => {
           ) : null}
         </>
       )}
+
+      <MessageModal
+        handleClose={() => {
+          setMessage(emptyMessage);
+        }}
+        modalFlag={message.flag}
+        operation={message.operation}
+        value={message.message}
+      />
     </div>
   );
 };

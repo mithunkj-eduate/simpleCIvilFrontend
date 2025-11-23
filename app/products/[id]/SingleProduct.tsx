@@ -8,6 +8,10 @@ import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { productType } from "@/types/product";
 import { Button } from "@/stories/Button/Button";
+import MessageModal from "@/customComponents/MessageModal";
+import { Operation } from "@/utils/enum.types";
+import { msgType } from "@/utils/commenTypes";
+import { emptyMessage } from "@/utils/constants";
 
 export default function ProductDetails() {
   const [product, setProduct] = useState<any>(null);
@@ -17,6 +21,7 @@ export default function ProductDetails() {
   const { TOKEN } = Api();
   const params = useParams();
   const { state } = useContext(AppContext);
+  const [message, setMessage] = useState<msgType>(emptyMessage);
 
   const id = params.id as string;
 
@@ -57,7 +62,11 @@ export default function ProductDetails() {
   // ADD TO CART
   const addToCart = async () => {
     if (!TOKEN && !state.user) {
-      alert("Please login to add items.");
+      setMessage({
+        flag: true,
+        message: "Please login to add items.",
+        operation: Operation.NONE,
+      });
       return;
     }
 
@@ -68,11 +77,20 @@ export default function ProductDetails() {
         { headers: { Authorization: `Bearer ${TOKEN}` } }
       );
 
-      alert("Item added to cart");
+      setMessage({
+        flag: true,
+        message: "Item added to cart",
+        operation: Operation.CREATE,
+      });
     } catch (err) {
-      alert("Failed to add item");
+      setMessage({
+        flag: true,
+        message: "Failed to add item",
+        operation: Operation.NONE,
+      });
     }
   };
+
 
   return (
     <div className="bg-white p-4 md:p-10">
@@ -148,7 +166,7 @@ export default function ProductDetails() {
           <Button
             mode="primary"
             disabled={!product.avilablity}
-            className="mt-8 w-full sm:w-50" 
+            className="mt-8 w-full sm:w-50"
             onClick={addToCart}
           >
             Add to Cart
@@ -198,6 +216,15 @@ export default function ProductDetails() {
           </>
         )}
       </div>
+
+      <MessageModal
+        handleClose={() => {
+          setMessage(emptyMessage);
+        }}
+        modalFlag={message.flag}
+        operation={message.operation}
+        value={message.message}
+      />
     </div>
   );
 }

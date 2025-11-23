@@ -23,7 +23,10 @@ import {
 import { OrderStatus, PaymentMethod, DeliveryStatus } from "@/types/order";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
-import { UserType } from "@/utils/enum.types";
+import { Operation, UserType } from "@/utils/enum.types";
+import { msgType } from "@/utils/commenTypes";
+import { emptyMessage } from "@/utils/constants";
+import MessageModal from "@/customComponents/MessageModal";
 
 interface Order {
   _id: string;
@@ -309,6 +312,8 @@ export default function OrdersPage() {
   const [filterVersion, setFilterVersion] = useState(0);
   const { state } = useContext(AppContext);
   const { TOKEN } = Api();
+  const [message, setMessage] = useState<msgType>(emptyMessage);
+
 
   const memoizedFilters = useMemo(
     () => ({
@@ -443,7 +448,12 @@ export default function OrdersPage() {
             order._id === orderId ? { ...order, ...response.data.data } : order
           )
         );
-        alert("Order updated successfully");
+
+        setMessage({
+          flag: true,
+          message: "Order updated successfully",
+          operation: Operation.CREATE,
+        });
       }
     } catch (err) {
       setError("Failed to update order. Please try again.");
@@ -702,6 +712,14 @@ export default function OrdersPage() {
           </section>
         </main>
       </div>
+      <MessageModal
+        handleClose={() => {
+          setMessage(emptyMessage);
+        }}
+        modalFlag={message.flag}
+        operation={message.operation}
+        value={message.message}
+      />
     </div>
   );
 }

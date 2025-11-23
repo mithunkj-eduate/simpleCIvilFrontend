@@ -1,14 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Label } from "@/stories/Label/Label";
 import { Input } from "@/stories/Input/Input";
 import NavBar from "@/components/commen/Navbar";
-import { AuthMethod, LicenseTypes, UserType } from "@/utils/enum.types";
+import { AuthMethod, LicenseTypes, Operation, UserType } from "@/utils/enum.types";
 import { api } from "@/components/helpers/apiheader";
 import { useFormik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { SignupSchema } from "@/validations/validationSchemas";
+import { msgType } from "@/utils/commenTypes";
+import { emptyMessage } from "@/utils/constants";
+import MessageModal from "@/customComponents/MessageModal";
 
 // -----------------------
 // 🔹 Strictly Typed Form
@@ -73,6 +76,8 @@ const Signup: React.FC = () => {
     phoneNumber: "",
     role: UserType.USER,
   };
+  const [message, setMessage] = useState<msgType>(emptyMessage);
+
 
   const formik = useFormik<SignupFormValues>({
     initialValues,
@@ -91,7 +96,12 @@ const Signup: React.FC = () => {
           headers: { "Content-Type": "application/json" },
         });
 
-        alert("Signup successful!");
+        setMessage({
+          flag: true,
+          message: "Signup successful!",
+          operation: Operation.NONE,
+        });
+
       } catch (error) {
         console.error("Signup error:", error);
       }
@@ -206,6 +216,14 @@ const Signup: React.FC = () => {
         </form>
         {/* FORM END */}
       </div>
+      <MessageModal
+        handleClose={() => {
+          setMessage(emptyMessage);
+        }}
+        modalFlag={message.flag}
+        operation={message.operation}
+        value={message.message}
+      />
     </>
   );
 };

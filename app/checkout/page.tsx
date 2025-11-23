@@ -9,9 +9,12 @@ import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
 import { Button } from "@/stories/Button/Button";
 
-import { AutoCompleteOption } from "@/utils/commenTypes";
+import { AutoCompleteOption, msgType } from "@/utils/commenTypes";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
 import { CartItem } from "@/types/cart";
+import { Operation } from "@/utils/enum.types";
+import { emptyMessage } from "@/utils/constants";
+import MessageModal from "@/customComponents/MessageModal";
 
 const paymentMethodOptions = Object.values(PaymentMethod).map((method) => ({
   value: method,
@@ -33,6 +36,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { TOKEN } = Api();
   const cartItems: CartItem[] = state.cart || [];
+  const [message, setMessage] = useState<msgType>(emptyMessage);
 
   // USER'S LIVE SOURCE LOCATION
   const [source, setSource] = useState<{ lat: number; lng: number } | null>(
@@ -104,7 +108,12 @@ export default function CheckoutPage() {
         if (!response.data.data) throw new Error("Failed to place order");
       }
 
-      alert("Order placed successfully");
+      setMessage({
+        flag: true,
+        message: "Order placed successfully",
+        operation: Operation.CREATE,
+      });
+
       // Clear cart and redirect
       state.cart = [];
       router.push("/orders");
@@ -250,6 +259,14 @@ export default function CheckoutPage() {
           </div>
         )}
       </div>
+      <MessageModal
+        handleClose={() => {
+          setMessage(emptyMessage);
+        }}
+        modalFlag={message.flag}
+        operation={message.operation}
+        value={message.message}
+      />
     </div>
   );
 }

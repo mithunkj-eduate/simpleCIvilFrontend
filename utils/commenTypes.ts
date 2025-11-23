@@ -1,4 +1,4 @@
-import { CategoryLevelType, CatrgroryStatus } from "./enum.types";
+import { CategoryLevelType, CatrgroryStatus, Operation } from "./enum.types";
 
 export interface AutoCompleteOption {
   label: string;
@@ -50,3 +50,10 @@ export interface ProductInputType {
   longitude: number;
   avilablity?: boolean;
 }
+
+export interface msgType {
+  message: string;
+  flag: boolean;
+  operation: Operation;
+}
+

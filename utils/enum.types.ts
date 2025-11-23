@@ -48,3 +48,12 @@ export enum CatrgroryStatus {
   INACTIVE = "inactive",
 }
 
+export enum Operation {
+  UPDATE = "UPDATE",
+  CREATE = "CREATE",
+  DELETE = "DELETE",
+  VIEW = "VIEW",
+  NONE = "NONE",
+  CLEAR = "CLEAR",
+  CLOSE = "CLOSE",
+}

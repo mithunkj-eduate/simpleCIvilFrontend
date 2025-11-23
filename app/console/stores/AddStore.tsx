@@ -1,11 +1,15 @@
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
+import MessageModal from "@/customComponents/MessageModal";
 import { Button } from "@/stories/Button/Button";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
 import { TextArea } from "@/stories/TextArea/TextArea";
+import { msgType } from "@/utils/commenTypes";
+import { emptyMessage } from "@/utils/constants";
+import { Operation } from "@/utils/enum.types";
 import { DialogTitle } from "@headlessui/react";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 
 interface AddStoreProps {
   setModalFlag: (flag: boolean) => void;
@@ -48,11 +52,12 @@ export const StoreFormJson = [
 const AddStore = ({ setModalFlag }: AddStoreProps) => {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
+  const [message, setMessage] = useState<msgType>(emptyMessage);
   const [formData, setFormData] = React.useState({
     name: "",
     address: "",
-    latitude:13.100450747898778,
-    longitude:77.56980901384942,
+    latitude: 13.100450747898778,
+    longitude: 77.56980901384942,
     pincode: "",
   });
 
@@ -63,8 +68,8 @@ const AddStore = ({ setModalFlag }: AddStoreProps) => {
           name: formData.name,
           ownerId: state.user?.id,
           address: formData.address,
-          latitude:formData.latitude,
-          longitude:formData.longitude,
+          latitude: formData.latitude,
+          longitude: formData.longitude,
           pincode: formData.pincode,
         };
         const res = await api.post("/stores", body, {
@@ -74,13 +79,21 @@ const AddStore = ({ setModalFlag }: AddStoreProps) => {
           },
         });
         if (res.status === 200 && res.data.data) {
-          alert("add store sucssfull");
-          setModalFlag(false);
+          setMessage({
+            flag: true,
+            message: "add store sucssfull",
+            operation: Operation.CREATE,
+          });
         }
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleClose = () => {
+    setModalFlag(false);
+    setMessage(emptyMessage);
   };
 
   return (
@@ -178,6 +191,13 @@ const AddStore = ({ setModalFlag }: AddStoreProps) => {
           Cancel
         </Button>
       </div>
+
+      <MessageModal
+        handleClose={handleClose}
+        modalFlag={message.flag}
+        operation={message.operation}
+        value={message.message}
+      />
     </>
   );
 };

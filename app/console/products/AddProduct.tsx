@@ -7,12 +7,15 @@ import AutoSelect from "./AutoSelect";
 import {
   AutoCompleteOption,
   ProductInputType,
+  msgType,
   productType,
 } from "@/utils/commenTypes";
-import { ApiPathType } from "@/utils/enum.types";
+import { ApiPathType, Operation } from "@/utils/enum.types";
 import { AppContext } from "@/context/context";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
 import Api, { api } from "@/components/helpers/apiheader";
+import MessageModal from "@/customComponents/MessageModal";
+import { emptyMessage } from "@/utils/constants";
 
 export const StoreFormJson = [
   {
@@ -51,21 +54,21 @@ export const StoreFormJson = [
     inputName: "mrpPrice",
     dataType: "number",
     required: false,
-    minNum: 1
+    minNum: 1,
   },
   {
     labelName: "Sale Price",
     inputName: "salePrice",
     dataType: "number",
     required: false,
-    minNum: 1
+    minNum: 1,
   },
   {
     labelName: "Stock",
     inputName: "stock",
     dataType: "number",
     required: false,
-    minNum: 1
+    minNum: 1,
   },
   {
     labelName: "Color",
@@ -102,14 +105,14 @@ export const StoreFormJson = [
     inputName: "rentalMinDuration",
     dataType: "number",
     required: false,
-    min: "!"
+    min: "!",
   },
   {
     labelName: "Product Type",
     inputName: "type",
     dataType: "type",
     required: true,
-    min: 1
+    min: 1,
   },
 ];
 
@@ -137,6 +140,7 @@ const AddProduct = ({ setModalFlag, onProductAdded }: AddProductProps) => {
 
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
+  const [message, setMessage] = useState<msgType>(emptyMessage);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -230,7 +234,11 @@ const AddProduct = ({ setModalFlag, onProductAdded }: AddProductProps) => {
       });
 
       if (res.data.data) {
-        alert("Product added successfully");
+        setMessage({
+          flag: true,
+          message: "Product added successfully",
+          operation: Operation.CREATE,
+        });
         onProductAdded?.(); // Trigger refresh in ProductsPage
         setModalFlag(false);
       }
@@ -399,6 +407,14 @@ const AddProduct = ({ setModalFlag, onProductAdded }: AddProductProps) => {
           Cancel
         </Button>
       </div>
+      <MessageModal
+        handleClose={() => {
+          setMessage(emptyMessage);
+        }}
+        modalFlag={message.flag}
+        operation={message.operation}
+        value={message.message}
+      />
     </div>
   );
 };

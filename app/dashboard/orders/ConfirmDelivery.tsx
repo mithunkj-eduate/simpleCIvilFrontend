@@ -19,6 +19,10 @@ import { AppContext } from "@/context/context";
 import { Button } from "@/stories/Button/Button";
 import { Input } from "@/stories/Input/Input";
 import { DeliveryStatus } from "@/types/order";
+import MessageModal from "@/customComponents/MessageModal";
+import { msgType } from "@/utils/commenTypes";
+import { emptyMessage } from "@/utils/constants";
+import { Operation } from "@/utils/enum.types";
 
 interface Props {
   open: boolean;
@@ -38,6 +42,7 @@ export default function ConfirmDelivery({
   const { state } = useContext(AppContext);
   const { TOKEN } = Api();
   const [code, setCode] = useState(0);
+  const [message, setMessage] = useState<msgType>(emptyMessage);
 
   const handleSubmit = async () => {
     try {
@@ -45,7 +50,11 @@ export default function ConfirmDelivery({
       // throw new Error("Authentication required");
 
       if (!code) {
-        alert("Required Genarated Code");
+        setMessage({
+          flag: true,
+          message: "Required Genarated Code",
+          operation: Operation.NONE,
+        });
         return;
       }
       const res = await api.put(
@@ -61,11 +70,19 @@ export default function ConfirmDelivery({
       );
       console.log("res", res);
       if (res) {
-        alert("Delivery Successfuly");
+        setMessage({
+          flag: true,
+          message: "Delivery Successfuly",
+          operation: Operation.CREATE,
+        });
       }
     } catch (err) {
       console.error(err);
-      alert("Please enter correct generated code");
+      setMessage({
+        flag: true,
+        message: "Please enter correct generated code",
+        operation: Operation.NONE,
+      });
     }
   };
 
@@ -82,12 +99,20 @@ export default function ConfirmDelivery({
         }
       );
       if (response.data.data) {
-        setOpen(false);
-        alert("Order Picked Successfully");
+        setMessage({
+          flag: true,
+          message: "Order Picked Successfully",
+          operation: Operation.CREATE,
+        });
       }
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setMessage(emptyMessage);
   };
 
   return (
@@ -178,6 +203,13 @@ export default function ConfirmDelivery({
           </div>
         </div>
       </Dialog>
+
+      <MessageModal
+        handleClose={handleClose}
+        modalFlag={message.flag}
+        operation={message.operation}
+        value={message.message}
+      />
     </div>
   );
 }

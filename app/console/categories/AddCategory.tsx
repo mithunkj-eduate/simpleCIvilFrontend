@@ -4,15 +4,22 @@ import { Label } from "@/stories/Label/Label";
 import { TextArea } from "@/stories/TextArea/TextArea";
 import React, { useState } from "react";
 
-import { AutoCompleteOption, CategoryTypes } from "@/utils/commenTypes";
+import {
+  AutoCompleteOption,
+  CategoryTypes,
+  msgType,
+} from "@/utils/commenTypes";
 import {
   ApiPathType,
   CategoryLevelType,
   CatrgroryStatus,
+  Operation,
 } from "@/utils/enum.types";
 import Api, { api } from "@/components/helpers/apiheader";
 import AutoSelect from "../products/AutoSelect";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
+import MessageModal from "@/customComponents/MessageModal";
+import { emptyMessage } from "@/utils/constants";
 
 export const CategoryFormJson = [
   {
@@ -50,6 +57,7 @@ const AddCategory = ({ setModalFlag }: AddCategoryProps) => {
       label: CatrgroryStatus.ACTIVE,
       value: CatrgroryStatus.ACTIVE,
     });
+  const [message, setMessage] = useState<msgType>(emptyMessage);
 
   const LevelOption: AutoCompleteOption[] = [
     {
@@ -104,14 +112,23 @@ const AddCategory = ({ setModalFlag }: AddCategoryProps) => {
           },
         });
         if (res.data.data) {
-          alert(`add ${selectedLevel?.value} sucssfull`);
-          setModalFlag(false);
+          setMessage({
+            flag: true,
+            message: `add ${selectedLevel?.value} sucssfull`,
+            operation: Operation.CREATE,
+          });
+
         }
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  const handleClose = () =>{
+    setModalFlag(false);
+    setMessage(emptyMessage)
+  }
   return (
     <>
       <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -258,6 +275,13 @@ const AddCategory = ({ setModalFlag }: AddCategoryProps) => {
           Cancel
         </Button>
       </div>
+
+      <MessageModal
+        handleClose={handleClose}
+        modalFlag={message.flag}
+        operation={message.operation}
+        value={message.message}
+      />
     </>
   );
 };

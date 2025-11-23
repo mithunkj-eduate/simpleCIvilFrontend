@@ -3,9 +3,12 @@ import Navbar from "@/components/commen/Navbar";
 import Loading from "@/components/helpers/Loading";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
+import MessageModal from "@/customComponents/MessageModal";
 import { Button } from "@/stories/Button/Button";
 import { OrderAcceptStatus } from "@/types/order";
-import { LicenseTypes } from "@/utils/enum.types";
+import { msgType } from "@/utils/commenTypes";
+import { emptyMessage } from "@/utils/constants";
+import { LicenseTypes, Operation } from "@/utils/enum.types";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -30,6 +33,7 @@ const GetOrderPage = () => {
   const [Orders, setOrders] = useState<Orders[]>([]);
   const { state } = useContext(AppContext);
   const router = useRouter();
+  const [message, setMessage] = useState<msgType>(emptyMessage);
 
   const location = {
     lat: 13.028473178767564,
@@ -109,7 +113,11 @@ const GetOrderPage = () => {
         );
 
         if (res.status) {
-          alert("Update successfully");
+          setMessage({
+            flag: true,
+            message: "Update successfully",
+            operation: Operation.CREATE,
+          });
         } else {
           console.error("Failed to fetch users:", res);
         }
@@ -221,6 +229,14 @@ const GetOrderPage = () => {
           </div>
         </>
       )}
+      <MessageModal
+        handleClose={() => {
+          setMessage(emptyMessage);
+        }}
+        modalFlag={message.flag}
+        operation={message.operation}
+        value={message.message}
+      />
     </div>
   );
 };
