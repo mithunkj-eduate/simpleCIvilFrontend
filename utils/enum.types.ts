@@ -57,3 +57,7 @@ export enum Operation {
   CLEAR = "CLEAR",
   CLOSE = "CLOSE",
 }
+
+export enum PageForNav{
+  aboutus= "aboutus"
+}

@@ -2,11 +2,7 @@
 import Card from "@/components/Card";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
-import Peoples from "@/components/Peoples";
-import PriceCard from "@/components/PriceCard";
 import Navbar from "@/components/commen/Navbar";
-import { Button } from "@/stories/Button/Button";
-import { Input } from "@/stories/Input/Input";
 import { LicenseTypes } from "@/utils/enum.types";
 
 export default function Home() {

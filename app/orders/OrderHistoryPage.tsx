@@ -99,7 +99,7 @@ export default function OrderHistoryPage() {
 
   return (
     <div className="bg-white">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex align-items-center">
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 border-b border-gray-200 pt-2 pb-6 sticky top-0 bg-white z-10">
             Order History

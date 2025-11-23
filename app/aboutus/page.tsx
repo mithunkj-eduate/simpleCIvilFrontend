@@ -1,6 +1,6 @@
 import Footer from "@/components/Footer";
 import NavBar from "@/components/commen/Navbar";
-import { LicenseTypes } from "@/utils/enum.types";
+import { LicenseTypes, PageForNav } from "@/utils/enum.types";
 
 /* eslint-disable @next/next/no-img-element */
 const links = [
@@ -30,7 +30,7 @@ const stats = [
 export default function Example() {
   return (
     <>
-      <NavBar NavType={LicenseTypes.USER} className="text-white" />
+      <NavBar NavType={LicenseTypes.USER} pageForNav={PageForNav.aboutus} />
 
       <div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32">
         <img

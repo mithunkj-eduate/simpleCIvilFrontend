@@ -57,7 +57,7 @@ const OrderHistory = () => {
   return (
     <>
       <Navbar NavType={LicenseTypes.USER} />
-      <div className="mt-12">
+      <div className="">
         <OrderHistoryPage />
       </div>
 

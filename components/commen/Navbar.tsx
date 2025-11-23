@@ -7,7 +7,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/20/solid";
 
 import Image from "next/image";
 import icon from "@/assets/icon.png";
-import { LicenseTypes, UserType } from "@/utils/enum.types";
+import { LicenseTypes, PageForNav, UserType } from "@/utils/enum.types";
 import { AppContext } from "@/context/context";
 import Link from "next/link";
 
@@ -15,19 +15,36 @@ interface NavProps {
   NavType: LicenseTypes;
   AdminDashboard?: boolean;
   className?: string;
+  pageForNav?: PageForNav;
 }
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Navbar({ NavType, className }: NavProps) {
+export default function Navbar({ NavType, className, pageForNav }: NavProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [items, setItems] = useState<
     { name: string; href: string; current: boolean }[]
   >([]);
 
   const { state } = useContext(AppContext);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const Navigation = useMemo(
     () => [
       { name: "Home", href: "/", current: true },
@@ -107,7 +124,16 @@ export default function Navbar({ NavType, className }: NavProps) {
   }, [NavType, Navigation, ConsoleNavigation]);
 
   return (
-    <header className="absolute inset-x-0 top-0 z-50 sticky">
+    <header
+      //  className="absolute inset-x-0 top-0 z-50 sticky"
+      className={
+        pageForNav === PageForNav.aboutus
+          ? `absolute inset-x-0 top-0 z-50 sticky transition-all duration-300 bg-white`
+          : `absolute inset-x-0 top-0 z-50 sticky transition-all duration-300 ${
+              isScrolled ? "bg-white" : "bg-transparent"
+            }`
+      }
+    >
       <nav
         aria-label="Global"
         className="flex items-center justify-between p-6 lg:px-8"
@@ -214,12 +240,12 @@ export default function Navbar({ NavType, className }: NavProps) {
                 height={32} // Adjust height as needed
               /> */}
               <Image
-              alt=""
-              src={icon ? icon : ""} // Adjust the path to your logo
-              className="h-8 w-auto"
-              width={32} // Adjust width as needed
-              height={32} // Adjust height as needed
-            />
+                alt=""
+                src={icon ? icon : ""} // Adjust the path to your logo
+                className="h-8 w-auto"
+                width={32} // Adjust width as needed
+                height={32} // Adjust height as needed
+              />
             </a>
             <button
               type="button"
