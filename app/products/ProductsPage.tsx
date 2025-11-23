@@ -32,7 +32,9 @@ interface Product {
   name: string;
   description: string;
   storeId: { _id: string; name: string };
+  groupId: { _id: string; name: string };
   categoryId: { _id: string; name: string };
+  subsidiaryId: { _id: string; name: string };
   type: string;
   avilablity: boolean;
   saleTerms?: {
@@ -235,19 +237,68 @@ const subCategories = [
   { name: "Rentals", href: "#", current: false },
 ];
 
-// Dynamic filter generation
+// // commented mithun reuse this categay only show
+// // Dynamic filter generation
+// const extractCategories = (products: Product[]) => {
+//   const categories = products.map((product) => ({
+//     id: product.categoryId._id,
+//     name: product.categoryId.name,
+//   }));
+//   return [...new Map(categories.map((cat) => [cat.id, cat])).values()].map(
+//     (category) => ({
+//       value: category.id,
+//       label: category.name,
+//       checked: false,
+//     })
+//   );
+// };
+
+// Extract unique categories for filter list
 const extractCategories = (products: Product[]) => {
-  const categories = products.map((product) => ({
-    id: product.categoryId._id,
-    name: product.categoryId.name,
+  const categoriesMap = new Map<string, { id: string; name: string }>();
+
+  products.forEach((product) => {
+    if (product.categoryId?._id) {
+      categoriesMap.set(product.categoryId._id, {
+        id: product.categoryId._id,
+        name: product.categoryId.name,
+      });
+    }
+  });
+
+  // Convert map → array and add default "checked: false"
+  return Array.from(categoriesMap.values()).map((cat) => ({
+    value: cat.id,
+    label: cat.name,
+    checked: false,
   }));
-  return [...new Map(categories.map((cat) => [cat.id, cat])).values()].map(
-    (category) => ({
-      value: category.id,
-      label: category.name,
-      checked: false,
-    })
-  );
+};
+
+const extractGroups = (products: Product[]) => {
+  const groups = products
+    .map((p) => p.groupId && { id: p.groupId._id, name: p.groupId.name })
+    .filter(Boolean);
+
+  return [...new Map(groups.map((g) => [g.id, g])).values()].map((g) => ({
+    value: g.id,
+    label: g.name,
+    checked: false,
+  }));
+};
+
+const extractSubsidiary = (products: Product[]) => {
+  const subs = products
+    .map(
+      (p) =>
+        p.subsidiaryId && { id: p.subsidiaryId._id, name: p.subsidiaryId.name }
+    )
+    .filter(Boolean);
+
+  return [...new Map(subs.map((s) => [s.id, s])).values()].map((s) => ({
+    value: s.id,
+    label: s.name,
+    checked: false,
+  }));
 };
 
 const extractStores = (products: Product[]) => {
@@ -339,7 +390,9 @@ export default function ProductsPage() {
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
   const [selectedSubCategory, setSelectedSubCategory] = useState("all");
   const [filters, setFilters] = useState({
+    group: [] as { value: string; label: string; checked: boolean }[],
     category: [] as { value: string; label: string; checked: boolean }[],
+    subsidiary: [] as { value: string; label: string; checked: boolean }[],
     store: [] as { value: string; label: string; checked: boolean }[],
     priceRange: extractPriceRanges(),
     tags: [] as { value: string; label: string; checked: boolean }[],
@@ -356,7 +409,9 @@ export default function ProductsPage() {
   // Memoize filter options to prevent unnecessary recreation
   const memoizedFilters = useMemo(
     () => ({
+      group: filters.group.map((cat) => cat.value),
       category: filters.category.map((cat) => cat.value),
+      subsidiary: filters.subsidiary.map((cat) => cat.value),
       store: filters.store.map((store) => store.value),
       priceRange: filters.priceRange.find((range) => range.checked),
       tags: filters.tags.map((tag) => tag.value),
@@ -380,11 +435,23 @@ export default function ProductsPage() {
       queryParams.append("type", selectedSubCategory);
     }
 
+    const selectedGroups = filters.group
+      .filter((cat) => cat.checked)
+      .map((cat) => cat.value);
+    if (selectedGroups.length > 0) {
+      queryParams.append("groupId", selectedGroups.join(","));
+    }
     const selectedCategories = filters.category
       .filter((cat) => cat.checked)
       .map((cat) => cat.value);
     if (selectedCategories.length > 0) {
       queryParams.append("categoryId", selectedCategories.join(","));
+    }
+    const selectedSubsidiary = filters.subsidiary
+      .filter((cat) => cat.checked)
+      .map((cat) => cat.value);
+    if (selectedSubsidiary.length > 0) {
+      queryParams.append("subsidiaryId", selectedSubsidiary.join(","));
     }
 
     const selectedStores = filters.store
@@ -452,7 +519,9 @@ export default function ProductsPage() {
 
       // Only update filters on initial load or if filter options are empty
       if (
+        filters.group.length === 0 ||
         filters.category.length === 0 ||
+        filters.subsidiary.length === 0 ||
         filters.store.length === 0 ||
         filters.tags.length === 0 ||
         filters.color.length === 0 ||
@@ -460,10 +529,16 @@ export default function ProductsPage() {
       ) {
         setFilters((prev) => ({
           ...prev,
+          group:
+            prev.group.length === 0 ? extractGroups(data.data) : prev.group,
           category:
             prev.category.length === 0
               ? extractCategories(data.data)
               : prev.category,
+          subsidiary:
+            prev.subsidiary.length === 0
+              ? extractSubsidiary(data.data)
+              : prev.subsidiary,
           store:
             prev.store.length === 0 ? extractStores(data.data) : prev.store,
           tags: prev.tags.length === 0 ? extractTags(data.data) : prev.tags,
@@ -542,7 +617,9 @@ export default function ProductsPage() {
 
   const clearAllFilters = () => {
     setFilters({
+      group: filters.group.map((cat) => ({ ...cat, checked: false })),
       category: filters.category.map((cat) => ({ ...cat, checked: false })),
+      subsidiary: filters.subsidiary.map((cat) => ({ ...cat, checked: false })),
       store: filters.store.map((store) => ({ ...store, checked: false })),
       priceRange: filters.priceRange.map((range) => ({
         ...range,
@@ -608,6 +685,7 @@ export default function ProductsPage() {
                   {subCategories.map((category) => (
                     <li key={category.name}>
                       <button
+                       type="button"
                         onClick={() => {
                           setSelectedSubCategory(category.name.toLowerCase());
                           setFilterVersion((prev) => prev + 1);
@@ -626,7 +704,9 @@ export default function ProductsPage() {
                 </ul>
 
                 {[
+                  "group",
                   "category",
+                  "subsidiary",
                   "store",
                   "priceRange",
                   "tags",
@@ -917,6 +997,7 @@ export default function ProductsPage() {
                   {subCategories.map((category) => (
                     <li key={category.name}>
                       <button
+                        type="button"
                         onClick={() => {
                           setSelectedSubCategory(category.name.toLowerCase());
                           setFilterVersion((prev) => prev + 1);
@@ -940,7 +1021,9 @@ export default function ProductsPage() {
                   Clear All Filters
                 </button>
                 {[
+                  "group",
                   "category",
+                  "subsidiary",
                   "store",
                   "priceRange",
                   "tags",
