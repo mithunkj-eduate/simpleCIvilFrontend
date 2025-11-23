@@ -7,12 +7,17 @@ import Footer from "@/components/Footer";
 const page = () => {
   return (
     <>
-      <Navbar NavType={LicenseTypes.USER} />
-      <div className="flex flex-col items-center justify-center min-h-screen mt-2">
-        <CartPage />
-      </div>
+      <div className="min-h-screen flex flex-col">
+        <Navbar NavType={LicenseTypes.USER} />
 
-      <Footer />
+        <main className="flex-1">
+          <div className="flex flex-col items-center justify-center mt-2">
+            <CartPage />
+          </div>
+        </main>
+
+        <Footer />
+      </div>
     </>
   );
 };
