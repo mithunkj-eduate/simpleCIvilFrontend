@@ -1,4 +1,8 @@
 import { Stores } from "@/commenType/commenTypes";
+import AddModal from "@/components/helpers/AddModal";
+import { useState } from "react";
+import AddStore from "./AddStore";
+import { Operation } from "@/utils/enum.types";
 
 // const people = [
 //   {
@@ -44,6 +48,10 @@ interface Props {
 }
 
 export default function StoresList({ stores }: Props) {
+  const [modalFlag, setModalFlag] = useState(false);
+  const [selectedId, setSelectedId] = useState("");
+  const [operation, setOperation] = useState(Operation.NONE);
+
   return (
     <div className="bg-white py-24 sm:py-32">
       <div className="mx-auto grid max-w-7xl gap-20 px-6 lg:px-8 xl:grid-cols-3">
@@ -68,7 +76,14 @@ export default function StoresList({ stores }: Props) {
                         src={}
                         className="size-16 rounded-full outline-1 -outline-offset-1 outline-black/5"
                     /> */}
-                <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-gray-100 sm:mx-0 sm:size-16">
+                <div
+                  className="flex size-16 shrink-0 items-center justify-center rounded-full bg-gray-100 sm:mx-0 sm:size-16"
+                  onClick={() => {
+                    setSelectedId(store.id);
+                    setOperation(Operation.UPDATE);
+                    setModalFlag(true);
+                  }}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -98,6 +113,21 @@ export default function StoresList({ stores }: Props) {
           ))}
         </ul>
       </div>
+      <AddModal
+        modalFlag={modalFlag}
+        setModalFlag={setModalFlag}
+        // eslint-disable-next-line react/no-children-prop
+        children={
+          <AddStore
+            setModalFlag={setModalFlag}
+            selectedId={selectedId}
+            operations={{
+              operation,
+              setOperation,
+            }}
+          />
+        }
+      />
     </div>
   );
 }

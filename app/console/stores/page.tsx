@@ -7,7 +7,7 @@ import AddStore from "./AddStore";
 import { GetStores, Stores } from "@/commenType/commenTypes";
 import Api, { api } from "@/components/helpers/apiheader";
 import Navbar from "@/components/commen/Navbar";
-import { LicenseTypes } from "@/utils/enum.types";
+import { LicenseTypes, Operation } from "@/utils/enum.types";
 import StoresList from "./StoresList";
 
 const StorePage = () => {
@@ -15,6 +15,7 @@ const StorePage = () => {
   const [loading, setLoading] = useState(false);
   const [modalFlag, setModalFlag] = useState(false);
   const [stores, setStores] = React.useState<Stores[]>([]);
+  const [operation, setOperation] = useState(Operation.NONE);
 
   const GetStores = async () => {
     setLoading(true);
@@ -71,7 +72,10 @@ const StorePage = () => {
               <Button
                 mode="primary"
                 className="ms-auto m-2"
-                onClick={() => setModalFlag(true)}
+                onClick={() => {
+                  setOperation(Operation.CREATE);
+                  setModalFlag(true);
+                }}
               >
                 Add{" "}
               </Button>
@@ -86,7 +90,16 @@ const StorePage = () => {
         modalFlag={modalFlag}
         setModalFlag={setModalFlag}
         // eslint-disable-next-line react/no-children-prop
-        children={<AddStore setModalFlag={setModalFlag} />}
+        children={
+          <AddStore
+            setModalFlag={setModalFlag}
+            selectedId={""}
+            operations={{
+              operation,
+              setOperation,
+            }}
+          />
+        }
       />
     </>
   );
