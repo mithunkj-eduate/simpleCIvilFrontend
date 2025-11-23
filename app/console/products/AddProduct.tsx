@@ -172,16 +172,36 @@ const AddProduct = ({ setModalFlag, onProductAdded }: AddProductProps) => {
 
     try {
       if (!TOKEN) {
-        throw new Error("Authentication token is missing");
+        setMessage({
+          flag: true,
+          message: "Authentication token is missing",
+          operation: Operation.NONE,
+        });
+        return;
       }
       if (!selectedStore) {
-        throw new Error("Please select a store");
+        setMessage({
+          flag: true,
+          message: "Please select a store",
+          operation: Operation.NONE,
+        });
+        return;
       }
       if (!selectedGroup) {
-        throw new Error("Please select a group");
+        setMessage({
+          flag: true,
+          message: "Please select a group",
+          operation: Operation.NONE,
+        });
+        return;
       }
       if (!selectedType) {
-        throw new Error("Please select a product type");
+        setMessage({
+          flag: true,
+          message: "Please select a product type",
+          operation: Operation.NONE,
+        });
+        return;
       }
 
       const body: ProductInputType = {
