@@ -25,6 +25,7 @@ interface Orders {
   createdAt: string;
   location: number[];
   deliveryLocation: number[];
+  items: { productName: string; quantity: number }[];
 }
 
 const GetOrderPage = () => {
@@ -55,22 +56,40 @@ const GetOrderPage = () => {
         );
         if (res) {
           setOrders(
-            res.data.data.map((product: any) => ({
-              id: product._id,
-              productName: product?.productId.name || "N/A",
-              quantity: product.quantity || "N/A",
-              totalPrice: product.totalPrice || "N/A",
-              orderStatus: product.orderStatus || "N/A",
-              paymentMethod: product.paymentMethod || "N/A",
-              deliveryAddress: product.deliveryAddress || "N/A",
-              storeName: product?.storeId?.name || "N/A",
-              storeAddress: product?.storeId?.address || "N/A",
-              createdAt: product.createdAt
-                ? new Date(product.createdAt).toLocaleDateString()
-                : "N/A",
-              location: product?.storeId?.location?.coordinates || [],
-              deliveryLocation: product?.location?.coordinates || [],
-            }))
+            res.data.data.map((order: any) => {
+              const firstItem = order.items?.[0]; // first product in the order
+
+              return {
+                id: order._id,
+                productName: firstItem?.productId?.name || "N/A",
+                items: order.items.map((it: any) => ({
+                  productName: it.productId?.name,
+                  quantity: it.quantity,
+                  priceSnapshot: it.priceSnapshot,
+                })),
+
+                quantity: firstItem?.quantity || "N/A",
+                totalPrice: order.receipt?.total || "N/A",
+                orderStatus: order.orderStatus || "N/A",
+                paymentMethod: order.paymentMethod || "N/A",
+                deliveryAddress: order.deliveryAddress || "N/A",
+
+                storeName: order.storeId?.name || "N/A",
+                storeAddress: order.storeId?.address || "N/A",
+
+                createdAt: order.createdAt
+                  ? new Date(order.createdAt).toLocaleDateString()
+                  : "N/A",
+
+                storeLocation: order.storeId?.location?.coordinates || [],
+                deliveryLocation: order.location?.coordinates || [],
+
+                // extra item details (optional)
+                variant: firstItem?.variantId || null,
+                attributes: firstItem?.attributesSnapshot || {},
+                priceSnapshot: firstItem?.priceSnapshot || 0,
+              };
+            })
           );
         } else {
           console.error("Failed to fetch users:", res);
@@ -146,9 +165,14 @@ const GetOrderPage = () => {
                   <li key={index} className="flex justify-between gap-x-6 py-5">
                     <div className="flex min-w-0 gap-x-4">
                       <div className="min-w-0 flex-auto">
-                        <p className="text-sm/6 font-semibold text-gray-900">
-                          {person.productName}
-                        </p>
+                        <div>
+                          {person.items.map((item, i) => (
+                            <p key={i} className="text-xs text-gray-700">
+                              {item.productName} (x{item.quantity})
+                            </p>
+                          ))}
+                        </div>
+
                         <p className="mt-1 truncate text-xs/5 text-gray-500">
                           Qty: {person.quantity} Price: {person.totalPrice}
                         </p>

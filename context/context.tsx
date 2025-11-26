@@ -4,16 +4,16 @@ import { Actions } from "./types";
 import { payloadTypes, reducer } from "./reducer";
 import { User } from "@/commenType/commenTypes";
 import Api, { api } from "@/components/helpers/apiheader";
-import { CartItem } from "@/types/cart";
+import { CartItem, CartState } from "@/types/cart";
 
 export type InitialStateType = {
   user: User | null;
-  cart: CartItem[];
+  cart: CartItem[] | null;
 };
 
 export const initialState: InitialStateType = {
   user: null,
-  cart: [],
+  cart: null,
 };
 
 const AppContext = createContext<{

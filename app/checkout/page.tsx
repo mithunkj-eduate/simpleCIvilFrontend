@@ -8,42 +8,28 @@ import { PaymentMethod } from "@/types/order";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
 import { Button } from "@/stories/Button/Button";
-
 import { msgType } from "@/utils/commenTypes";
-import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
-import { CartItem } from "@/types/cart";
 import { Operation } from "@/utils/enum.types";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
 
 import { Formik, Form, ErrorMessage } from "formik";
 import { checkoutValidation } from "@/validations/validationSchemas";
-
-const paymentMethodOptions = Object.values(PaymentMethod).map((method) => ({
-  value: method,
-  label: method.charAt(0).toUpperCase() + method.slice(1),
-}));
+import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
 
 export default function CheckoutPage() {
   const { state } = useContext(AppContext);
   const router = useRouter();
   const { TOKEN } = Api();
 
-  const cartItems: CartItem[] = state.cart || [];
+  const cartItems = state.cart || [];
   const [message, setMessage] = useState<msgType>(emptyMessage);
-
-  const totalPrice = cartItems.reduce((sum, item) => {
-    const price = item.saleTerms
-      ? item.saleTerms.salePrice * item.quantity
-      : item.rentalTerms?.[0]?.pricePerUnit || 0;
-    return sum + price;
-  }, 0);
 
   const [source, setSource] = useState<{ lat: number; lng: number } | null>(
     null
   );
 
-  // GET USER'S CURRENT LOCATION
+  // GET USER LOCATION
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((pos) => {
@@ -55,6 +41,14 @@ export default function CheckoutPage() {
     }
   }, []);
 
+  // CALCULATE TOTALS
+  const subtotal = cartItems.reduce((sum, item) => {
+    const price = item.saleTerms
+      ? item.saleTerms.salePrice * item.quantity
+      : item.rentalTerms?.[0]?.pricePerUnit || 0;
+    return sum + price;
+  }, 0);
+
   const initialValues = {
     fullName: "",
     email: "",
@@ -63,28 +57,38 @@ export default function CheckoutPage() {
     paymentMethod: "",
   };
 
+  /**
+   * ---------------------------------------------------------
+   * HANDLE ORDER CREATE - FOR NEW SCHEMA
+   * ---------------------------------------------------------
+   */
   const handleSubmit = async (values: any) => {
     try {
       if (!TOKEN) throw new Error("Authentication token missing");
 
-      for (const item of cartItems) {
-        const body = {
-          venderId: item.ownerId._id,
-          productId: item._id,
-          storeId: item.storeId._id,
+      const body =
+        state.cart &&
+        state.cart.map((item) => ({
+          venderId: item.vendorId,
+          productId: item.productId,
+          storeId: item.storeId,
           quantity: item.quantity,
-          totalPrice: item.saleTerms
-            ? item.saleTerms.salePrice * item.quantity
-            : item.rentalTerms?.[0].pricePerUnit || 0,
+          totalPrice: item.isRental
+            ? item.rentalPricePerUnit * item.quantity
+            : item.salePrice * item.quantity,
           paymentMethod: values.paymentMethod,
           deliveryAddress: values.deliveryAddress,
           location: source ? [source.lat, source.lng] : [],
-        };
+          selectedColor: item.selectedColor,
+          selectedSize: item.selectedSize,
+          selectedWeight: item.selectedWeight,
+          rentalStartDate: item.rentalStartDate,
+          rentalEndDate: item.rentalEndDate,
+        }));
 
-        await api.post("/orders", body, {
-          headers: { Authorization: `Bearer ${TOKEN}` },
-        });
-      }
+      await api.post("/orders", body, {
+        headers: { Authorization: `Bearer ${TOKEN}` },
+      });
 
       setMessage({
         flag: true,
@@ -102,6 +106,11 @@ export default function CheckoutPage() {
     router.push("/orders");
   };
 
+  const paymentMethodOptions = Object.values(PaymentMethod).map((method) => ({
+    value: method,
+    label: method.charAt(0).toUpperCase() + method.slice(1),
+  }));
+
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-7xl px-4 py-12">
@@ -111,6 +120,9 @@ export default function CheckoutPage() {
           <p className="text-center text-gray-500 py-10">Your cart is empty.</p>
         ) : (
           <div className="mt-8 grid lg:grid-cols-12 gap-x-12">
+            {/* ---------------------------------------------
+             SHIPPING FORM
+            ---------------------------------------------- */}
             <div className="lg:col-span-8">
               <Formik
                 initialValues={initialValues}
@@ -235,6 +247,9 @@ export default function CheckoutPage() {
               </Formik>
             </div>
 
+            {/* ---------------------------------------------
+             SUMMARY
+            ---------------------------------------------- */}
             <div className="lg:col-span-4">
               <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
                 <h2 className="text-lg font-medium text-gray-900">
@@ -245,7 +260,7 @@ export default function CheckoutPage() {
                   <div className="flex justify-between">
                     <p className="text-sm text-gray-600">Subtotal</p>
                     <p className="text-sm font-medium text-gray-900">
-                      ₹{totalPrice.toFixed(2)}
+                      ₹{subtotal.toFixed(2)}
                     </p>
                   </div>
 
@@ -257,7 +272,7 @@ export default function CheckoutPage() {
                   <div className="flex justify-between border-t pt-4">
                     <p className="text-base font-medium text-gray-900">Total</p>
                     <p className="text-base font-medium text-gray-900">
-                      ₹{totalPrice.toFixed(2)}
+                      ₹{subtotal.toFixed(2)}
                     </p>
                   </div>
                 </div>

@@ -7,6 +7,7 @@ import AutoSelect from "./AutoSelect";
 import {
   AutoCompleteOption,
   ProductInputType,
+  VariantType,
   msgType,
   productType,
 } from "@/utils/commenTypes";
@@ -188,6 +189,7 @@ const AddProduct = ({
   const [message, setMessage] = useState<msgType>(emptyMessage);
 
   const [formData, setFormData] = useState<ProductFormData>(initialFormData);
+  const [variants, setVariants] = useState<any[]>([]);
 
   const SaleTypeOption: AutoCompleteOption[] = [
     { label: productType.SALE, value: productType.SALE },
@@ -311,7 +313,7 @@ const AddProduct = ({
         return;
       }
 
-      const body: ProductInputType = {
+      const body1: ProductInputType = {
         name: formData.name.trim(),
         description: formData.description.trim(),
         storeId: selectedStore.value as string,
@@ -351,6 +353,38 @@ const AddProduct = ({
                 },
               ]
             : undefined,
+      };
+
+      const body: ProductInputType = {
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        storeId: selectedStore.value as string,
+        ownerId: state.user?.id as string,
+        groupId: selectedGroup?.value ?? "",
+        categoryId: selectedCategory?.value,
+        subsidiaryId: selectedSubsidiary?.value,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+        avilablity: true,
+        type: selectedType.value as productType,
+
+        // NEW: attach variants
+        variants: variants.map((v) => ({
+          sku: v.sku,
+          price: v.price,
+          stock: v.stock ?? 0, // optional fallback
+          attributes: {
+            color: v.color ?? "",
+            size: v.size ?? "",
+            weight: v.weight ?? "",
+            material: v.material ?? "",
+          },
+          images: v.images ?? [],
+        })),
+
+        tags: formData.tags
+          ? formData.tags.split(",").map((t) => t.trim())
+          : [],
       };
 
       const path =
@@ -394,6 +428,16 @@ const AddProduct = ({
       setFormData(initialFormData);
       setModalFlag(false);
     }
+  };
+
+  const updateVariant = (index: number, field: string, value: any) => {
+    const updated = [...variants];
+    updated[index][field] = value;
+    setVariants(updated);
+  };
+
+  const removeVariant = (index: number) => {
+    setVariants(variants.filter((_, i) => i !== index));
   };
 
   return (
@@ -503,6 +547,88 @@ const AddProduct = ({
                 </div>
               );
             })}
+
+            <div className="sm:col-span-2 mt-6">
+              <Label>Product Variants</Label>
+
+              {variants.map((v, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-6 gap-3 p-3 border rounded-md mt-4 bg-gray-50"
+                >
+                  <Input
+                    placeholder="Color"
+                    value={v.color}
+                    onChange={(e) =>
+                      updateVariant(index, "color", e.target.value)
+                    }
+                  />
+                  <Input
+                    placeholder="Size"
+                    value={v.size}
+                    onChange={(e) =>
+                      updateVariant(index, "size", e.target.value)
+                    }
+                  />
+                  <Input
+                    placeholder="Weight"
+                    value={v.weight}
+                    onChange={(e) =>
+                      updateVariant(index, "weight", e.target.value)
+                    }
+                  />
+
+                  <Input
+                    placeholder="SKU"
+                    value={v.sku}
+                    onChange={(e) =>
+                      updateVariant(index, "sku", e.target.value)
+                    }
+                  />
+
+                  <Input
+                    type="number"
+                    placeholder="Price"
+                    value={v.price}
+                    onChange={(e) =>
+                      updateVariant(index, "price", Number(e.target.value))
+                    }
+                  />
+
+                  <Input
+                    type="number"
+                    placeholder="Stock"
+                    value={v.stock}
+                    onChange={(e) =>
+                      updateVariant(index, "stock", Number(e.target.value))
+                    }
+                  />
+
+                  <Button mode="cancel" onClick={() => removeVariant(index)}>
+                    Remove
+                  </Button>
+                </div>
+              ))}
+
+              <Button
+                className="mt-4"
+                onClick={() =>
+                  setVariants([
+                    ...variants,
+                    {
+                      color: "",
+                      size: "",
+                      weight: "",
+                      sku: "",
+                      price: 0,
+                      stock: 0,
+                    },
+                  ])
+                }
+              >
+                + Add Variant
+              </Button>
+            </div>
 
             {/* Category Hierarchy */}
             <div className="sm:col-span-2">

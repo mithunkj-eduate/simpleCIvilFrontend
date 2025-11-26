@@ -18,6 +18,12 @@ export default function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
+
+  // Variant selections
+  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedWeight, setSelectedWeight] = useState("");
+
   const { TOKEN } = Api();
   const params = useParams();
   const { state } = useContext(AppContext);
@@ -39,12 +45,18 @@ export default function ProductDetails() {
           data.image?.[0] ||
             "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"
         );
+
+        // Default selections
+        if (data.colors?.length) setSelectedColor(data.colors[0]);
+        if (data.sizes?.length) setSelectedSize(data.sizes[0]);
+        if (data.weights?.length) setSelectedWeight(data.weights[0]);
       } catch (err) {
         setError("Unable to load product");
       } finally {
         setLoading(false);
       }
     };
+
     if (id && TOKEN) fetchData();
   }, [id, TOKEN]);
 
@@ -73,8 +85,16 @@ export default function ProductDetails() {
     try {
       await api.post(
         "/carts",
-        { productId: product._id, quantity: 1 },
-        { headers: { Authorization: `Bearer ${TOKEN}` } }
+        {
+          productId: product._id,
+          quantity: 1,
+          selectedColor,
+          selectedSize,
+          selectedWeight,
+        },
+        {
+          headers: { Authorization: `Bearer ${TOKEN}` },
+        }
       );
 
       setMessage({
@@ -90,7 +110,6 @@ export default function ProductDetails() {
       });
     }
   };
-
 
   return (
     <div className="bg-white p-4 md:p-10">
@@ -127,7 +146,7 @@ export default function ProductDetails() {
 
           {/* Rating */}
           <div className="flex items-center mt-3">
-            {[1, 2, 3, 4, 5].map((i) => (
+            {[1, 2, 3, 3, 5].map((i) => (
               <StarIcon
                 key={i}
                 className={`h-5 w-5 ${
@@ -154,13 +173,75 @@ export default function ProductDetails() {
           <div className="mt-5">
             <p className="text-sm">
               <span className="font-semibold">Store:</span>{" "}
-              {product.storeId.name}
+              {product.storeId?.name}
             </p>
             <p className="text-sm">
               <span className="font-semibold">Owner:</span>{" "}
-              {product.ownerId.name}
+              {product.ownerId?.name}
             </p>
           </div>
+
+          {/* VARIANT SELECTORS */}
+          {product.colors?.length > 0 && (
+            <div className="mt-4">
+              <p className="font-medium text-sm">Select Color</p>
+              <div className="flex gap-2 mt-2">
+                {product.colors.map((c: string) => (
+                  <button
+                    key={c}
+                    onClick={() => setSelectedColor(c)}
+                    className={`px-3 py-1 rounded-lg border ${
+                      selectedColor === c ? "border-blue-600" : "border-gray-300"
+                    }`}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {product.sizes?.length > 0 && (
+            <div className="mt-4">
+              <p className="font-medium text-sm">Select Size</p>
+              <div className="flex gap-2 mt-2">
+                {product.sizes.map((s: string) => (
+                  <button
+                    key={s}
+                    onClick={() => setSelectedSize(s)}
+                    className={`px-3 py-1 rounded-lg border ${
+                      selectedSize === s
+                        ? "border-blue-600"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {product.weights?.length > 0 && (
+            <div className="mt-4">
+              <p className="font-medium text-sm">Select Weight</p>
+              <div className="flex gap-2 mt-2">
+                {product.weights.map((w: string) => (
+                  <button
+                    key={w}
+                    onClick={() => setSelectedWeight(w)}
+                    className={`px-3 py-1 rounded-lg border ${
+                      selectedWeight === w
+                        ? "border-blue-600"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    {w}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* BUTTON */}
           <Button
