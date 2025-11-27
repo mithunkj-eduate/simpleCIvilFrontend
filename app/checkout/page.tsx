@@ -17,6 +17,13 @@ import { Formik, Form, ErrorMessage } from "formik";
 import { checkoutValidation } from "@/validations/validationSchemas";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
 
+const calculateSubtotal = (cart: any) =>
+  cart.reduce((sum, item) => {
+    const price = item.isRental ? item.rentalPricePerUnit : item.salePrice;
+
+    return sum + price * item.quantity;
+  }, 0);
+
 export default function CheckoutPage() {
   const { state } = useContext(AppContext);
   const router = useRouter();
@@ -65,36 +72,58 @@ export default function CheckoutPage() {
   const handleSubmit = async (values: any) => {
     try {
       if (!TOKEN) throw new Error("Authentication token missing");
+      if (state.cart) {
+        const body = {
+          venderId: state.cart?.[0]?.vendorId,
+          storeId: state.cart?.[0]?.storeId,
 
-      const body =
-        state.cart &&
-        state.cart.map((item) => ({
-          venderId: item.vendorId,
-          productId: item.productId,
-          storeId: item.storeId,
-          quantity: item.quantity,
-          totalPrice: item.isRental
-            ? item.rentalPricePerUnit * item.quantity
-            : item.salePrice * item.quantity,
-          paymentMethod: values.paymentMethod,
+          items: state.cart.map((item) => ({
+            productId: item.productId,
+
+            selectedColor: item.selectedColor || null,
+            selectedSize: item.selectedSize || null,
+            selectedWeight: item.selectedWeight || null,
+
+            quantity: item.quantity,
+
+            // REQUIRED BY BACKEND
+            priceSnapshot: item.isRental
+              ? item.rentalPricePerUnit
+              : item.salePrice ? item.salePrice : 0,
+
+            // Automatically include only available attributes
+            attributesSnapshot: Object.fromEntries(
+              Object.entries({
+                color: item.selectedColor,
+                size: item.selectedSize,
+                weight: item.selectedWeight,
+              }).filter(([_, v]) => v)
+            ),
+          })),
+
           deliveryAddress: values.deliveryAddress,
           location: source ? [source.lat, source.lng] : [],
-          selectedColor: item.selectedColor,
-          selectedSize: item.selectedSize,
-          selectedWeight: item.selectedWeight,
-          rentalStartDate: item.rentalStartDate,
-          rentalEndDate: item.rentalEndDate,
-        }));
+          paymentMethod: values.paymentMethod,
 
-      await api.post("/orders", body, {
-        headers: { Authorization: `Bearer ${TOKEN}` },
-      });
+          receipt: {
+            subtotal: calculateSubtotal(state.cart),
+            shipping: 0,
+            discount: 0,
+            tax: 0,
+            total: calculateSubtotal(state.cart),
+          },
+        };
 
-      setMessage({
-        flag: true,
-        message: "Order placed successfully",
-        operation: Operation.CREATE,
-      });
+        await api.post("/orders", body, {
+          headers: { Authorization: `Bearer ${TOKEN}` },
+        });
+
+        setMessage({
+          flag: true,
+          message: "Order placed successfully",
+          operation: Operation.CREATE,
+        });
+      }
     } catch (err: any) {
       alert(err.message);
     }

@@ -62,12 +62,12 @@ function OrderRow({
 
   return (
     <tr className="border-b">
-      <td className="py-4 px-6">{order.productId.name}</td>
-      <td className="py-4 px-6">{order.buyerId.name}</td>
-      <td className="py-4 px-6">{order.venderId.name}</td>
-      <td className="py-4 px-6">{order.storeId.name}</td>
+      <td className="py-4 px-6">{order.productId?.name}</td>
+      <td className="py-4 px-6">{order.buyerId?.name}</td>
+      <td className="py-4 px-6">{order.venderId?.name}</td>
+      <td className="py-4 px-6">{order.storeId?.name}</td>
       <td className="py-4 px-6">{order.quantity}</td>
-      <td className="py-4 px-6">₹{order.totalPrice.toFixed(2)}</td>
+      <td className="py-4 px-6">₹{order?.totalPrice?.toFixed(2)}</td>
       <td className="py-4 px-6">{order.orderStatus}</td>
       <td className="py-4 px-6">{order.paymentMethod}</td>
       <td className="py-4 px-6">{order.deliveryStatus}</td>
@@ -138,7 +138,7 @@ function OrderRow({
                      Mark as Delivered
                    </button>
                  )}
-               </MenuItem> */}  
+               </MenuItem> */}
               </MenuItems>
             </Menu>
           ) : order.deliveryStatus === DeliveryStatus.PENDING ||
@@ -185,6 +185,15 @@ function OrdersTable({
   orders: Order[];
   onUpdateStatus: (id: string, updates: Partial<Order>) => void;
 }) {
+  // return (
+  //   <>
+  //     {orders.length > 0 ? (
+  //       orders.map((order) => <OrderCard key={order._id} order={order} />)
+  //     ) : (
+  //       <p className="text-center text-gray-500 py-10">No orders found.</p>
+  //     )}
+  //   </>
+  // );
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
@@ -313,7 +322,6 @@ export default function OrdersPage() {
   const { state } = useContext(AppContext);
   const { TOKEN } = Api();
   const [message, setMessage] = useState<msgType>(emptyMessage);
-
 
   const memoizedFilters = useMemo(
     () => ({
@@ -720,6 +728,107 @@ export default function OrdersPage() {
         operation={message.operation}
         value={message.message}
       />
+    </div>
+  );
+}
+
+function OrderCard({ order }: { order: Order }) {
+  const getProgress = () => {
+    switch (order.deliveryStatus) {
+      case "PENDING":
+        return 20;
+      case "SHIPPED":
+        return 60;
+      case "DELIVERED":
+        return 100;
+      case "RETURNED":
+        return 100;
+      default:
+        return 0;
+    }
+  };
+
+  return (
+    <div className="border rounded-xl p-5 bg-white shadow-sm my-4">
+      {/* Top Section */}
+      <div className="flex items-center gap-4">
+        <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
+          <img
+            src={order.productId?.image || "/no-image.png"}
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        <div className="flex-1">
+          <h2 className="font-semibold text-lg">{order.productId?.name}</h2>
+
+          <p className="text-gray-600 text-sm">
+            Store: <span className="font-medium">{order.storeId?.name}</span>
+          </p>
+
+          <p className="text-gray-500 text-sm">
+            Ordered on: {new Date(order.createdAt).toLocaleDateString()}
+          </p>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div className="my-4 border-t" />
+
+      {/* Middle Section */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+        <div>
+          <p className="text-gray-500">Qty</p>
+          <p className="font-semibold">{order.quantity}</p>
+        </div>
+
+        <div>
+          <p className="text-gray-500">Total</p>
+          <p className="font-semibold">₹{order.totalPrice}</p>
+        </div>
+
+        <div>
+          <p className="text-gray-500">Order Status</p>
+          <p className="font-semibold">{order.orderStatus}</p>
+        </div>
+
+        <div>
+          <p className="text-gray-500">Delivery Status</p>
+          <p className="font-semibold">{order.deliveryStatus}</p>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div className="my-4 border-t" />
+
+      {/* Delivery Progress Bar */}
+      <div>
+        <div className="flex justify-between text-xs text-gray-500 mb-1">
+          <span>Progress</span>
+          <span>{getProgress()}%</span>
+        </div>
+
+        <div className="w-full bg-gray-200 rounded-full h-2">
+          <div
+            className="bg-green-500 h-2 rounded-full transition-all"
+            style={{ width: `${getProgress()}%` }}
+          ></div>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div className="my-4 border-t" />
+
+      {/* Buttons */}
+      <div className="flex gap-3">
+        <button className="px-4 py-2 rounded-lg bg-red-500 text-white text-sm">
+          Request Return
+        </button>
+
+        <button className="px-4 py-2 rounded-lg border border-gray-300 text-sm">
+          View Product
+        </button>
+      </div>
     </div>
   );
 }

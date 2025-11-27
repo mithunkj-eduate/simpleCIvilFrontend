@@ -11,6 +11,7 @@
 // }
 
 export interface CartItem {
+  _id: any;
   vendorId: string;
   productId: string;
   storeId: string;

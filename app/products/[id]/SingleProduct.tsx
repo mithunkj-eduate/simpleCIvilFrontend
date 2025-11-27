@@ -19,10 +19,19 @@ export default function ProductDetails() {
   const [error, setError] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
 
-  // Variant selections
-  const [selectedColor, setSelectedColor] = useState("");
-  const [selectedSize, setSelectedSize] = useState("");
-  const [selectedWeight, setSelectedWeight] = useState("");
+  // Variant selections (attributes)
+  const [selectedColor, setSelectedColor] = useState<string>("");
+  const [selectedSize, setSelectedSize] = useState<string>("");
+  const [selectedWeight, setSelectedWeight] = useState<string>("");
+  
+
+  // Derived lists
+  const [colors, setColors] = useState<string[]>([]);
+  const [sizes, setSizes] = useState<string[]>([]);
+  const [weights, setWeights] = useState<string[]>([]);
+
+  const [matchedVariant, setMatchedVariant] = useState<any>(null); // current variant object
+  const [displayPrice, setDisplayPrice] = useState<number | null>(null);
 
   const { TOKEN } = Api();
   const params = useParams();
@@ -31,26 +40,74 @@ export default function ProductDetails() {
 
   const id = params.id as string;
 
+  // Helper: extract unique attribute lists from product.variants
+  const extractAttributes = (variants: any[] = []) => {
+    const c = new Set<string>();
+    const s = new Set<string>();
+    const w = new Set<string>();
+    variants.forEach((v) => {
+      const attrs = v.attributes || {};
+      if (attrs.color) c.add(String(attrs.color));
+      if (attrs.size) s.add(String(attrs.size));
+      if (attrs.weight) w.add(String(attrs.weight));
+    });
+    return {
+      colors: [...c],
+      sizes: [...s],
+      weights: [...w],
+    };
+  };
+
+  // Helper: find variant matching current selections
+  const findMatchingVariant = (
+    variants: any[] = [],
+    color?: string,
+    size?: string,
+    weight?: string
+  ) => {
+    if (!variants || variants.length === 0) return null;
+    // exact match priority: color + size + weight
+    return (
+      variants.find((v) => {
+        const a = v.attributes || {};
+        const matchColor = color ? a.color === color : true;
+        const matchSize = size ? a.size === size : true;
+        const matchWeight = weight ? a.weight === weight : true;
+        return matchColor && matchSize && matchWeight;
+      }) || null
+    );
+  };
+
   // FETCH PRODUCT
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const res = await api.get(`/products/${id}`, {
           headers: { Authorization: `Bearer ${TOKEN}` },
         });
 
         const data = res.data.data;
         setProduct(data);
+console.log(data,"data")
+        // set default image
         setSelectedImage(
-          data.image?.[0] ||
+          data.image?.[0] ??
             "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"
         );
 
-        // Default selections
-        if (data.colors?.length) setSelectedColor(data.colors[0]);
-        if (data.sizes?.length) setSelectedSize(data.sizes[0]);
-        if (data.weights?.length) setSelectedWeight(data.weights[0]);
+        // build attribute lists from variants (Option B)
+        const { colors, sizes, weights } = extractAttributes(data.variants);
+        setColors(colors);
+        setSizes(sizes);
+        setWeights(weights);
+
+        // preselect first available attribute if present
+        if (colors.length) setSelectedColor(colors[0]);
+        if (sizes.length) setSelectedSize(sizes[0]);
+        if (weights.length) setSelectedWeight(weights[0]);
       } catch (err) {
+        console.error(err);
         setError("Unable to load product");
       } finally {
         setLoading(false);
@@ -58,21 +115,71 @@ export default function ProductDetails() {
     };
 
     if (id && TOKEN) fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, TOKEN]);
+
+  // When variants or selections change → compute matchedVariant & displayPrice & image
+  useEffect(() => {
+    if (!product) return;
+    console.log(selectedColor, selectedSize, selectedWeight, "selectedWeight");
+    const variant = findMatchingVariant(
+      product.variants || [],
+      selectedColor,
+      selectedSize,
+      selectedWeight
+    );
+    console.log(variant, "variant");
+    setMatchedVariant(variant);
+
+    // set price:
+    let price: number | null = null;
+    if (variant?.price !== undefined && variant?.price !== null) {
+      price = variant.price;
+    } else if (
+      product.type === productType.RENTAL &&
+      product.rentalTerms?.[0]?.pricePerUnit
+    ) {
+      price = Number(product.rentalTerms[0].pricePerUnit);
+    } else if (product.saleTerms?.salePrice !== undefined) {
+      price = Number(product.saleTerms.salePrice);
+    } else {
+      price = null;
+    }
+    setDisplayPrice(price);
+
+    // set image to variant image if available, otherwise product.image[0]
+    const variantImage = variant?.images?.[0];
+    if (variantImage) setSelectedImage(variantImage);
+    else
+      setSelectedImage(
+        product.image?.[0] ||
+          "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"
+      );
+  }, [product, selectedColor, selectedSize, selectedWeight]);
 
   if (loading) return <p className="text-center py-10">Loading…</p>;
   if (error || !product)
     return <p className="text-red-500 text-center">{error}</p>;
 
-  const price =
-    product.type === productType.RENTAL && product.rentalTerms?.[0]
-      ? `₹${product.rentalTerms[0].pricePerUnit} / ${product.rentalTerms[0].minduration}`
-      : product.saleTerms
-      ? `₹${product.saleTerms.salePrice.toFixed(2)}`
+  // convenience values
+  const inStock =
+    matchedVariant?.stock !== undefined
+      ? matchedVariant.stock > 0
+      : product.saleTerms?.stock === undefined
+      ? true
+      : product.saleTerms.stock > 0;
+
+  // final price display string
+  const priceDisplay =
+    displayPrice !== null
+      ? product.type === productType.RENTAL && product.rentalTerms?.[0]
+        ? `₹${displayPrice} / ${product.rentalTerms[0].minduration}`
+        : `₹${displayPrice}`
       : "N/A";
 
   // ADD TO CART
   const addToCart = async () => {
+    alert("alert");
     if (!TOKEN && !state.user) {
       setMessage({
         flag: true,
@@ -81,21 +188,68 @@ export default function ProductDetails() {
       });
       return;
     }
-
+    console.log(product, "product", matchedVariant);
+    // if variants exist, ensure matchedVariant exists and is in stock
+    if ((product.variants?.length ?? 0) > 0) {
+      if (!matchedVariant) {
+        setMessage({
+          flag: true,
+          message: "Please select a valid variant combination.",
+          operation: Operation.NONE,
+        });
+        return;
+      }
+      if (matchedVariant.stock !== undefined && matchedVariant.stock <= 0) {
+        setMessage({
+          flag: true,
+          message: "Selected variant is out of stock.",
+          operation: Operation.NONE,
+        });
+        return;
+      }
+    } else {
+      // fallback: if product-level stock available, check
+      if (
+        product.saleTerms?.stock !== undefined &&
+        product.saleTerms.stock <= 0
+      ) {
+        setMessage({
+          flag: true,
+          message: "Product out of stock.",
+          operation: Operation.NONE,
+        });
+        return;
+      }
+    }
+console.log(product.storeId._id,"product.storeId._id")
     try {
-      await api.post(
-        "/carts",
-        {
-          productId: product._id,
-          quantity: 1,
-          selectedColor,
-          selectedSize,
-          selectedWeight,
-        },
-        {
-          headers: { Authorization: `Bearer ${TOKEN}` },
-        }
-      );
+      // payload includes variant sku + attribute snapshot for later receipt
+      const payload: any = {
+        productId: product._id,
+        storeId: product.storeId._id,
+        vendorId:product.ownerId._id,
+        quantity: 1,
+        selectedColor: selectedColor || undefined,
+        selectedSize: selectedSize || undefined,
+        selectedWeight: selectedWeight || undefined,
+      };
+
+      if (matchedVariant) {
+        payload.variantSku = matchedVariant.sku;
+        // include attributes snapshot
+        payload.attributesSnapshot = matchedVariant.attributes || {};
+        // include price snapshot (important)
+        payload.priceSnapshot = matchedVariant.price ?? displayPrice ?? 0;
+      } else {
+        payload.priceSnapshot =
+          product.saleTerms?.salePrice ??
+          product.rentalTerms?.[0]?.pricePerUnit ??
+          0;
+      }
+
+      await api.post("/carts", payload, {
+        headers: { Authorization: `Bearer ${TOKEN}` },
+      });
 
       setMessage({
         flag: true,
@@ -103,6 +257,7 @@ export default function ProductDetails() {
         operation: Operation.CREATE,
       });
     } catch (err) {
+      console.error(err);
       setMessage({
         flag: true,
         message: "Failed to add item",
@@ -115,30 +270,16 @@ export default function ProductDetails() {
     <div className="bg-white p-4 md:p-10">
       {/* GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* LEFT: IMAGES */}
+        {/* LEFT: IMAGE */}
         <div>
           <img
             src={selectedImage}
             className="w-full rounded-xl border border-gray-300 object-cover"
-            alt="saleproduct"
+            alt={product.name}
           />
-
-          {/* Thumbnail */}
-          {/* <div className="flex gap-3 mt-4">
-            {product.image.length && product.image?.map((img: any, i: number) => (
-              <img
-                key={i}
-                src={img}
-                onClick={() => setSelectedImage(img)}
-                className={`h-20 w-20 cursor-pointer rounded-lg border ${
-                  selectedImage === img && "border-blue-500"
-                }`}
-              />
-            ))}
-          </div> */}
         </div>
 
-        {/* RIGHT: PRODUCT DETAILS */}
+        {/* RIGHT: DETAILS */}
         <div>
           <h1 className="text-2xl font-bold">{product.name}</h1>
 
@@ -146,9 +287,9 @@ export default function ProductDetails() {
 
           {/* Rating */}
           <div className="flex items-center mt-3">
-            {[1, 2, 3, 3, 5].map((i) => (
+            {[1, 2, 3, 4, 5].map((i, index) => (
               <StarIcon
-                key={i}
+                key={index}
                 className={`h-5 w-5 ${
                   i <= product.rating ? "text-yellow-500" : "text-gray-300"
                 }`}
@@ -160,10 +301,12 @@ export default function ProductDetails() {
           </div>
 
           {/* PRICE */}
-          <p className="text-3xl font-bold text-green-600 mt-4">{price}</p>
+          <p className="text-3xl font-bold text-green-600 mt-4">
+            {priceDisplay}
+          </p>
 
           {/* STOCK */}
-          {product.avilablity ? (
+          {inStock ? (
             <p className="text-sm text-green-600 mt-1">In Stock</p>
           ) : (
             <p className="text-sm text-red-600 mt-1">Out of Stock</p>
@@ -181,17 +324,19 @@ export default function ProductDetails() {
             </p>
           </div>
 
-          {/* VARIANT SELECTORS */}
-          {product.colors?.length > 0 && (
+          {/* VARIANT SELECTORS (built from product.variants attributes) */}
+          {colors.length > 0 && (
             <div className="mt-4">
               <p className="font-medium text-sm">Select Color</p>
               <div className="flex gap-2 mt-2">
-                {product.colors.map((c: string) => (
+                {colors.map((c) => (
                   <button
                     key={c}
                     onClick={() => setSelectedColor(c)}
                     className={`px-3 py-1 rounded-lg border ${
-                      selectedColor === c ? "border-blue-600" : "border-gray-300"
+                      selectedColor === c
+                        ? "border-blue-600"
+                        : "border-gray-300"
                     }`}
                   >
                     {c}
@@ -201,18 +346,16 @@ export default function ProductDetails() {
             </div>
           )}
 
-          {product.sizes?.length > 0 && (
+          {sizes.length > 0 && (
             <div className="mt-4">
               <p className="font-medium text-sm">Select Size</p>
               <div className="flex gap-2 mt-2">
-                {product.sizes.map((s: string) => (
+                {sizes.map((s) => (
                   <button
                     key={s}
                     onClick={() => setSelectedSize(s)}
                     className={`px-3 py-1 rounded-lg border ${
-                      selectedSize === s
-                        ? "border-blue-600"
-                        : "border-gray-300"
+                      selectedSize === s ? "border-blue-600" : "border-gray-300"
                     }`}
                   >
                     {s}
@@ -222,11 +365,11 @@ export default function ProductDetails() {
             </div>
           )}
 
-          {product.weights?.length > 0 && (
+          {weights.length > 0 && (
             <div className="mt-4">
               <p className="font-medium text-sm">Select Weight</p>
               <div className="flex gap-2 mt-2">
-                {product.weights.map((w: string) => (
+                {weights.map((w) => (
                   <button
                     key={w}
                     onClick={() => setSelectedWeight(w)}
@@ -243,15 +386,22 @@ export default function ProductDetails() {
             </div>
           )}
 
-          {/* BUTTON */}
-          <Button
+          {/* ADD TO CART */}
+          {/* <Button
             mode="primary"
-            disabled={!product.avilablity}
+            disabled={!product.avilablity || !inStock}
             className="mt-8 w-full sm:w-50"
-            onClick={addToCart}
+            onClick={() => addToCart()}
           >
             Add to Cart
-          </Button>
+          </Button> */}
+
+          <button
+            className="mt-8 w-full sm:w-50 border border-gray-400"
+            onClick={() => addToCart()}
+          >
+            Click
+          </button>
 
           {/* TAGS */}
           {product.tags?.length > 0 && (
@@ -299,9 +449,7 @@ export default function ProductDetails() {
       </div>
 
       <MessageModal
-        handleClose={() => {
-          setMessage(emptyMessage);
-        }}
+        handleClose={() => setMessage(emptyMessage)}
         modalFlag={message.flag}
         operation={message.operation}
         value={message.message}

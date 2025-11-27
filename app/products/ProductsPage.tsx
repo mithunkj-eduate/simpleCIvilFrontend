@@ -145,8 +145,8 @@ function ProductCard({ product }: { product: Product }) {
 
         {/* Category & Store */}
         <div className="text-xs text-gray-500 mt-2 flex flex-col gap-1">
-          <p>Store: {product.storeId.name}</p>
-          <p>Category: {product.categoryId.name}</p>
+          <p>Store: {product.storeId?.name}</p>
+          <p>Category: {product.categoryId?.name}</p>
           <p>Type: {product.type}</p>
         </div>
 
