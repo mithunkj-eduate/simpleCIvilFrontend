@@ -10,8 +10,9 @@ import { productType } from "@/types/product";
 import { Button } from "@/stories/Button/Button";
 import MessageModal from "@/customComponents/MessageModal";
 import { Operation } from "@/utils/enum.types";
-import { msgType } from "@/utils/commenTypes";
+import { VariantType, msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
+import { CartVariantType } from "@/types/cart";
 
 export default function ProductDetails() {
   const [product, setProduct] = useState<any>(null);
@@ -23,7 +24,6 @@ export default function ProductDetails() {
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedWeight, setSelectedWeight] = useState<string>("");
-  
 
   // Derived lists
   const [colors, setColors] = useState<string[]>([]);
@@ -32,6 +32,9 @@ export default function ProductDetails() {
 
   const [matchedVariant, setMatchedVariant] = useState<any>(null); // current variant object
   const [displayPrice, setDisplayPrice] = useState<number | null>(null);
+
+  const [variants, setVariants] = useState<CartVariantType[]>([]);
+  const [selectedVariant, setSelectedVariant] = useState<CartVariantType>();
 
   const { TOKEN } = Api();
   const params = useParams();
@@ -89,7 +92,7 @@ export default function ProductDetails() {
 
         const data = res.data.data;
         setProduct(data);
-console.log(data,"data")
+        console.log(data, "data");
         // set default image
         setSelectedImage(
           data.image?.[0] ??
@@ -101,7 +104,7 @@ console.log(data,"data")
         setColors(colors);
         setSizes(sizes);
         setWeights(weights);
-
+        setVariants(data.variants);
         // preselect first available attribute if present
         if (colors.length) setSelectedColor(colors[0]);
         if (sizes.length) setSelectedSize(sizes[0]);
@@ -179,7 +182,6 @@ console.log(data,"data")
 
   // ADD TO CART
   const addToCart = async () => {
-    alert("alert");
     if (!TOKEN && !state.user) {
       setMessage({
         flag: true,
@@ -191,7 +193,7 @@ console.log(data,"data")
     console.log(product, "product", matchedVariant);
     // if variants exist, ensure matchedVariant exists and is in stock
     if ((product.variants?.length ?? 0) > 0) {
-      if (!matchedVariant) {
+      if (!selectedVariant) {
         setMessage({
           flag: true,
           message: "Please select a valid variant combination.",
@@ -199,7 +201,7 @@ console.log(data,"data")
         });
         return;
       }
-      if (matchedVariant.stock !== undefined && matchedVariant.stock <= 0) {
+      if (selectedVariant.stock !== undefined && selectedVariant.stock <= 0) {
         setMessage({
           flag: true,
           message: "Selected variant is out of stock.",
@@ -221,27 +223,27 @@ console.log(data,"data")
         return;
       }
     }
-console.log(product.storeId._id,"product.storeId._id")
+    console.log(product.storeId._id, "product.storeId._id");
     try {
       // payload includes variant sku + attribute snapshot for later receipt
       const payload: any = {
         productId: product._id,
         storeId: product.storeId._id,
-        vendorId:product.ownerId._id,
+        vendorId: product.ownerId._id,
         quantity: 1,
-        selectedColor: selectedColor || undefined,
-        selectedSize: selectedSize || undefined,
-        selectedWeight: selectedWeight || undefined,
+        selectedColor: selectedVariant?.attributes?.color || undefined,
+        selectedSize: selectedVariant?.attributes?.size || undefined,
+        selectedWeight: selectedVariant?.attributes?.weight || undefined,
       };
 
-      if (matchedVariant) {
-        payload.variantSku = matchedVariant.sku;
+      if (selectedVariant) {
+        payload.variantSku = selectedVariant.sku;
         // include attributes snapshot
-        payload.attributesSnapshot = matchedVariant.attributes || {};
+        payload.customVariant = selectedVariant.attributes || {};
         // include price snapshot (important)
-        payload.priceSnapshot = matchedVariant.price ?? displayPrice ?? 0;
+        payload.salePrice = selectedVariant.price ?? displayPrice ?? 0;
       } else {
-        payload.priceSnapshot =
+        payload.salePrice =
           product.saleTerms?.salePrice ??
           product.rentalTerms?.[0]?.pricePerUnit ??
           0;
@@ -300,17 +302,17 @@ console.log(product.storeId._id,"product.storeId._id")
             </span>
           </div>
 
-          {/* PRICE */}
+          {/* //PRICE
           <p className="text-3xl font-bold text-green-600 mt-4">
             {priceDisplay}
-          </p>
+          </p> */}
 
-          {/* STOCK */}
+          {/* // STOCK
           {inStock ? (
             <p className="text-sm text-green-600 mt-1">In Stock</p>
           ) : (
             <p className="text-sm text-red-600 mt-1">Out of Stock</p>
-          )}
+          )} */}
 
           {/* SELLER INFO */}
           <div className="mt-5">
@@ -324,67 +326,106 @@ console.log(product.storeId._id,"product.storeId._id")
             </p>
           </div>
 
-          {/* VARIANT SELECTORS (built from product.variants attributes) */}
-          {colors.length > 0 && (
-            <div className="mt-4">
-              <p className="font-medium text-sm">Select Color</p>
-              <div className="flex gap-2 mt-2">
-                {colors.map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => setSelectedColor(c)}
-                    className={`px-3 py-1 rounded-lg border ${
-                      selectedColor === c
-                        ? "border-blue-600"
-                        : "border-gray-300"
-                    }`}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+          <div className="mt-6">
+            <h3 className="font-semibold text-lg text-gray-800 mb-3 border-b pb-1">
+              All Product Variants
+            </h3>
 
-          {sizes.length > 0 && (
-            <div className="mt-4">
-              <p className="font-medium text-sm">Select Size</p>
-              <div className="flex gap-2 mt-2">
-                {sizes.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setSelectedSize(s)}
-                    className={`px-3 py-1 rounded-lg border ${
-                      selectedSize === s ? "border-blue-600" : "border-gray-300"
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
+            {/* Header Row (Optional, but helpful for clarity) */}
+            <div className="hidden md:flex text-xs font-medium text-gray-500 border-b pb-2 mb-2">
+              <div className="w-1/4">SKU</div>
+              <div className="w-1/4">Attributes</div>
+              <div className="w-1/4">Price</div>
+              <div className="w-1/4">Stock</div>
             </div>
-          )}
 
-          {weights.length > 0 && (
-            <div className="mt-4">
-              <p className="font-medium text-sm">Select Weight</p>
-              <div className="flex gap-2 mt-2">
-                {weights.map((w) => (
-                  <button
-                    key={w}
-                    onClick={() => setSelectedWeight(w)}
-                    className={`px-3 py-1 rounded-lg border ${
-                      selectedWeight === w
-                        ? "border-blue-600"
-                        : "border-gray-300"
-                    }`}
-                  >
-                    {w}
-                  </button>
-                ))}
-              </div>
+            {/* Variant Rows */}
+            <div className="space-y-3">
+              {variants.length > 0 ? (
+                variants.map((item, index) => {
+                  let isSelected;
+                  if (selectedVariant)
+                    isSelected = item._id === selectedVariant._id;
+                  const isOutOfStock = item.stock === 0;
+
+                  return (
+                    <div
+                      key={index}
+                      className={`
+                    relative px-4 py-2 text-sm font-medium 
+                    border-2 rounded-lg transition-all duration-200 
+                    hover:shadow-lg focus:outline-none 
+                    
+                    // Conditional Styling based on selection and stock
+                    ${
+                      isOutOfStock
+                        ? "opacity-50 cursor-not-allowed line-through border-gray-200 text-gray-400 bg-gray-50"
+                        : isSelected
+                        ? "border-indigo-600 bg-indigo-50 text-indigo-700 ring-2 ring-indigo-300"
+                        : "border-gray-300 text-gray-800 bg-white hover:border-gray-500"
+                    }
+                  `}
+                      onClick={() => setSelectedVariant(item)}
+                    >
+                      {/* SKU */}
+                      <div className="w-full md:w-1/4 font-mono text-xs text-gray-600 mb-1 md:mb-0">
+                        {item.sku}
+                      </div>
+
+                      {/* Attributes */}
+                      <div className="w-full md:w-1/4 flex flex-wrap gap-x-2 gap-y-1 text-sm mb-1 md:mb-0">
+                        {/* Displaying attributes as small, labeled badges */}
+                        {Object.entries(item.attributes || {}).map(
+                          ([key, value]) => (
+                            <span
+                              key={key}
+                              className="
+                  px-2 py-0.5 text-xs font-medium rounded-full 
+                  bg-blue-100 text-blue-800
+                "
+                            >
+                              {/* Capitalize the key for display */}
+                              {key.charAt(0).toUpperCase() + key.slice(1)}:{" "}
+                              {value}
+                            </span>
+                          )
+                        )}
+                      </div>
+
+                      {/* Price */}
+                      <div className="w-full md:w-1/4 font-bold text-gray-900 mb-1 md:mb-0">
+                        ₹ {item.price.toFixed(2)}
+                      </div>
+
+                      {/* Stock */}
+                      {item.stock && (
+                        <div className="w-full md:w-1/4 text-sm font-semibold">
+                          <span
+                            className={`
+                px-3 py-1 rounded-full text-xs
+                ${
+                  item.stock > 10
+                    ? "bg-green-100 text-green-800"
+                    : item.stock > 0
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-red-100 text-red-800"
+                }
+              `}
+                          >
+                            {item.stock > 0
+                              ? `${item.stock} in Stock`
+                              : "Sold Out"}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="text-gray-500 italic">No variants found.</p>
+              )}
             </div>
-          )}
+          </div>
 
           {/* ADD TO CART */}
           {/* <Button
@@ -396,12 +437,23 @@ console.log(product.storeId._id,"product.storeId._id")
             Add to Cart
           </Button> */}
 
-          <button
-            className="mt-8 w-full sm:w-50 border border-gray-400"
-            onClick={() => addToCart()}
-          >
-            Click
-          </button>
+          {variants.length && selectedVariant ? (
+            <Button
+              disabled={variants.length && !selectedVariant ? true : false}
+              className="mt-8 w-full sm:w-50 border border-gray-400"
+              onClick={() => addToCart()}
+            >
+              Add to Cart
+            </Button>
+          ) : !variants.length ? (
+            <Button
+              disabled={variants.length && !selectedVariant ? true : false}
+              className="mt-8 w-full sm:w-50 border border-gray-400"
+              onClick={() => addToCart()}
+            >
+              Add to Cart
+            </Button>
+          ) : null}
 
           {/* TAGS */}
           {product.tags?.length > 0 && (

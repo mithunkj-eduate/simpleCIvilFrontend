@@ -4,7 +4,7 @@ import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
-import { PaymentMethod } from "@/types/order";
+import { DeliveryStatus, OrderStatus, PaymentMethod } from "@/types/order";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
 import { Button } from "@/stories/Button/Button";
@@ -63,60 +63,72 @@ export default function CheckoutPage() {
     deliveryAddress: "",
     paymentMethod: "",
   };
-
+  console.log(state.cart, "cart");
   /**
    * ---------------------------------------------------------
    * HANDLE ORDER CREATE - FOR NEW SCHEMA
    * ---------------------------------------------------------
    */
   const handleSubmit = async (values: any) => {
+    alert("ssfg");
     try {
       if (!TOKEN) throw new Error("Authentication token missing");
       if (state.cart) {
-        const body = {
-          venderId: state.cart?.[0]?.vendorId,
-          storeId: state.cart?.[0]?.storeId,
+        const body = createOrdersFromCart(
+          state.cart, // Using 'any' for the provided JSON structure
+          state.user ? state.user.id : "",
+          values.deliveryAddress,
+          source ? [source.lat, source.lng] : [0, 0]
+        );
+        console.log(body, "body1");
+        // const body = {
+        //   venderId: state.cart?.[0]?.vendorId,
+        //   storeId: state.cart?.[0]?.storeId,
 
-          items: state.cart.map((item) => ({
-            productId: item.productId,
+        //   items: state.cart.map((item) => ({
+        //     productId: item.productId,
 
-            selectedColor: item.selectedColor || null,
-            selectedSize: item.selectedSize || null,
-            selectedWeight: item.selectedWeight || null,
+        //     selectedColor: item.selectedColor || null,
+        //     selectedSize: item.selectedSize || null,
+        //     selectedWeight: item.selectedWeight || null,
 
-            quantity: item.quantity,
+        //     quantity: item.quantity,
 
-            // REQUIRED BY BACKEND
-            priceSnapshot: item.isRental
-              ? item.rentalPricePerUnit
-              : item.salePrice ? item.salePrice : 0,
+        //     // REQUIRED BY BACKEND
+        //     priceSnapshot: item.isRental
+        //       ? item.rentalPricePerUnit
+        //       : item.salePrice
+        //       ? item.salePrice
+        //       : 0,
 
-            // Automatically include only available attributes
-            attributesSnapshot: Object.fromEntries(
-              Object.entries({
-                color: item.selectedColor,
-                size: item.selectedSize,
-                weight: item.selectedWeight,
-              }).filter(([_, v]) => v)
-            ),
-          })),
+        //     // Automatically include only available attributes
+        //     attributesSnapshot: Object.fromEntries(
+        //       Object.entries({
+        //         color: item.selectedColor,
+        //         size: item.selectedSize,
+        //         weight: item.selectedWeight,
+        //       }).filter(([_, v]) => v)
+        //     ),
+        //   })),
 
-          deliveryAddress: values.deliveryAddress,
-          location: source ? [source.lat, source.lng] : [],
-          paymentMethod: values.paymentMethod,
+        //   deliveryAddress: values.deliveryAddress,
+        //   location: source ? [source.lat, source.lng] : [],
+        //   paymentMethod: values.paymentMethod,
 
-          receipt: {
-            subtotal: calculateSubtotal(state.cart),
-            shipping: 0,
-            discount: 0,
-            tax: 0,
-            total: calculateSubtotal(state.cart),
-          },
-        };
+        //   receipt: {
+        //     subtotal: calculateSubtotal(state.cart),
+        //     shipping: 0,
+        //     discount: 0,
+        //     tax: 0,
+        //     total: calculateSubtotal(state.cart),
+        //   },
+        // };
 
-        await api.post("/orders", body, {
-          headers: { Authorization: `Bearer ${TOKEN}` },
-        });
+        for (let i = 0; i < body.length; i++) {
+          await api.post("/orders", body[i], {
+            headers: { Authorization: `Bearer ${TOKEN}` },
+          });
+        }
 
         setMessage({
           flag: true,
@@ -319,4 +331,113 @@ export default function CheckoutPage() {
       />
     </div>
   );
+}
+
+/**
+ * Transforms an array of cart items into an array of separate orders,
+ * grouped by storeId.
+ * @param cartItems The array of items from the cart data.
+ * @param buyerId The ID of the user placing the order (required for the schema).
+ * @param deliveryAddress The common address for all orders.
+ * @param coordinates The common coordinates for all orders.
+ * @returns An array of IOrder objects, one for each unique store.
+ */
+function createOrdersFromCart(
+  cartItems: any[], // Using 'any' for the provided JSON structure
+  buyerId: string,
+  deliveryAddress: string,
+  coordinates: [number, number]
+): IOrder[] {
+  // Use a Map to group items by storeId
+  const ordersByStore = new Map<
+    string,
+    { items: ICartItem[]; vendorId: string; storeDetails: any }
+  >();
+
+  let tempSubtotal = 0; // Temp variable to calculate subtotal during grouping
+
+  // 1. Group items by store and calculate subtotals
+  for (const item of cartItems) {
+    const storeId = item.storeId._id;
+    const vendorId = item.vendorId._id;
+    const storeDetails = item.storeId;
+
+    // Calculate the total price for this item
+    const itemTotal = (item.salePrice || 0) * item.quantity;
+    tempSubtotal += itemTotal;
+
+    if (!ordersByStore.has(storeId)) {
+      ordersByStore.set(storeId, {
+        items: [],
+        vendorId: vendorId,
+        storeDetails: storeDetails,
+      });
+    }
+
+    // Add the cart item to the correct store group, mapping to the OrderItem structure
+    const storeOrder = ordersByStore.get(storeId)!;
+
+    storeOrder.items.push({
+      productId: item.productId._id,
+
+      // Variants
+      selectedColor: item.selectedColor,
+      selectedSize: item.selectedSize,
+      selectedWeight: item.selectedWeight,
+      customVariant: item.customVariant,
+
+      quantity: item.quantity,
+
+      // priceSnapshot must be the price of the item at the time of purchase
+      priceSnapshot: item.salePrice || 0,
+
+      // Attributes snapshot mapping
+      attributesSnapshot: {
+        color: item.selectedColor || item.customVariant?.color,
+        size: item.selectedSize || item.customVariant?.size,
+        weight: item.selectedWeight || item.customVariant?.weight,
+        material: item.customVariant?.material,
+      },
+    } as IOrderItem);
+  }
+
+  // 2. Map the grouped items into the final IOrder array
+  const finalOrders: IOrder[] = [];
+
+  for (const [storeId, data] of ordersByStore.entries()) {
+    // Calculate the subtotal for this specific store's order
+    const storeSubtotal = data.items.reduce(
+      (sum, orderItem) => sum + orderItem.priceSnapshot * orderItem.quantity,
+      0
+    );
+    const shippingCost = 0; // Assuming free shipping for simplicity
+
+    finalOrders.push({
+      buyerId: buyerId,
+      venderId: data.vendorId,
+      storeId: storeId,
+
+      items: data.items,
+
+      deliveryAddress: deliveryAddress,
+      location:coordinates ? coordinates :[],
+
+      receipt: {
+        subtotal: storeSubtotal,
+        shipping: shippingCost,
+        discount: 0,
+        tax: 0,
+        total: storeSubtotal + shippingCost,
+      },
+
+      paymentMethod: PaymentMethod.CASH, // Default to CASH
+      orderStatus: OrderStatus.PENDING,
+      deliveryStatus: DeliveryStatus.PENDING,
+
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+  }
+
+  return finalOrders;
 }
