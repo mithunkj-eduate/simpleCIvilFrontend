@@ -22,3 +22,50 @@ export enum OrderAcceptStatus {
   ACCEPTED = "ACCEPTED",
   CANCELLED = "CANCELLED",
 }
+
+// --- OrderItem Schema Interface ---
+export interface IOrderItem {
+  productId: string; // ObjectId of Product
+
+  // Variants
+  selectedColor?: string;
+  selectedSize?: string;
+  selectedWeight?: string;
+  customVariant?: Record<string, any>; // Complex variant details
+
+  quantity: number;
+  priceSnapshot: number; // The item's salePrice at the time of purchase
+  attributesSnapshot: { [key: string]: string }; // Custom attributes snapshot
+}
+
+// --- Order Schema Interface ---
+export interface IOrder {
+  buyerId: string;
+  venderId: string; // The seller ID
+  storeId: string;
+
+  items: IOrderItem[];
+
+  // Delivery/Location
+  deliveryAddress: string;
+  location: [number, number];
+
+  // Pricing
+  receipt: {
+    subtotal?: number;
+    shipping?: number;
+    discount?: number;
+    tax?: number;
+    total?: number;
+  };
+
+  // Statuses
+  paymentMethod: PaymentMethod;
+  orderStatus: OrderStatus;
+  deliveryStatus: DeliveryStatus;
+
+  // Optional dates
+  deliveryDate?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}

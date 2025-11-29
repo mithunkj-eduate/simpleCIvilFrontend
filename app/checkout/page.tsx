@@ -4,7 +4,13 @@ import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
-import { DeliveryStatus, OrderStatus, PaymentMethod } from "@/types/order";
+import {
+  DeliveryStatus,
+  IOrder,
+  IOrderItem,
+  OrderStatus,
+  PaymentMethod,
+} from "@/types/order";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
 import { Button } from "@/stories/Button/Button";
@@ -70,7 +76,6 @@ export default function CheckoutPage() {
    * ---------------------------------------------------------
    */
   const handleSubmit = async (values: any) => {
-    alert("ssfg");
     try {
       if (!TOKEN) throw new Error("Authentication token missing");
       if (state.cart) {
@@ -81,48 +86,6 @@ export default function CheckoutPage() {
           source ? [source.lat, source.lng] : [0, 0]
         );
         console.log(body, "body1");
-        // const body = {
-        //   venderId: state.cart?.[0]?.vendorId,
-        //   storeId: state.cart?.[0]?.storeId,
-
-        //   items: state.cart.map((item) => ({
-        //     productId: item.productId,
-
-        //     selectedColor: item.selectedColor || null,
-        //     selectedSize: item.selectedSize || null,
-        //     selectedWeight: item.selectedWeight || null,
-
-        //     quantity: item.quantity,
-
-        //     // REQUIRED BY BACKEND
-        //     priceSnapshot: item.isRental
-        //       ? item.rentalPricePerUnit
-        //       : item.salePrice
-        //       ? item.salePrice
-        //       : 0,
-
-        //     // Automatically include only available attributes
-        //     attributesSnapshot: Object.fromEntries(
-        //       Object.entries({
-        //         color: item.selectedColor,
-        //         size: item.selectedSize,
-        //         weight: item.selectedWeight,
-        //       }).filter(([_, v]) => v)
-        //     ),
-        //   })),
-
-        //   deliveryAddress: values.deliveryAddress,
-        //   location: source ? [source.lat, source.lng] : [],
-        //   paymentMethod: values.paymentMethod,
-
-        //   receipt: {
-        //     subtotal: calculateSubtotal(state.cart),
-        //     shipping: 0,
-        //     discount: 0,
-        //     tax: 0,
-        //     total: calculateSubtotal(state.cart),
-        //   },
-        // };
 
         for (let i = 0; i < body.length; i++) {
           await api.post("/orders", body[i], {
@@ -333,15 +296,6 @@ export default function CheckoutPage() {
   );
 }
 
-/**
- * Transforms an array of cart items into an array of separate orders,
- * grouped by storeId.
- * @param cartItems The array of items from the cart data.
- * @param buyerId The ID of the user placing the order (required for the schema).
- * @param deliveryAddress The common address for all orders.
- * @param coordinates The common coordinates for all orders.
- * @returns An array of IOrder objects, one for each unique store.
- */
 function createOrdersFromCart(
   cartItems: any[], // Using 'any' for the provided JSON structure
   buyerId: string,
@@ -351,7 +305,7 @@ function createOrdersFromCart(
   // Use a Map to group items by storeId
   const ordersByStore = new Map<
     string,
-    { items: ICartItem[]; vendorId: string; storeDetails: any }
+    { items: IOrderItem[]; vendorId: string; storeDetails: any }
   >();
 
   let tempSubtotal = 0; // Temp variable to calculate subtotal during grouping
@@ -379,7 +333,7 @@ function createOrdersFromCart(
 
     storeOrder.items.push({
       productId: item.productId._id,
-
+      _id: item._id,
       // Variants
       selectedColor: item.selectedColor,
       selectedSize: item.selectedSize,
@@ -420,7 +374,7 @@ function createOrdersFromCart(
       items: data.items,
 
       deliveryAddress: deliveryAddress,
-      location:coordinates ? coordinates :[],
+      location: coordinates,
 
       receipt: {
         subtotal: storeSubtotal,

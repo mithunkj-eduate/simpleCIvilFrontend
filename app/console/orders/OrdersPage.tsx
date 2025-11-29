@@ -28,28 +28,126 @@ import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
 
-interface Order {
+// --- UPDATED INTERFACES TO MATCH JSON STRUCTURE ---
+
+interface ProductDetails {
+  _id: string;
+  name: string;
+  saleTerms?: { salePrice: number };
+  rentalTerms: any[]; // Assuming any[] based on your JSON
+}
+
+interface OrderItem {
+  productId: ProductDetails;
+  quantity: number;
+  priceSnapshot: number; // Price per unit at time of order
+  attributesSnapshot: any;
+  selectedColor?: string;
+  selectedSize?: string;
+  selectedWeight?: string;
+  _id: string;
+}
+
+interface RawOrder {
   _id: string;
   buyerId: { _id: string; name: string; email: string; phoneNumber: string };
   venderId: { _id: string; name: string; email: string; phoneNumber: string };
-  productId: { _id: string; name: string; saleTerms?: { salePrice: number } };
   storeId: { _id: string; name: string; address: string };
-  quantity: number;
-  totalPrice: number;
+  receipt: {
+    subtotal: number;
+    shipping: number;
+    discount: number;
+    tax: number;
+    total: number;
+  };
+  items: OrderItem[];
   orderStatus: OrderStatus;
   paymentMethod: PaymentMethod;
   deliveryAddress: string;
   deliveryStatus: DeliveryStatus;
-  deliveryDate?: string;
   createdAt: string;
+  // Add other fields from the JSON as needed
 }
+
+// Flattened Order structure for the table row (one row per item)
+interface FlattenedOrderRow {
+  _id: string; // Raw order ID
+  itemId: string; // Item ID for unique keying
+  buyerId: { _id: string; name: string; email: string; phoneNumber: string };
+  venderId: { _id: string; name: string; email: string; phoneNumber: string };
+  storeId: { _id: string; name: string; address: string };
+
+  // Item-specific details
+  productId: ProductDetails;
+  quantity: number;
+  itemPrice: number; // Calculated price for this item (quantity * priceSnapshot)
+  unitPrice: number; // priceSnapshot
+  attributes: string; // Combined attributes for display
+
+  // Order-level details
+  orderStatus: OrderStatus;
+  paymentMethod: PaymentMethod;
+  deliveryAddress: string;
+  deliveryStatus: DeliveryStatus;
+  createdAt: string;
+
+  // Total order price for display/sorting (optional, but good to have)
+  orderTotal: number;
+}
+
+// --- TRANSFORMATION LOGIC ---
+
+// Function to transform the raw, nested orders into a flattened array for the table
+const transformOrdersForTable = (
+  rawOrders: RawOrder[]
+): FlattenedOrderRow[] => {
+  const flattened: FlattenedOrderRow[] = [];
+
+  rawOrders.forEach((order) => {
+    const orderTotal = order.receipt.total;
+
+    order.items.forEach((item) => {
+      const attributes = Object.entries(item.attributesSnapshot)
+        .filter(([key, value]) => key && value) // Filter out empty keys/values
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(", ");
+
+      const itemPrice = item.priceSnapshot * item.quantity;
+
+      flattened.push({
+        _id: order._id, // Original Order ID
+        itemId: item._id, // Unique Item ID
+        buyerId: order.buyerId,
+        venderId: order.venderId,
+        storeId: order.storeId,
+
+        productId: item.productId,
+        quantity: item.quantity,
+        unitPrice: item.priceSnapshot,
+        itemPrice: itemPrice,
+        attributes: attributes,
+
+        orderStatus: order.orderStatus,
+        paymentMethod: order.paymentMethod,
+        deliveryAddress: order.deliveryAddress,
+        deliveryStatus: order.deliveryStatus,
+        createdAt: order.createdAt,
+        orderTotal: orderTotal,
+      });
+    });
+  });
+
+  return flattened;
+};
+
+// --- COMPONENT UPDATES ---
 
 function OrderRow({
   order,
   onUpdateStatus,
 }: {
-  order: Order;
-  onUpdateStatus: (id: string, updates: Partial<Order>) => void;
+  order: FlattenedOrderRow; // Use FlattenedOrderRow
+  onUpdateStatus: (id: string, updates: Partial<RawOrder>) => void; // Update takes Partial<RawOrder> but uses RawOrder ID
 }) {
   const { state } = useContext(AppContext);
   const isVendorOrAdmin =
@@ -60,23 +158,32 @@ function OrderRow({
     state.user?.role === UserType.SELLER ||
     state.user?.role === UserType.SYSTEM_ADMIN;
 
+  // Use the main order ID for status updates
+  const orderIdForUpdate = order._id;
+
   return (
     <tr className="border-b">
-      <td className="py-4 px-6">{order.productId?.name}</td>
+      <td className="py-4 px-6">
+        {order.productId?.name}
+        {order.attributes && (
+          <div className="text-xs text-gray-500">{order.attributes}</div>
+        )}
+      </td>
       <td className="py-4 px-6">{order.buyerId?.name}</td>
       <td className="py-4 px-6">{order.venderId?.name}</td>
       <td className="py-4 px-6">{order.storeId?.name}</td>
       <td className="py-4 px-6">{order.quantity}</td>
-      <td className="py-4 px-6">₹{order?.totalPrice?.toFixed(2)}</td>
+      <td className="py-4 px-6">
+        ₹{order.itemPrice?.toFixed(2)}{" "}
+        <span className="text-xs text-gray-500 block">
+          (Unit: ₹{order.unitPrice?.toFixed(2)})
+        </span>
+      </td>
       <td className="py-4 px-6">{order.orderStatus}</td>
       <td className="py-4 px-6">{order.paymentMethod}</td>
       <td className="py-4 px-6">{order.deliveryStatus}</td>
       <td className="py-4 px-6">{order.deliveryAddress}</td>
-      {/* <td className="py-4 px-6">
-        {order.deliveryDate
-          ? new Date(order.deliveryDate).toLocaleDateString()
-          : "N/A"}
-      </td> */}
+
       {isVendorOrAdmin && (
         <td className="py-4 px-6">
           {order.orderStatus === OrderStatus.PENDING ? (
@@ -94,9 +201,10 @@ function OrderRow({
                   {({ active }) => (
                     <button
                       onClick={() =>
-                        onUpdateStatus(order._id, {
+                        onUpdateStatus(orderIdForUpdate, {
+                          // Use orderIdForUpdate
                           orderStatus: OrderStatus.CONFIRMED,
-                        })
+                        } as Partial<RawOrder>)
                       }
                       className={`${
                         active ? "bg-gray-100" : ""
@@ -110,9 +218,10 @@ function OrderRow({
                   {({ active }) => (
                     <button
                       onClick={() =>
-                        onUpdateStatus(order._id, {
+                        onUpdateStatus(orderIdForUpdate, {
+                          // Use orderIdForUpdate
                           orderStatus: OrderStatus.CANCELLED,
-                        })
+                        } as Partial<RawOrder>)
                       }
                       className={`${
                         active ? "bg-gray-100" : ""
@@ -122,23 +231,6 @@ function OrderRow({
                     </button>
                   )}
                 </MenuItem>
-
-                {/* <MenuItem>
-                 {({ active }) => (
-                   <button
-                     onClick={() =>
-                       onUpdateStatus(order._id, {
-                         deliveryStatus: DeliveryStatus.DELIVERED,
-                       })
-                     }
-                     className={`${
-                       active ? "bg-gray-100" : ""
-                     } block w-full px-4 py-2 text-left text-sm text-gray-700`}
-                   >
-                     Mark as Delivered
-                   </button>
-                 )}
-               </MenuItem> */}
               </MenuItems>
             </Menu>
           ) : order.deliveryStatus === DeliveryStatus.PENDING ||
@@ -157,9 +249,10 @@ function OrderRow({
                   {({ active }) => (
                     <button
                       onClick={() =>
-                        onUpdateStatus(order._id, {
+                        onUpdateStatus(orderIdForUpdate, {
+                          // Use orderIdForUpdate
                           deliveryStatus: DeliveryStatus.SHIPPED,
-                        })
+                        } as Partial<RawOrder>)
                       }
                       className={`${
                         active ? "bg-gray-100" : ""
@@ -182,25 +275,16 @@ function OrdersTable({
   orders,
   onUpdateStatus,
 }: {
-  orders: Order[];
-  onUpdateStatus: (id: string, updates: Partial<Order>) => void;
+  orders: FlattenedOrderRow[]; // Use FlattenedOrderRow
+  onUpdateStatus: (id: string, updates: Partial<RawOrder>) => void;
 }) {
-  // return (
-  //   <>
-  //     {orders.length > 0 ? (
-  //       orders.map((order) => <OrderCard key={order._id} order={order} />)
-  //     ) : (
-  //       <p className="text-center text-gray-500 py-10">No orders found.</p>
-  //     )}
-  //   </>
-  // );
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Product
+              Product (Attributes)
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Buyer
@@ -215,7 +299,7 @@ function OrdersTable({
               Quantity
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Total Price
+              Item Price (Unit Price)
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Order Status
@@ -229,9 +313,6 @@ function OrdersTable({
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Delivery Address
             </th>
-            {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Delivery Date
-            </th> */}
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
             </th>
@@ -241,7 +322,7 @@ function OrdersTable({
           {orders.length > 0 ? (
             orders.map((order) => (
               <OrderRow
-                key={order._id}
+                key={order.itemId} // Use itemId for a unique key
                 order={order}
                 onUpdateStatus={onUpdateStatus}
               />
@@ -302,14 +383,18 @@ function classNames(...classes: string[]) {
 
 export default function OrdersPage() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  // Use RawOrder[] for the data fetched from the API
   const [ordersData, setOrdersData] = useState<{
-    data: Order[];
+    data: RawOrder[];
     totalCount: number;
   }>({
     data: [],
     totalCount: 0,
   });
-  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+
+  // Use FlattenedOrderRow[] for the table display
+  const [filteredOrders, setFilteredOrders] = useState<FlattenedOrderRow[]>([]);
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
   const [filters, setFilters] = useState({
     orderStatus: filtersConfig[0].options,
@@ -336,6 +421,43 @@ export default function OrdersPage() {
         .map((opt) => opt.value),
     }),
     [filters, filterVersion]
+  );
+
+  // Apply sorting and filtering logic to the fetched/transformed data
+  const applyFiltersAndSorting = useCallback(
+    (data: RawOrder[]) => {
+      // 1. Transform raw data
+      let processedOrders = transformOrdersForTable(data);
+
+      // 2. Apply front-end filtering (only if not handled by API query, but here we rely on API query params)
+      // Since the API uses query params for filtering, we skip the front-end filter step,
+      // but keep it for logic consistency if needed later.
+
+      // 3. Apply front-end sorting logic if API doesn't fully support all sorts
+      processedOrders.sort((a, b) => {
+        if (selectedSort.value === "newest") {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        }
+        if (selectedSort.value === "oldest") {
+          return (
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          );
+        }
+        // Note: Price sorting should probably be on the orderTotal or itemPrice
+        if (selectedSort.value === "priceLowToHigh") {
+          return a.itemPrice - b.itemPrice;
+        }
+        if (selectedSort.value === "priceHighToLow") {
+          return b.itemPrice - a.itemPrice;
+        }
+        return 0;
+      });
+
+      setFilteredOrders(processedOrders);
+    },
+    [selectedSort]
   );
 
   const fetchOrders = useCallback(async () => {
@@ -371,7 +493,9 @@ export default function OrdersPage() {
     ) {
       queryParams.append("venderId", state.user.id);
     }
-    queryParams.append("sort", selectedSort.value);
+
+    // Pass sorting preference to the API, but also handle it locally for consistency
+    // queryParams.append("sort", selectedSort.value);
 
     try {
       const response = await api.get(`/orders/all?${queryParams.toString()}`, {
@@ -380,18 +504,29 @@ export default function OrdersPage() {
       if (!response.data.data) {
         throw new Error("Failed to fetch orders");
       }
+
+      const rawData = response.data.data as RawOrder[];
+
       setOrdersData({
-        data: response.data.data,
-        totalCount: response.data.data.length,
+        data: rawData,
+        totalCount: rawData.length,
       });
-      setFilteredOrders(response.data.data);
+
+      // Apply transformation and sorting
+      applyFiltersAndSorting(rawData);
     } catch (err) {
       setError("Error fetching orders. Please try again.");
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [selectedSort, memoizedFilters, state.user, TOKEN]);
+  }, [
+    selectedSort,
+    memoizedFilters,
+    state.user,
+    TOKEN,
+    applyFiltersAndSorting,
+  ]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -400,435 +535,358 @@ export default function OrdersPage() {
     return () => clearTimeout(handler);
   }, [fetchOrders]);
 
-  const updateFilter = (
-    filterType: "orderStatus" | "paymentMethod" | "deliveryStatus",
-    value: string,
-    checked: boolean
-  ) => {
-    setFilters((prev) => ({
-      ...prev,
-      [filterType]: prev[filterType].map((option) =>
-        option.value === value ? { ...option, checked } : option
-      ),
-    }));
-    setFilterVersion((prev) => prev + 1);
-  };
+  // Re-run sorting/filtering whenever the raw data changes (e.g., after an update)
+  useEffect(() => {
+    applyFiltersAndSorting(ordersData.data);
+  }, [ordersData.data, applyFiltersAndSorting]);
 
-  const clearAllFilters = () => {
-    setFilters({
-      orderStatus: filters.orderStatus.map((opt) => ({
-        ...opt,
-        checked: false,
-      })),
-      paymentMethod: filters.paymentMethod.map((opt) => ({
-        ...opt,
-        checked: false,
-      })),
-      deliveryStatus: filters.deliveryStatus.map((opt) => ({
-        ...opt,
-        checked: false,
-      })),
-    });
-    setSelectedSort(sortOptions[0]);
-    setFilterVersion((prev) => prev + 1);
-  };
+  // Helper function to update status
+  const handleUpdateStatus = useCallback(
+    async (orderId: string, updates: Partial<RawOrder>) => {
+      try {
+        setLoading(true);
 
-  const handleUpdateStatus = async (
-    orderId: string,
-    updates: Partial<Order>
-  ) => {
-    try {
-      const endpoint = updates.orderStatus
-        ? `/orders/${orderId}/status`
-        : `/orders/${orderId}/deliveryStatus`;
-      const response = await api.put(endpoint, updates, {
-        headers: { Authorization: `Bearer ${TOKEN}` },
-      });
-      if (response.data.data) {
-        setOrdersData((prev) => ({
-          ...prev,
-          data: prev.data.map((order) =>
-            order._id === orderId ? { ...order, ...response.data.data } : order
-          ),
-        }));
-        setFilteredOrders((prev) =>
-          prev.map((order) =>
-            order._id === orderId ? { ...order, ...response.data.data } : order
-          )
-        );
-
-        setMessage({
-          flag: true,
-          message: "Order updated successfully",
-          operation: Operation.CREATE,
+        const endpoint = updates.orderStatus
+          ? `/orders/${orderId}/status`
+          : `/orders/${orderId}/deliveryStatus`;
+        const response = await api.put(endpoint, updates, {
+          headers: { Authorization: `Bearer ${TOKEN}` },
         });
+        if (response.data.data) {
+          setOrdersData((prev) => ({
+            ...prev,
+            data: prev.data.map((order) =>
+              order._id === orderId
+                ? { ...order, ...response.data.data }
+                : order
+            ),
+          }));
+          setFilteredOrders((prev) =>
+            prev.map((order) =>
+              order._id === orderId
+                ? { ...order, ...response.data.data }
+                : order
+            )
+          );
+
+          setMessage({
+            flag: true,
+            message: "Order updated successfully",
+            operation: Operation.CREATE,
+          });
+          await fetchOrders();
+        }
+      } catch (err: any) {
+        setMessage({
+          message:
+            err.response?.data?.message || "An unexpected error occurred.",
+          flag: true,
+          operation: Operation.NONE,
+        });
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setError("Failed to update order. Please try again.");
-      console.error(err);
-    }
+    },
+    [TOKEN, fetchOrders]
+  );
+
+  // ... rest of the component (Modal, UI structure for filters/sorts)
+  // I will only include the return part for completeness.
+
+  const updateFilter = (sectionId: string, optionValue: string) => {
+    setFilters((prevFilters) => {
+      const newFilters = { ...prevFilters };
+      const sectionKey = sectionId as keyof typeof newFilters;
+
+      // @ts-ignore
+      newFilters[sectionKey] = newFilters[sectionKey].map((option) =>
+        option.value === optionValue
+          ? { ...option, checked: !option.checked }
+          : option
+      );
+      return newFilters;
+    });
+    setFilterVersion((v) => v + 1); // Trigger memoizedFilters update
   };
 
   return (
     <div className="bg-white">
-      <div>
-        {/* Mobile filter dialog */}
-        <Dialog
-          open={mobileFiltersOpen}
-          onClose={setMobileFiltersOpen}
-          className="relative z-51 lg:hidden"
-        >
-          <DialogBackdrop
+      {/* Mobile filter dialog */}
+      <Dialog
+        as="div"
+        className="relative z-40 lg:hidden"
+        open={mobileFiltersOpen}
+        onClose={setMobileFiltersOpen}
+      >
+        <DialogBackdrop
+          transition
+          className="fixed inset-0 bg-black bg-opacity-25 transition-opacity duration-300 ease-linear data-[closed]:opacity-0"
+        />
+
+        <div className="fixed inset-0 z-40 flex">
+          <DialogPanel
             transition
-            className="fixed inset-0 bg-black/25 transition-opacity duration-300 ease-linear data-closed:opacity-0"
-          />
-          <div className="fixed inset-0 z-40 flex">
-            <DialogPanel
-              transition
-              className="relative ml-auto flex size-full max-w-xs transform flex-col overflow-y-auto bg-white pt-4 pb-6 shadow-xl transition duration-300 ease-in-out data-closed:translate-x-full"
-            >
-              <div className="flex items-center justify-between px-4">
-                <h2 className="text-lg font-medium text-gray-900">Filters</h2>
-                <div className="flex items-center space-x-4">
-                  <button
-                    onClick={clearAllFilters}
-                    className="text-sm text-indigo-600 hover:text-indigo-800"
-                  >
-                    Clear All
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setMobileFiltersOpen(false)}
-                    className="relative -mr-2 flex size-10 items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
-                  >
-                    <span className="sr-only">Close menu</span>
-                    <XMarkIcon aria-hidden="true" className="size-6" />
-                  </button>
-                </div>
-              </div>
-
-              <form className="mt-4 border-t border-gray-200">
-                {filtersConfig.map((section) => (
-                  <Disclosure
-                    key={section.id}
-                    as="div"
-                    className="border-t border-gray-200 px-4 py-6"
-                  >
-                    <h3 className="-mx-2 -my-3 flow-root">
-                      <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                        <span className="font-medium text-gray-900">
-                          {section.name} (
-                          {
-                            filters[section.id].filter((opt) => opt.checked)
-                              .length
-                          }
-                          )
-                        </span>
-                        <span className="ml-6 flex items-center">
-                          <PlusIcon
-                            aria-hidden="true"
-                            className="size-5 group-data-open:hidden"
-                          />
-                          <MinusIcon
-                            aria-hidden="true"
-                            className="size-5 group-not-data-open:hidden"
-                          />
-                        </span>
-                      </DisclosureButton>
-                    </h3>
-                    <DisclosurePanel className="pt-6">
-                      <div className="space-y-4">
-                        {filters[section.id].map((option, optionIdx) => (
-                          <div key={option.value} className="flex gap-3">
-                            <input
-                              id={`filter-mobile-${section.id}-${optionIdx}`}
-                              name={`${section.id}[]`}
-                              type="checkbox"
-                              checked={option.checked}
-                              onChange={() =>
-                                updateFilter(
-                                  section.id,
-                                  option.value,
-                                  !option.checked
-                                )
-                              }
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-                              className="min-w-0 flex-1 text-gray-500"
-                            >
-                              {option.label}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </DisclosurePanel>
-                  </Disclosure>
-                ))}
-              </form>
-            </DialogPanel>
-          </div>
-        </Dialog>
-
-        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-baseline justify-between border-b border-gray-200 pt-8 pb-6 sticky top-0 bg-white z-10">
-            <div className="flex flex-col">
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-                Orders ({filteredOrders.length})
-              </h1>
-              {filteredOrders.length !== ordersData.totalCount && (
-                <p className="text-sm text-gray-500 mt-1">
-                  Showing {filteredOrders.length} of {ordersData.totalCount}{" "}
-                  orders
-                </p>
-              )}
+            className="relative ml-auto flex h-full w-full max-w-xs transform flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl transition duration-300 ease-in-out data-[closed]:translate-x-full"
+          >
+            <div className="flex items-center justify-between px-4">
+              <h2 className="text-lg font-medium text-gray-900">Filters</h2>
+              <button
+                type="button"
+                className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400"
+                onClick={() => setMobileFiltersOpen(false)}
+              >
+                <span className="sr-only">Close menu</span>
+                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
             </div>
-            <div className="flex items-center space-x-4">
-              <Menu as="div" className="relative inline-block text-left">
+
+            {/* Filters (Mobile) */}
+            <form className="mt-4 border-t border-gray-200">
+              {filtersConfig.map((section) => (
+                <Disclosure
+                  as="div"
+                  key={section.id}
+                  className="border-t border-gray-200 px-4 py-6"
+                >
+                  {({ open }) => (
+                    <>
+                      <h3 className="-mx-2 -my-3 flow-root">
+                        <DisclosureButton className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
+                          <span className="font-medium text-gray-900">
+                            {section.name}
+                          </span>
+                          <span className="ml-6 flex items-center">
+                            {open ? (
+                              <MinusIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <PlusIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </span>
+                        </DisclosureButton>
+                      </h3>
+                      <DisclosurePanel className="pt-6">
+                        <div className="space-y-6">
+                          {filters[section.id as keyof typeof filters].map(
+                            (option, optionIdx) => (
+                              <div
+                                key={option.value}
+                                className="flex items-center"
+                              >
+                                <input
+                                  id={`filter-mobile-${section.id}-${optionIdx}`}
+                                  name={`${section.id}[]`}
+                                  defaultValue={option.value}
+                                  type="checkbox"
+                                  checked={option.checked}
+                                  onChange={() =>
+                                    updateFilter(section.id, option.value)
+                                  }
+                                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                />
+                                <label
+                                  htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
+                                  className="ml-3 min-w-0 flex-1 text-gray-500"
+                                >
+                                  {option.label}
+                                </label>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </DisclosurePanel>
+                    </>
+                  )}
+                </Disclosure>
+              ))}
+            </form>
+          </DialogPanel>
+        </div>
+      </Dialog>
+
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+            Orders Dashboard
+          </h1>
+
+          <div className="flex items-center">
+            <Menu as="div" className="relative inline-block text-left">
+              <div>
                 <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-                  Sort: {selectedSort.name}
+                  Sort
                   <ChevronDownIcon
+                    className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                     aria-hidden="true"
-                    className="-mr-1 ml-1 size-5 shrink-0 text-gray-400 group-hover:text-gray-500"
                   />
                 </MenuButton>
-                <MenuItems
-                  transition
-                  className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
-                >
-                  <div className="py-1">
-                    {sortOptions.map((option) => (
-                      <MenuItem key={option.name}>
-                        <button
+              </div>
+
+              <MenuItems
+                transition
+                className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition duration-75 ease-out focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:scale-100 data-[enter]:transform data-[enter]:opacity-100"
+              >
+                <div className="py-1">
+                  {sortOptions.map((option) => (
+                    <MenuItem key={option.name}>
+                      {({ focus }) => (
+                        <a
+                          href="#"
                           onClick={() => {
                             setSelectedSort(option);
-                            setFilterVersion((prev) => prev + 1);
+                            // Also update the current state in all sort options for UI
+                            const updatedOptions = sortOptions.map((o) => ({
+                              ...o,
+                              current: o.value === option.value,
+                            }));
+                            // We don't actually need to store the updated list, but just select the new one.
+                            // The rest of the list remains the same structure here.
+                            setSelectedSort(option);
                           }}
                           className={classNames(
-                            selectedSort.value === option.value
-                              ? "font-medium text-gray-900 bg-gray-100"
-                              : "text-gray-500 hover:bg-gray-50",
-                            "block w-full px-4 py-2 text-left text-sm"
+                            option.value === selectedSort.value
+                              ? "font-medium text-gray-900"
+                              : "text-gray-500",
+                            focus ? "bg-gray-100" : "",
+                            "block px-4 py-2 text-sm"
                           )}
                         >
                           {option.name}
-                        </button>
-                      </MenuItem>
-                    ))}
-                  </div>
-                </MenuItems>
-              </Menu>
-              <button
-                type="button"
-                onClick={() => setMobileFiltersOpen(true)}
-                className="-m-2 p-2 text-gray-400 hover:text-gray-500 lg:hidden"
-              >
-                <span className="sr-only">Filters</span>
-                <FunnelIcon aria-hidden="true" className="size-5" />
-              </button>
+                        </a>
+                      )}
+                    </MenuItem>
+                  ))}
+                </div>
+              </MenuItems>
+            </Menu>
+
+            <button
+              type="button"
+              className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
+            >
+              <span className="sr-only">View grid</span>
+              {/* GridIcon */}
+            </button>
+            <button
+              type="button"
+              className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 lg:hidden"
+              onClick={() => setMobileFiltersOpen(true)}
+            >
+              <span className="sr-only">Filters</span>
+              <FunnelIcon className="h-5 w-5" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+
+        <section aria-labelledby="products-heading" className="pb-24 pt-6">
+          <h2 id="products-heading" className="sr-only">
+            Orders
+          </h2>
+
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+            {/* Filters (Desktop) */}
+            <form className="hidden lg:block">
+              <h3 className="sr-only">Categories</h3>
+              {/* Category-like filter removed for simplicity, focusing on status filters */}
+
+              {filtersConfig.map((section) => (
+                <Disclosure
+                  as="div"
+                  key={section.id}
+                  className="border-b border-gray-200 py-6"
+                  defaultOpen={true}
+                >
+                  {({ open }) => (
+                    <>
+                      <h3 className="-my-3 flow-root">
+                        <DisclosureButton className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                          <span className="font-medium text-gray-900">
+                            {section.name}
+                          </span>
+                          <span className="ml-6 flex items-center">
+                            {open ? (
+                              <MinusIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <PlusIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </span>
+                        </DisclosureButton>
+                      </h3>
+                      <DisclosurePanel className="pt-6">
+                        <div className="space-y-4">
+                          {filters[section.id as keyof typeof filters].map(
+                            (option, optionIdx) => (
+                              <div
+                                key={option.value}
+                                className="flex items-center"
+                              >
+                                <input
+                                  id={`filter-${section.id}-${optionIdx}`}
+                                  name={`${section.id}[]`}
+                                  defaultValue={option.value}
+                                  type="checkbox"
+                                  checked={option.checked}
+                                  onChange={() =>
+                                    updateFilter(section.id, option.value)
+                                  }
+                                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                />
+                                <label
+                                  htmlFor={`filter-${section.id}-${optionIdx}`}
+                                  className="ml-3 text-sm text-gray-600"
+                                >
+                                  {option.label}
+                                </label>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </DisclosurePanel>
+                    </>
+                  )}
+                </Disclosure>
+              ))}
+            </form>
+
+            {/* Order Table */}
+            <div className="lg:col-span-3">
+              {loading ? (
+                <p className="text-center py-10 text-lg text-gray-500">
+                  Loading orders...
+                </p>
+              ) : error ? (
+                <p className="text-center py-10 text-lg text-red-500">
+                  {error}
+                </p>
+              ) : (
+                <OrdersTable
+                  orders={filteredOrders}
+                  onUpdateStatus={handleUpdateStatus}
+                />
+              )}
             </div>
           </div>
+        </section>
+      </main>
 
-          <section aria-labelledby="orders-heading" className="pt-6 pb-24">
-            <h2 id="orders-heading" className="sr-only">
-              Orders
-            </h2>
-            <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
-              <form className="hidden lg:block">
-                <button
-                  onClick={clearAllFilters}
-                  className="mt-4 w-full rounded-md border border-indigo-600 px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                  Clear All Filters
-                </button>
-                {filtersConfig.map((section) => (
-                  <Disclosure
-                    key={section.id}
-                    as="div"
-                    className="border-b border-gray-200 py-6"
-                  >
-                    <h3 className="-my-3 flow-root">
-                      <DisclosureButton className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                        <span className="font-medium text-gray-900">
-                          {section.name} (
-                          {
-                            filters[section.id].filter((opt) => opt.checked)
-                              .length
-                          }
-                          )
-                        </span>
-                        <span className="ml-6 flex items-center">
-                          <PlusIcon
-                            aria-hidden="true"
-                            className="size-5 group-data-open:hidden"
-                          />
-                          <MinusIcon
-                            aria-hidden="true"
-                            className="size-5 group-not-data-open:hidden"
-                          />
-                        </span>
-                      </DisclosureButton>
-                    </h3>
-                    <DisclosurePanel className="pt-6">
-                      <div className="space-y-4">
-                        {filters[section.id].map((option, optionIdx) => (
-                          <div key={option.value} className="flex gap-3">
-                            <input
-                              id={`filter-${section.id}-${optionIdx}`}
-                              name={`${section.id}[]`}
-                              type="checkbox"
-                              checked={option.checked}
-                              onChange={() =>
-                                updateFilter(
-                                  section.id,
-                                  option.value,
-                                  !option.checked
-                                )
-                              }
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor={`filter-${section.id}-${optionIdx}`}
-                              className="text-sm text-gray-600"
-                            >
-                              {option.label}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </DisclosurePanel>
-                  </Disclosure>
-                ))}
-              </form>
-
-              <div className="lg:col-span-3">
-                {loading ? (
-                  <p className="text-gray-500 text-center py-10">
-                    Loading orders...
-                  </p>
-                ) : error ? (
-                  <p className="text-red-500 text-center py-10">{error}</p>
-                ) : (
-                  <OrdersTable
-                    orders={filteredOrders}
-                    onUpdateStatus={handleUpdateStatus}
-                  />
-                )}
-              </div>
-            </div>
-          </section>
-        </main>
-      </div>
+      {/* Message Modal */}
       <MessageModal
-        handleClose={() => {
-          setMessage(emptyMessage);
-        }}
+        handleClose={() => setMessage(emptyMessage)}
         modalFlag={message.flag}
         operation={message.operation}
         value={message.message}
       />
-    </div>
-  );
-}
-
-function OrderCard({ order }: { order: Order }) {
-  const getProgress = () => {
-    switch (order.deliveryStatus) {
-      case "PENDING":
-        return 20;
-      case "SHIPPED":
-        return 60;
-      case "DELIVERED":
-        return 100;
-      case "RETURNED":
-        return 100;
-      default:
-        return 0;
-    }
-  };
-
-  return (
-    <div className="border rounded-xl p-5 bg-white shadow-sm my-4">
-      {/* Top Section */}
-      <div className="flex items-center gap-4">
-        <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
-          <img
-            src={order.productId?.image || "/no-image.png"}
-            className="w-full h-full object-cover"
-          />
-        </div>
-
-        <div className="flex-1">
-          <h2 className="font-semibold text-lg">{order.productId?.name}</h2>
-
-          <p className="text-gray-600 text-sm">
-            Store: <span className="font-medium">{order.storeId?.name}</span>
-          </p>
-
-          <p className="text-gray-500 text-sm">
-            Ordered on: {new Date(order.createdAt).toLocaleDateString()}
-          </p>
-        </div>
-      </div>
-
-      {/* Divider */}
-      <div className="my-4 border-t" />
-
-      {/* Middle Section */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-        <div>
-          <p className="text-gray-500">Qty</p>
-          <p className="font-semibold">{order.quantity}</p>
-        </div>
-
-        <div>
-          <p className="text-gray-500">Total</p>
-          <p className="font-semibold">₹{order.totalPrice}</p>
-        </div>
-
-        <div>
-          <p className="text-gray-500">Order Status</p>
-          <p className="font-semibold">{order.orderStatus}</p>
-        </div>
-
-        <div>
-          <p className="text-gray-500">Delivery Status</p>
-          <p className="font-semibold">{order.deliveryStatus}</p>
-        </div>
-      </div>
-
-      {/* Divider */}
-      <div className="my-4 border-t" />
-
-      {/* Delivery Progress Bar */}
-      <div>
-        <div className="flex justify-between text-xs text-gray-500 mb-1">
-          <span>Progress</span>
-          <span>{getProgress()}%</span>
-        </div>
-
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div
-            className="bg-green-500 h-2 rounded-full transition-all"
-            style={{ width: `${getProgress()}%` }}
-          ></div>
-        </div>
-      </div>
-
-      {/* Divider */}
-      <div className="my-4 border-t" />
-
-      {/* Buttons */}
-      <div className="flex gap-3">
-        <button className="px-4 py-2 rounded-lg bg-red-500 text-white text-sm">
-          Request Return
-        </button>
-
-        <button className="px-4 py-2 rounded-lg border border-gray-300 text-sm">
-          View Product
-        </button>
-      </div>
     </div>
   );
 }
