@@ -27,6 +27,8 @@ import { Operation, UserType } from "@/utils/enum.types";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
+import { Button } from "@/stories/Button/Button";
+import Image from "next/image";
 
 // --- UPDATED INTERFACES TO MATCH JSON STRUCTURE ---
 
@@ -407,6 +409,7 @@ export default function OrdersPage() {
   const { state } = useContext(AppContext);
   const { TOKEN } = Api();
   const [message, setMessage] = useState<msgType>(emptyMessage);
+  const [tableScreen, setTableScreen] = useState(true);
 
   const memoizedFilters = useMemo(
     () => ({
@@ -427,7 +430,7 @@ export default function OrdersPage() {
   const applyFiltersAndSorting = useCallback(
     (data: RawOrder[]) => {
       // 1. Transform raw data
-      let processedOrders = transformOrdersForTable(data);
+      const processedOrders = transformOrdersForTable(data);
 
       // 2. Apply front-end filtering (only if not handled by API query, but here we rely on API query params)
       // Since the API uses query params for filtering, we skip the front-end filter step,
@@ -520,13 +523,7 @@ export default function OrdersPage() {
     } finally {
       setLoading(false);
     }
-  }, [
-    selectedSort,
-    memoizedFilters,
-    state.user,
-    TOKEN,
-    applyFiltersAndSorting,
-  ]);
+  }, [memoizedFilters, state.user, TOKEN, applyFiltersAndSorting]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -715,7 +712,22 @@ export default function OrdersPage() {
             Orders Dashboard
           </h1>
 
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
+            <Image
+              src={"/card.svg"}
+              alt="/card"
+              width={20}
+              height={20}
+              onClick={() => setTableScreen(false)}
+            />
+            <Image
+              src={"/tableImg.svg"}
+              alt="/card"
+              width={20}
+              height={20}
+              onClick={() => setTableScreen(true)}
+            />
+
             <Menu as="div" className="relative inline-block text-left">
               <div>
                 <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
@@ -870,10 +882,32 @@ export default function OrdersPage() {
                   {error}
                 </p>
               ) : (
-                <OrdersTable
-                  orders={filteredOrders}
-                  onUpdateStatus={handleUpdateStatus}
-                />
+                <>
+                  {tableScreen ? (
+                    <div className="space-y-4">
+                      <OrdersTable
+                        orders={filteredOrders}
+                        onUpdateStatus={handleUpdateStatus}
+                      />
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {filteredOrders.length > 0 ? (
+                        filteredOrders.map((order, index) => (
+                          <OrderCard
+                            key={index}
+                            order={order}
+                            onUpdateStatus={handleUpdateStatus}
+                          />
+                        ))
+                      ) : (
+                        <p className="text-center py-10 text-lg text-gray-500">
+                          No orders found.
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
@@ -887,6 +921,218 @@ export default function OrdersPage() {
         operation={message.operation}
         value={message.message}
       />
+    </div>
+  );
+}
+
+// Add this new component within the same file, or in a separate file like OrderCard.tsx
+
+function OrderCard({
+  order,
+  onUpdateStatus,
+}: {
+  order: FlattenedOrderRow;
+  onUpdateStatus: (id: string, updates: Partial<RawOrder>) => void;
+}) {
+  const { state } = useContext(AppContext);
+  const isVendorOrAdmin =
+    state.user?.role === UserType.ADMIN ||
+    state.user?.role === UserType.PICE_WORKER ||
+    state.user?.role === UserType.PROJECT_MANAGER ||
+    state.user?.role === UserType.RESELLER ||
+    state.user?.role === UserType.SELLER ||
+    state.user?.role === UserType.SYSTEM_ADMIN;
+
+  const orderIdForUpdate = order._id;
+
+  // Function to get status color
+  const getStatusColor = (status: OrderStatus | DeliveryStatus): string => {
+    switch (status) {
+      case OrderStatus.CONFIRMED:
+      case DeliveryStatus.SHIPPED:
+        return "text-indigo-700 bg-indigo-100";
+      case OrderStatus.CANCELLED:
+      case DeliveryStatus.RETURNED:
+        return "text-red-700 bg-red-100";
+      case OrderStatus.PENDING:
+      case DeliveryStatus.PENDING:
+      default:
+        return "text-yellow-700 bg-yellow-100";
+    }
+  };
+
+  return (
+    <div className="bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200 mb-6">
+      <div className="p-4 sm:p-6">
+        <div className="flex justify-between items-start mb-4 border-b pb-4">
+          <h3 className="text-xl font-semibold text-gray-900 leading-tight">
+            Order ID:{" "}
+            <span className="text-sm font-normal text-gray-500">
+              {orderIdForUpdate}
+            </span>
+          </h3>
+          <span
+            className={classNames(
+              getStatusColor(order.orderStatus),
+              "inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
+            )}
+          >
+            {order.orderStatus}
+          </span>
+        </div>
+        {isVendorOrAdmin && (
+          <div className="ms-48">
+            {order.orderStatus === OrderStatus.PENDING ? (
+              <Menu as="div" className="relative inline-block  text-left">
+                <MenuButton className="inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                  Actions
+                  <ChevronDownIcon
+                    className="-mr-1 ml-1 h-5 w-5 text-gray-400"
+                    aria-hidden="true"
+                  />
+                </MenuButton>
+
+                <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5">
+                  <MenuItem>
+                    {({ active }) => (
+                      <button
+                        onClick={() =>
+                          onUpdateStatus(orderIdForUpdate, {
+                            // Use orderIdForUpdate
+                            orderStatus: OrderStatus.CONFIRMED,
+                          } as Partial<RawOrder>)
+                        }
+                        className={`${
+                          active ? "bg-gray-100" : ""
+                        } block w-full px-4 py-2 text-left text-sm text-gray-700`}
+                      >
+                        Confirm Order
+                      </button>
+                    )}
+                  </MenuItem>
+                  <MenuItem>
+                    {({ active }) => (
+                      <button
+                        onClick={() =>
+                          onUpdateStatus(orderIdForUpdate, {
+                            // Use orderIdForUpdate
+                            orderStatus: OrderStatus.CANCELLED,
+                          } as Partial<RawOrder>)
+                        }
+                        className={`${
+                          active ? "bg-gray-100" : ""
+                        } block w-full px-4 py-2 text-left text-sm text-gray-700`}
+                      >
+                        Cancel Order
+                      </button>
+                    )}
+                  </MenuItem>
+                </MenuItems>
+              </Menu>
+            ) : order.deliveryStatus === DeliveryStatus.PENDING ||
+              order.deliveryStatus === DeliveryStatus.RETURNED ? (
+              <Menu as="div" className="relative inline-block text-left">
+                <MenuButton className="inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                  Actions
+                  <ChevronDownIcon
+                    className="-mr-1 ml-1 h-5 w-5 text-gray-400"
+                    aria-hidden="true"
+                  />
+                </MenuButton>
+
+                <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5">
+                  <MenuItem>
+                    {({ active }) => (
+                      <button
+                        onClick={() =>
+                          onUpdateStatus(orderIdForUpdate, {
+                            // Use orderIdForUpdate
+                            deliveryStatus: DeliveryStatus.SHIPPED,
+                          } as Partial<RawOrder>)
+                        }
+                        className={`${
+                          active ? "bg-gray-100" : ""
+                        } block w-full px-4 py-2 text-left text-sm text-gray-700`}
+                      >
+                        Mark as Shipped
+                      </button>
+                    )}
+                  </MenuItem>
+                </MenuItems>
+              </Menu>
+            ) : null}
+          </div>
+        )}
+        {/* Product and Price Details */}
+        <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+          <div className="col-span-2">
+            <p className="font-medium text-lg text-indigo-600">
+              {order.productId.name}
+            </p>
+            {order.attributes && (
+              <p className="text-xs text-gray-500 mt-1">
+                Attributes: {order.attributes}
+              </p>
+            )}
+          </div>
+          <div className="border-t pt-2">
+            <p className="font-medium">Quantity</p>
+            <p>{order.quantity}</p>
+          </div>
+          <div className="border-t pt-2">
+            <p className="font-medium">Item Price</p>
+            <p className="font-bold">₹{order.itemPrice?.toFixed(2)}</p>
+            <p className="text-xs text-gray-500">
+              (Unit: ₹{order.unitPrice?.toFixed(2)})
+            </p>
+          </div>
+        </div>
+
+        <dl className="mt-4 space-y-3 border-t pt-4 text-sm">
+          {/* Buyer, Vendor, Store */}
+          <div className="grid grid-cols-2 gap-y-3">
+            <div>
+              <dt className="font-medium text-gray-900">Buyer</dt>
+              <dd className="text-gray-700">{order.buyerId?.name}</dd>
+            </div>
+            <div>
+              <dt className="font-medium text-gray-900">Vendor</dt>
+              <dd className="text-gray-700">{order.venderId?.name}</dd>
+            </div>
+          </div>
+          <div>
+            <dt className="font-medium text-gray-900">Store</dt>
+            <dd className="text-gray-700">
+              {order.storeId?.name} ({order.storeId?.address})
+            </dd>
+          </div>
+
+          {/* Status and Payment */}
+          <div className="flex justify-between">
+            <div>
+              <dt className="font-medium text-gray-900">Payment</dt>
+              <dd className="text-gray-700">{order.paymentMethod}</dd>
+            </div>
+            <div>
+              <dt className="font-medium text-gray-900">Delivery Status</dt>
+              <dd
+                className={classNames(
+                  getStatusColor(order.deliveryStatus),
+                  "font-medium rounded-md px-2 py-0.5 text-center"
+                )}
+              >
+                {order.deliveryStatus}
+              </dd>
+            </div>
+          </div>
+
+          {/* Address */}
+          <div>
+            <dt className="font-medium text-gray-900">Delivery Address</dt>
+            <dd className="text-gray-700">{order.deliveryAddress}</dd>
+          </div>
+        </dl>
+      </div>
     </div>
   );
 }
