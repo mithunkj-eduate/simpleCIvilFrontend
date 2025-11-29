@@ -276,7 +276,8 @@ const AddProduct = ({
 
   useEffect(() => {
     if (
-      operations.operation === Operation.UPDATE &&
+      (operations.operation === Operation.UPDATE ||
+        operations.operation === Operation.VIEW) &&
       selectedId &&
       TOKEN &&
       state.user
@@ -470,6 +471,7 @@ const AddProduct = ({
                           setFormData({ ...formData, [key]: e.target.value })
                         }
                         required={item.required}
+                        disabled={operations.operation === Operation.VIEW}
                       />
                     </div>
                   </div>
@@ -486,6 +488,7 @@ const AddProduct = ({
                         setSelectedItem={setSelectedStore}
                         path={ApiPathType.STROES}
                         label="Search Store"
+                        disabled={operations.operation === Operation.VIEW}
                       />
                     </div>
                   </div>
@@ -502,6 +505,7 @@ const AddProduct = ({
                         options={SaleTypeOption}
                         value={selectedType}
                         onChange={(_e, newValue) => setSelectedType(newValue)}
+                        disabled={operations.operation === Operation.VIEW}
                       />
                     </div>
                   </div>
@@ -527,6 +531,7 @@ const AddProduct = ({
                       }}
                       required={item.required}
                       min={item.minNum}
+                      disabled={operations.operation === Operation.VIEW}
                     />
                   </div>
                 </div>
@@ -540,6 +545,7 @@ const AddProduct = ({
                 setSelectedItem={setSelectedGroup}
                 path={ApiPathType.CATEGORIES_GROUP}
                 label="Search Group"
+                disabled={operations.operation === Operation.VIEW}
               />
             </div>
 
@@ -550,6 +556,7 @@ const AddProduct = ({
                   setSelectedItem={setSelectedCategory}
                   path={`${ApiPathType.CATEGORIES_CATEGORIES}&&parentCatId=${selectedGroup.value}`}
                   label="Search Category"
+                  disabled={operations.operation === Operation.VIEW}
                 />
               </div>
             )}
@@ -561,6 +568,7 @@ const AddProduct = ({
                   setSelectedItem={setSelectedSubsidiary}
                   path={`${ApiPathType.CATEGORIES_SUBSIDIARY}&&parentCatId=${selectedCategory.value}`}
                   label="Search Subsidiary Category"
+                  disabled={operations.operation === Operation.VIEW}
                 />
               </div>
             )}
@@ -579,11 +587,13 @@ const AddProduct = ({
                   onChange={(e) =>
                     updateVariant(index, "color", e.target.value)
                   }
+                  disabled={operations.operation === Operation.VIEW}
                 />
                 <Input
                   placeholder="Size"
                   value={v.size}
                   onChange={(e) => updateVariant(index, "size", e.target.value)}
+                  disabled={operations.operation === Operation.VIEW}
                 />
                 <Input
                   placeholder="Weight"
@@ -591,6 +601,7 @@ const AddProduct = ({
                   onChange={(e) =>
                     updateVariant(index, "weight", e.target.value)
                   }
+                  disabled={operations.operation === Operation.VIEW}
                 />
 
                 <Input
@@ -598,6 +609,7 @@ const AddProduct = ({
                   value={v.sku}
                   onChange={(e) => updateVariant(index, "sku", e.target.value)}
                   required
+                  disabled={operations.operation === Operation.VIEW}
                 />
 
                 <Input
@@ -609,6 +621,7 @@ const AddProduct = ({
                     updateVariant(index, "price", Number(e.target.value))
                   }
                   required
+                  disabled={operations.operation === Operation.VIEW}
                 />
 
                 <Input
@@ -620,45 +633,50 @@ const AddProduct = ({
                     updateVariant(index, "stock", Number(e.target.value))
                   }
                   required
+                  disabled={operations.operation === Operation.VIEW}
                 />
-
-                <Button mode="cancel" onClick={() => removeVariant(index)}>
-                  Remove
-                </Button>
+                {operations.operation === Operation.VIEW ? null : (
+                  <Button mode="cancel" onClick={() => removeVariant(index)}>
+                    Remove
+                  </Button>
+                )}
               </div>
             ))}
-
-            <Button
-              className="mt-4"
-              onClick={() =>
-                setVariants([
-                  ...variants,
-                  {
-                    color: "",
-                    size: "",
-                    weight: "",
-                    sku: "",
-                    price: 0,
-                    stock: 0,
-                  },
-                ])
-              }
-            >
-              + Add Variant
-            </Button>
+            {operations.operation === Operation.VIEW ? null : (
+              <Button
+                className="mt-4"
+                onClick={() =>
+                  setVariants([
+                    ...variants,
+                    {
+                      color: "",
+                      size: "",
+                      weight: "",
+                      sku: "",
+                      price: 0,
+                      stock: 0,
+                    },
+                  ])
+                }
+              >
+                + Add Variant
+              </Button>
+            )}
           </div>
         </div>
       </div>
 
       <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 mt-8">
-        <Button
-          type="button"
-          onClick={handleAddProduct}
-          mode="primary"
-          disabled={loading}
-        >
-          {loading ? "Saving..." : "Save Product"}
-        </Button>
+        {operations.operation === Operation.VIEW ? null : (
+          <Button
+            type="button"
+            onClick={handleAddProduct}
+            mode="primary"
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save Product"}
+          </Button>
+        )}
         <Button
           type="button"
           onClick={() => setModalFlag(false)}

@@ -27,12 +27,12 @@ const ProductsPage = () => {
       className: "md:px-6 pl-4 py-3 flex items-center space-x-3 truncate",
     },
     { name: "Description", className: "hidden sm:table-cell" },
-    { name: "Mrp Price", className: "hidden sm:table-cell" },
-    { name: "Sale Price", className: "hidden sm:table-cell" },
+    // { name: "Mrp Price", className: "hidden sm:table-cell" },
+    // { name: "Sale Price", className: "hidden sm:table-cell" },
     { name: "Group", className: "px-6 py-3" },
     { name: "Category", className: "px-6 py-3" },
     { name: "Subcategory", className: "px-6 py-3" },
-    { name: "Stock", className: "hidden sm:table-cell" },
+    // { name: "Stock", className: "hidden sm:table-cell" },
     { name: "Created At", className: "hidden sm:table-cell" },
     { name: "Action", className: "px-6 py-3" },
   ];
@@ -138,12 +138,12 @@ const ProductsPage = () => {
                         <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {product.description}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
+                        {/* <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           ₹{product.mrpPrice.toFixed(2)}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           ₹{product.salePrice.toFixed(2)}
-                        </td>
+                        </td> */}
                         <td className="px-6 py-4 text-sm text-gray-500">
                           {product.group}
                         </td>
@@ -153,13 +153,25 @@ const ProductsPage = () => {
                         <td className="px-6 py-4 text-sm text-gray-500">
                           {product.subsidiary}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
+                        {/* <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {product.stock}
-                        </td>
+                        </td> */}
                         <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {product.createdAt}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
+                        <td className="px-6 py-4 text-sm text-gray-500 flex">
+                          <Image
+                            width={50}
+                            height={50}
+                            src={"/EyeIcon.svg"}
+                            alt="productEdit"
+                            className="size-5"
+                            onClick={() => {
+                              setSelectedId(product.id);
+                              setOperation(Operation.VIEW);
+                              setModalFlag(true);
+                            }}
+                          />
                           <Image
                             width={50}
                             height={50}

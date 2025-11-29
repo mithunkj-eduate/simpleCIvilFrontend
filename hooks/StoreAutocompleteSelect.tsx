@@ -12,6 +12,7 @@ interface Props {
     newValue: AutoCompleteOption | null
   ) => void;
   className?: string;
+  disabled?:boolean
 }
 
 export default function AutocompleteSelect({
@@ -20,6 +21,7 @@ export default function AutocompleteSelect({
   value,
   onChange,
   className,
+  disabled
 }: Props) {
   return (
     <Autocomplete
@@ -32,6 +34,7 @@ export default function AutocompleteSelect({
       renderInput={(params) => <TextField {...params} label={label} />}
       isOptionEqualToValue={(option, val) => option.value === val.value}
       className= {className}
+      disabled={disabled}
     />
   );
 }

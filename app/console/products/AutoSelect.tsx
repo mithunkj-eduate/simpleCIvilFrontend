@@ -12,6 +12,7 @@ interface Props {
   >;
   path: string;
   label?: string;
+  disabled?: boolean
 }
 
 export default function AutoSelect({
@@ -19,6 +20,7 @@ export default function AutoSelect({
   setSelectedItem,
   path,
   label,
+  disabled
 }: Props) {
   const [options, setOptions] = useState<AutoCompleteOption[]>([]);
   const { TOKEN } = Api();
@@ -68,6 +70,7 @@ export default function AutoSelect({
         onChange={(e, newValue) => {
           setSelectedItem(newValue as AutoCompleteOption | null);
         }}
+        disabled={disabled}
       />
     </div>
   );
