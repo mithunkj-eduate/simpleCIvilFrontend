@@ -708,26 +708,11 @@ export default function OrdersPage() {
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+          <h1 className="text-1xl font-bold tracking-tight text-gray-900">
             Orders Dashboard
           </h1>
 
-          <div className="flex items-center gap-2">
-            <Image
-              src={"/card.svg"}
-              alt="/card"
-              width={20}
-              height={20}
-              onClick={() => setTableScreen(false)}
-            />
-            <Image
-              src={"/tableImg.svg"}
-              alt="/card"
-              width={20}
-              height={20}
-              onClick={() => setTableScreen(true)}
-            />
-
+          <div className="flex items-center gap-1">
             <Menu as="div" className="relative inline-block text-left">
               <div>
                 <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
@@ -776,7 +761,20 @@ export default function OrdersPage() {
                 </div>
               </MenuItems>
             </Menu>
-
+            <Image
+              src={"/card.svg"}
+              alt="/card"
+              width={20}
+              height={20}
+              onClick={() => setTableScreen(false)}
+            />
+            <Image
+              src={"/tableImg.svg"}
+              alt="/card"
+              width={20}
+              height={20}
+              onClick={() => setTableScreen(true)}
+            />
             <button
               type="button"
               className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"

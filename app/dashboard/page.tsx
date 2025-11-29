@@ -17,7 +17,6 @@ const DashBord = () => {
   }
   return (
     <>
-      <Navbar NavType={LicenseTypes.RAIDER} />
       <GetOrderPage />
     </>
   );

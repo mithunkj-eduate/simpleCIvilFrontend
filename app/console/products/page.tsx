@@ -30,8 +30,8 @@ const ProductsPage = () => {
     // { name: "Mrp Price", className: "hidden sm:table-cell" },
     // { name: "Sale Price", className: "hidden sm:table-cell" },
     { name: "Group", className: "px-6 py-3" },
-    { name: "Category", className: "px-6 py-3" },
-    { name: "Subcategory", className: "px-6 py-3" },
+    { name: "Category", className: "px-6 py-3 hidden sm:table-cell" },
+    { name: "Subcategory", className: "px-6 py-3 hidden sm:table-cell" },
     // { name: "Stock", className: "hidden sm:table-cell" },
     { name: "Created At", className: "hidden sm:table-cell" },
     { name: "Action", className: "px-6 py-3" },
@@ -147,10 +147,10 @@ const ProductsPage = () => {
                         <td className="px-6 py-4 text-sm text-gray-500">
                           {product.group}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
+                        <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {product.category}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
+                        <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {product.subsidiary}
                         </td>
                         {/* <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">

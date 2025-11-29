@@ -13,17 +13,19 @@ import AddModal from "@/components/helpers/AddModal";
 import MessageModal from "@/customComponents/MessageModal";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
+import { getDistance } from "@/utils/utilFunctions";
 
 interface Orders {
   id: string;
   productName: string;
+  paymentMethod: string;
   createdAt: string;
   store: string;
   storeAddress: string;
   orderAcceptStatus: string;
   deliveryAddress: string;
   deliveryStatus: string;
-  location: number[];
+  storeLocation: number[];
   orderId: string;
   buyerId: string;
   deliveryLocation: number[];
@@ -66,15 +68,21 @@ const DeliveryOrderPage = () => {
           setOrders(
             res.data.data.map((product: any) => ({
               id: product._id,
-              productName: product?.orderId?.productId.name || "N/A",
+              productName:
+                product?.orderId?.items.map(
+                  (item: any) => `${item?.productId?.name}, `
+                ) ||
+                "N/A",
+              paymentMethod: product?.orderId?.paymentMethod || "N/A",
               orderAcceptStatus: product.orderAcceptStatus,
-              store: product?.orderId?.storeId.name || "N/A",
+              store: product?.orderId?.storeId?.name || "N/A",
               storeAddress: product?.orderId?.storeId.address || "N/A",
               deliveryAddress: product?.orderId?.deliveryAddress || "N/A",
-              deliveryStatus: product?.orderId.deliveryStatus || "N/A",
-              orderId: product?.orderId._id || "N/A",
+              deliveryStatus: product?.orderId?.deliveryStatus || "N/A",
+              orderId: product?.orderId?._id || "N/A",
               buyerId: product?.orderId?.buyerId._id || "N/A",
-              location: product?.orderId?.storeId?.location?.coordinates || [],
+              storeLocation:
+                product?.orderId?.storeId?.location?.coordinates || [],
               createdAt: product.createdAt
                 ? new Date(product.createdAt).toLocaleDateString()
                 : "N/A",
@@ -177,6 +185,20 @@ const DeliveryOrderPage = () => {
                         <p className="mt-1 truncate text-xs/5 text-gray-500">
                           Delivery Address: {person.deliveryAddress}
                         </p>
+                        {person.deliveryStatus === DeliveryStatus.PENDING ? (
+                          <div className="mt-1 truncate text-xs/5 text-gray-500">
+                            Total distance{" "}
+                            <span className="text-xl text-gray-900">
+                              {getDistance(
+                                person.storeLocation[0],
+                                person.storeLocation[1],
+                                person.deliveryLocation[0],
+                                person.deliveryLocation[1]
+                              )?.toFixed(2)}{" "}
+                              KM
+                            </span>
+                          </div>
+                        ) : null}{" "}
                         {person.orderAcceptStatus ===
                           OrderAcceptStatus.ACCEPTED &&
                         person.deliveryStatus !== DeliveryStatus.DELIVERED ? (
@@ -232,6 +254,9 @@ const DeliveryOrderPage = () => {
                       <p className="text-sm/6 text-gray-900">
                         Delivery Status : {person.deliveryStatus}
                       </p>
+                      <p className="text-sm/6 text-gray-900">
+                        Payment Method : {person.paymentMethod}
+                      </p>
                       <p className="mt-1 text-xs/5 text-gray-500">
                         Accepted :
                         <time dateTime={person.createdAt}>
@@ -244,11 +269,11 @@ const DeliveryOrderPage = () => {
                           <Button
                             onClick={() => {
                               if (
-                                person.location.length &&
+                                person.storeLocation.length &&
                                 person.deliveryStatus === DeliveryStatus.PENDING
                               )
                                 router.push(
-                                  `/dashboard/orders/map?lat=${person.location[0]}&lng=${person.location[1]}`
+                                  `/dashboard/orders/map?lat=${person.storeLocation[0]}&lng=${person.storeLocation[1]}`
                                 );
                               else if (person.deliveryLocation.length) {
                                 router.push(

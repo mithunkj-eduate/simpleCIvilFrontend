@@ -9,6 +9,7 @@ import { OrderAcceptStatus } from "@/types/order";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import { LicenseTypes, Operation } from "@/utils/enum.types";
+import { getDistance } from "@/utils/utilFunctions";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -23,7 +24,7 @@ interface Orders {
   storeName: string;
   storeAddress: string;
   createdAt: string;
-  location: number[];
+  storeLocation: number[];
   deliveryLocation: number[];
   items: { productName: string; quantity: number }[];
 }
@@ -185,6 +186,18 @@ const GetOrderPage = () => {
                         <p className="mt-1 truncate text-xs/5 text-gray-500">
                           Delivery Address: {person.deliveryAddress}
                         </p>
+                        <div className="mt-1 truncate text-xs/5 text-gray-500">
+                          Total distance{" "}
+                          <span className="text-xl text-gray-900">
+                            {getDistance(
+                              person.storeLocation[0],
+                              person.storeLocation[1],
+                              person.deliveryLocation[0],
+                              person.deliveryLocation[1]
+                            )?.toFixed(2)}{" "}
+                            KM
+                          </span>
+                        </div>
                         <div>
                           <Button
                             mode="accept"
@@ -227,10 +240,10 @@ const GetOrderPage = () => {
                       <Button
                         className=""
                         onClick={() => {
-                          console.log(person.location, "location");
-                          if (person.location.length)
+                          console.log(person.storeLocation, "location");
+                          if (person.storeLocation.length)
                             router.push(
-                              `/dashboard/orders/map?lat=${person.location[0]}&lng=${person.location[1]}`
+                              `/dashboard/orders/map?lat=${person.storeLocation[0]}&lng=${person.storeLocation[1]}`
                             );
                         }}
                       >
