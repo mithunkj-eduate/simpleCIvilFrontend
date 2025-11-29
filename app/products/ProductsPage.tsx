@@ -25,6 +25,7 @@ import {
 import { productSortQuery } from "@/types/productSchemaTypes";
 import { api } from "@/components/helpers/apiheader";
 import Link from "next/link";
+import { CartVariantType } from "@/types/cart";
 
 // Sample ProductCard component
 interface Product {
@@ -50,6 +51,7 @@ interface Product {
   color?: string;
   size?: string;
   image: string[];
+  variants: CartVariantType[];
 }
 
 // function ProductCard({ product }: { product: Product }) {
@@ -107,9 +109,7 @@ interface Product {
 // }
 
 function ProductCard({ product }: { product: Product }) {
-  const price = product.saleTerms
-    ? product.saleTerms.salePrice || product.saleTerms.price
-    : product.rentalTerms?.[0]?.pricePerUnit || 0;
+  const price = product.variants[0]?.price || 0;
 
   const image = product.image.length
     ? product.image[0]
@@ -159,13 +159,17 @@ function ProductCard({ product }: { product: Product }) {
         </p>
 
         {/* Availability */}
-        <p
-          className={`text-sm mt-1 ${
-            product.avilablity ? "text-green-600" : "text-red-500"
-          }`}
-        >
-          {product.avilablity ? "In Stock" : "Out of Stock"}
-        </p>
+        {product.variants && product.variants.length ?(
+          <p
+            className={`text-sm mt-1 ${
+              product.avilablity ? "text-green-600" : "text-red-500"
+            }`}
+          >
+            {product.variants.some((i) => i.stock)
+              ? "In Stock"
+              : "Out of Stock"}
+          </p>
+        ) : null}
 
         {/* Tags */}
         {product.tags.length > 0 && (
@@ -514,6 +518,7 @@ export default function ProductsPage() {
         throw new Error("Failed to fetch products");
       }
       const data = await response.data;
+      console.log(data, "data");
       setProductsData(data);
       setFilteredProducts(data.data);
 
@@ -685,7 +690,7 @@ export default function ProductsPage() {
                   {subCategories.map((category) => (
                     <li key={category.name}>
                       <button
-                       type="button"
+                        type="button"
                         onClick={() => {
                           setSelectedSubCategory(category.name.toLowerCase());
                           setFilterVersion((prev) => prev + 1);
