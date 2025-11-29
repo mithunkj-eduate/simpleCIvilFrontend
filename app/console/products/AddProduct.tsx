@@ -83,35 +83,35 @@ export const StoreFormJson = [
   //   required: false,
   // },
   {
-    labelName: "Tags (comma-separated)",
-    inputName: "tags",
-    dataType: "text",
-    required: false,
-  },
-  {
-    labelName: "Rental Price Per Unit",
-    inputName: "rentalPricePerUnit",
-    dataType: "number",
-    required: false,
-  },
-  {
-    labelName: "Rental Unit (e.g., days)",
-    inputName: "rentalUnit",
-    dataType: "number",
-    required: false,
-  },
-  {
-    labelName: "Minimum Rental Duration",
-    inputName: "rentalMinDuration",
-    dataType: "number",
-    required: false,
-  },
-  {
     labelName: "Product Type",
     inputName: "type",
     dataType: "type",
     required: true,
   },
+  {
+    labelName: "Tags (comma-separated)",
+    inputName: "tags",
+    dataType: "text",
+    required: false,
+  },
+  // {
+  //   labelName: "Rental Price Per Unit",
+  //   inputName: "rentalPricePerUnit",
+  //   dataType: "number",
+  //   required: false,
+  // },
+  // {
+  //   labelName: "Rental Unit (e.g., days)",
+  //   inputName: "rentalUnit",
+  //   dataType: "number",
+  //   required: false,
+  // },
+  // {
+  //   labelName: "Minimum Rental Duration",
+  //   inputName: "rentalMinDuration",
+  //   dataType: "number",
+  //   required: false,
+  // },
 ];
 
 // Type-safe form data — only string | number | undefined allowed for inputs
@@ -253,6 +253,21 @@ const AddProduct = ({
             label: data.subsidiaryId.name,
             value: data.subsidiaryId._id,
           });
+
+        if (data.variants && data.variants.length) {
+          setVariants(
+            data.variants.map((v) => ({
+              sku: v.sku,
+              price: v.price,
+              stock: v.stock ?? 0, // optional fallback
+              color: v.attributes.color ?? "",
+              size: v.attributes.size ?? "",
+              weight: v.attributes.weight ?? "",
+              material: v.attributes.material ?? "",
+              images: v.images ?? [],
+            }))
+          );
+        }
       }
     } catch (error) {
       console.error("Failed to fetch product:", error);
@@ -312,48 +327,18 @@ const AddProduct = ({
         });
         return;
       }
-
-      const body1: ProductInputType = {
-        name: formData.name.trim(),
-        description: formData.description.trim(),
-        storeId: selectedStore.value as string,
-        ownerId: state.user?.id as string,
-        groupId: selectedGroup?.value ?? "",
-        categoryId: selectedCategory?.value ?? "",
-        subsidiaryId: selectedSubsidiary?.value ?? "",
-        latitude: formData.latitude,
-        longitude: formData.longitude,
-        avilablity: true, // now safe and correct
-        type: selectedType.value as productType,
-        color: formData.color || undefined,
-        size: formData.size || undefined,
-        tags: formData.tags
-          ? formData.tags
-              .split(",")
-              .map((t) => t.trim())
-              .filter(Boolean)
-          : [],
-        saleTerms:
-          selectedType.value !== productType.RENTAL
-            ? {
-                mrpPrice: formData.mrpPrice || 0,
-                salePrice: formData.salePrice || 0,
-                stock: formData.stock || 0,
-              }
-            : undefined,
-        rentalTerms:
-          selectedType.value === productType.RENTAL &&
-          formData.rentalPricePerUnit > 0 &&
-          formData.rentalUnit > 0
-            ? [
-                {
-                  unit: formData.rentalUnit,
-                  pricePerUnit: formData.rentalPricePerUnit,
-                  minduration: formData.rentalMinDuration.toString(),
-                },
-              ]
-            : undefined,
-      };
+      const checkVariants = variants.filter(
+        (i) => i.sku !== "" && i.price !== 0
+      );
+      console.log(checkVariants, "checkVariants");
+      if (!checkVariants.length) {
+        setMessage({
+          flag: true,
+          message: "Please add variants price, stock, sku",
+          operation: Operation.NONE,
+        });
+        return;
+      }
 
       const body: ProductInputType = {
         name: formData.name.trim(),
@@ -369,7 +354,7 @@ const AddProduct = ({
         type: selectedType.value as productType,
 
         // NEW: attach variants
-        variants: variants.map((v) => ({
+        variants: checkVariants.map((v) => ({
           sku: v.sku,
           price: v.price,
           stock: v.stock ?? 0, // optional fallback
@@ -548,88 +533,6 @@ const AddProduct = ({
               );
             })}
 
-            <div className="sm:col-span-2 mt-6">
-              <Label>Product Variants</Label>
-
-              {variants.map((v, index) => (
-                <div
-                  key={index}
-                  className="grid grid-cols-6 gap-3 p-3 border rounded-md mt-4 bg-gray-50"
-                >
-                  <Input
-                    placeholder="Color"
-                    value={v.color}
-                    onChange={(e) =>
-                      updateVariant(index, "color", e.target.value)
-                    }
-                  />
-                  <Input
-                    placeholder="Size"
-                    value={v.size}
-                    onChange={(e) =>
-                      updateVariant(index, "size", e.target.value)
-                    }
-                  />
-                  <Input
-                    placeholder="Weight"
-                    value={v.weight}
-                    onChange={(e) =>
-                      updateVariant(index, "weight", e.target.value)
-                    }
-                  />
-
-                  <Input
-                    placeholder="SKU"
-                    value={v.sku}
-                    onChange={(e) =>
-                      updateVariant(index, "sku", e.target.value)
-                    }
-                  />
-
-                  <Input
-                    type="number"
-                    placeholder="Price"
-                    value={v.price}
-                    onChange={(e) =>
-                      updateVariant(index, "price", Number(e.target.value))
-                    }
-                  />
-
-                  <Input
-                    type="number"
-                    placeholder="Stock"
-                    value={v.stock}
-                    onChange={(e) =>
-                      updateVariant(index, "stock", Number(e.target.value))
-                    }
-                  />
-
-                  <Button mode="cancel" onClick={() => removeVariant(index)}>
-                    Remove
-                  </Button>
-                </div>
-              ))}
-
-              <Button
-                className="mt-4"
-                onClick={() =>
-                  setVariants([
-                    ...variants,
-                    {
-                      color: "",
-                      size: "",
-                      weight: "",
-                      sku: "",
-                      price: 0,
-                      stock: 0,
-                    },
-                  ])
-                }
-              >
-                + Add Variant
-              </Button>
-            </div>
-
             {/* Category Hierarchy */}
             <div className="sm:col-span-2">
               <AutoSelect
@@ -661,6 +564,88 @@ const AddProduct = ({
                 />
               </div>
             )}
+          </div>
+          <div className="sm:col-span-2  mt-6">
+            <Label>Product Variants</Label>
+
+            {variants.map((v, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-1 lg:grid-cols-2  gap-3 p-3 border rounded-md mt-4 bg-gray-50"
+              >
+                <Input
+                  placeholder="Color"
+                  value={v.color}
+                  onChange={(e) =>
+                    updateVariant(index, "color", e.target.value)
+                  }
+                />
+                <Input
+                  placeholder="Size"
+                  value={v.size}
+                  onChange={(e) => updateVariant(index, "size", e.target.value)}
+                />
+                <Input
+                  placeholder="Weight"
+                  value={v.weight}
+                  onChange={(e) =>
+                    updateVariant(index, "weight", e.target.value)
+                  }
+                />
+
+                <Input
+                  placeholder="SKU"
+                  value={v.sku}
+                  onChange={(e) => updateVariant(index, "sku", e.target.value)}
+                  required
+                />
+
+                <Input
+                  label="Price"
+                  type="number"
+                  placeholder="Price"
+                  value={v.price}
+                  onChange={(e) =>
+                    updateVariant(index, "price", Number(e.target.value))
+                  }
+                  required
+                />
+
+                <Input
+                  label="stock"
+                  type="number"
+                  placeholder="Stock"
+                  value={v.stock}
+                  onChange={(e) =>
+                    updateVariant(index, "stock", Number(e.target.value))
+                  }
+                  required
+                />
+
+                <Button mode="cancel" onClick={() => removeVariant(index)}>
+                  Remove
+                </Button>
+              </div>
+            ))}
+
+            <Button
+              className="mt-4"
+              onClick={() =>
+                setVariants([
+                  ...variants,
+                  {
+                    color: "",
+                    size: "",
+                    weight: "",
+                    sku: "",
+                    price: 0,
+                    stock: 0,
+                  },
+                ])
+              }
+            >
+              + Add Variant
+            </Button>
           </div>
         </div>
       </div>

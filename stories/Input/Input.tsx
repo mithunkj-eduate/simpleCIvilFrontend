@@ -1,3 +1,5 @@
+import { Label } from "../Label/Label";
+
 export type Props = {
   // If true, will pass native `event` to the `onChange` callback
   rawOnChange?: boolean;
@@ -59,29 +61,33 @@ export const Input = ({
   required,
   type = "text",
   value,
+  label,
 }: Props) => {
   return (
-    <input
-      placeholder={placeholder}
-      disabled={disabled}
-      autoFocus={autoFocus}
-      // autoComplete="off"
-      autoComplete="one-time-code"
-      onChange={onChange}
-      type={type}
-      name={name}
-      required={required}
-      onFocus={onFocus}
-      value={value}
-      defaultValue={defaultValue}
-      maxLength={maxLength}
-      min={min}
-      checked={checked}
-      max={max}
-      pattern={pattern}
-      id={id}
-      onBlur={onBlur}
-      className={`block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 ${className}`}
-    />
+    <>
+      {label && <Label>{label}</Label>}
+      <input
+        placeholder={placeholder}
+        disabled={disabled}
+        autoFocus={autoFocus}
+        // autoComplete="off"
+        autoComplete="one-time-code"
+        onChange={onChange}
+        type={type}
+        name={name}
+        required={required}
+        onFocus={onFocus}
+        value={value}
+        defaultValue={defaultValue}
+        maxLength={maxLength}
+        min={min}
+        checked={checked}
+        max={max}
+        pattern={pattern}
+        id={id}
+        onBlur={onBlur}
+        className={`block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 ${className}`}
+      />
+    </>
   );
 };
