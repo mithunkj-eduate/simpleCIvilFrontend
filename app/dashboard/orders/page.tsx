@@ -204,6 +204,13 @@ const DeliveryOrderPage = () => {
     }
   }, []);
 
+  const handleClose = () => {
+    if (message.operation === Operation.CREATE) {
+      setOpen(false);
+    }
+    setMessage(emptyMessage);
+  };
+
   return (
     <div className="bg-white ">
       <Navbar NavType={LicenseTypes.RAIDER} />
@@ -493,9 +500,7 @@ const DeliveryOrderPage = () => {
       )}
 
       <MessageModal
-        handleClose={() => {
-          setMessage(emptyMessage);
-        }}
+        handleClose={handleClose}
         modalFlag={message.flag}
         operation={message.operation}
         value={message.message}

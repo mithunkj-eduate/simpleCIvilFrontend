@@ -106,7 +106,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     () => [
       { name: "Dashboard", href: "/dashboard", current: true },
       { name: "Orders", href: "/dashboard/orders", current: false },
-      { name: "Map", href: "/dashboard/routemap", current: false },
+      // { name: "Map", href: "/dashboard/routemap", current: false },
     ],
     []
   );

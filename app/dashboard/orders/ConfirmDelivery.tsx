@@ -82,7 +82,6 @@ export default function ConfirmDelivery({
           message: "Delivery Successfuly",
           operation: Operation.CREATE,
         });
-        refetchQuery();
       }
     } catch (err) {
       console.error(err);
@@ -120,7 +119,10 @@ export default function ConfirmDelivery({
   };
 
   const handleClose = () => {
-    setOpen(false);
+    if (message.operation === Operation.CREATE) {
+      setOpen(false);
+      refetchQuery();
+    }
     setMessage(emptyMessage);
   };
 
