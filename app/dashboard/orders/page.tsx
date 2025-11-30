@@ -9,7 +9,6 @@ import { LicenseTypes, Operation } from "@/utils/enum.types";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import ConfirmDelivery from "./ConfirmDelivery";
-import AddModal from "@/components/helpers/AddModal";
 import MessageModal from "@/customComponents/MessageModal";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";

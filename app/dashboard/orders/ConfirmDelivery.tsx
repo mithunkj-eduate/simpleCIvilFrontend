@@ -1,19 +1,12 @@
 "use client";
 
-import {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { Button } from "@/stories/Button/Button";
@@ -93,30 +86,30 @@ export default function ConfirmDelivery({
     }
   };
 
-  const handleUpdateStatus = async () => {
-    try {
-      if (!TOKEN || !state.user?.id || !orderId) return;
+  // const handleUpdateStatus = async () => {
+  //   try {
+  //     if (!TOKEN || !state.user?.id || !orderId) return;
 
-      const endpoint = `/orders/${orderId}/deliveryStatus`;
-      const response = await api.put(
-        endpoint,
-        { deliveryStatus: DeliveryStatus.SHIPPED },
-        {
-          headers: { Authorization: `Bearer ${TOKEN}` },
-        }
-      );
-      if (response.data.data) {
-        refetchQuery();
-        setMessage({
-          flag: true,
-          message: "Order Picked Successfully",
-          operation: Operation.CREATE,
-        });
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  //     const endpoint = `/orders/${orderId}/deliveryStatus`;
+  //     const response = await api.put(
+  //       endpoint,
+  //       { deliveryStatus: DeliveryStatus.SHIPPED },
+  //       {
+  //         headers: { Authorization: `Bearer ${TOKEN}` },
+  //       }
+  //     );
+  //     if (response.data.data) {
+  //       refetchQuery();
+  //       setMessage({
+  //         flag: true,
+  //         message: "Order Picked Successfully",
+  //         operation: Operation.CREATE,
+  //       });
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   const handleClose = () => {
     if (message.operation === Operation.CREATE) {
