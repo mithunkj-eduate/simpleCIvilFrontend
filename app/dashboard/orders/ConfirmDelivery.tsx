@@ -18,7 +18,7 @@ import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { Button } from "@/stories/Button/Button";
 import { Input } from "@/stories/Input/Input";
-import { DeliveryStatus } from "@/types/order";
+import { DeliveryStatus, OrderAcceptStatus } from "@/types/order";
 import MessageModal from "@/customComponents/MessageModal";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
@@ -30,6 +30,11 @@ interface Props {
   orderId: string;
   buyerId: string;
   deliveryStatus: DeliveryStatus;
+  refetchQuery: () => void;
+  UpdateRaiderStatus: (
+    orderId: string,
+    acceptStatus: OrderAcceptStatus
+  ) => void;
 }
 
 export default function ConfirmDelivery({
@@ -38,6 +43,8 @@ export default function ConfirmDelivery({
   orderId,
   buyerId,
   deliveryStatus,
+  refetchQuery,
+  UpdateRaiderStatus,
 }: Props) {
   const { state } = useContext(AppContext);
   const { TOKEN } = Api();
@@ -75,6 +82,7 @@ export default function ConfirmDelivery({
           message: "Delivery Successfuly",
           operation: Operation.CREATE,
         });
+        refetchQuery();
       }
     } catch (err) {
       console.error(err);
@@ -99,6 +107,7 @@ export default function ConfirmDelivery({
         }
       );
       if (response.data.data) {
+        refetchQuery();
         setMessage({
           flag: true,
           message: "Order Picked Successfully",
@@ -173,7 +182,9 @@ export default function ConfirmDelivery({
                   <Button
                     type="button"
                     data-autofocus
-                    onClick={() => handleUpdateStatus()}
+                    onClick={() =>
+                      UpdateRaiderStatus(orderId, OrderAcceptStatus.PICKED)
+                    }
                     mode="dark"
                   >
                     OK

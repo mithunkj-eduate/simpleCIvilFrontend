@@ -54,6 +54,14 @@ const DeliveryOrderPage = () => {
   const [open, setOpen] = useState(false);
   const [item, setItem] = useState<itemType>(initialItem);
   const [message, setMessage] = useState<msgType>(emptyMessage);
+  const [currentLocation, setCurrentLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+  const location = {
+    lat: 13.028473178767564,
+    lng: 77.63284503525036,
+  };
 
   const GetUsers = async () => {
     setLoading(true);
@@ -147,6 +155,55 @@ const DeliveryOrderPage = () => {
     }
   };
 
+  const handleUpdateStatus = async (
+    orderId: string,
+    acceptStatus: OrderAcceptStatus
+  ) => {
+    try {
+      if (!TOKEN || !state.user?.id || !orderId || !acceptStatus) return;
+
+      const endpoint = `/raider/orders/acceptStatus`;
+      const response = await api.put(
+        endpoint,
+        {
+          orderId,
+          acceptStatus,
+        },
+        {
+          headers: { Authorization: `Bearer ${TOKEN}` },
+        }
+      );
+      if (response.data.status) {
+        GetUsers();
+        setMessage({
+          flag: true,
+          message: "Order Status Successfully",
+          operation: Operation.CREATE,
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // GET USER'S CURRENT LOCATION
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setCurrentLocation({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          });
+        },
+        (err) => {
+          console.error("Error getting location:", err);
+          alert("Unable to get your location");
+        }
+      );
+    }
+  }, []);
+
   return (
     <div className="bg-white ">
       <Navbar NavType={LicenseTypes.RAIDER} />
@@ -176,80 +233,173 @@ const DeliveryOrderPage = () => {
                       </div>
 
                       <div className="min-w-0 flex-auto">
-                        <p className="text-sm/6 font-semibold text-gray-900">
-                          {person.productName}
-                        </p>
-                        <p className="mt-1 truncate text-xs/5 text-gray-500">
-                          Store: {person.store}
-                        </p>
-                        <p className="mt-1 truncate text-xs/5 text-gray-500">
-                          Store Address: {person.storeAddress}
-                        </p>
-                        <p className="mt-1 truncate text-xs/5 text-gray-500">
-                          Delivery Address: {person.deliveryAddress}
-                        </p>
-                        {person.deliveryStatus === DeliveryStatus.PENDING ? (
-                          <div className="mt-1 truncate text-xs/5 text-gray-500">
-                            Total distance{" "}
-                            <span className="text-xl text-gray-900">
-                              {getDistance(
-                                person.storeLocation[0],
-                                person.storeLocation[1],
-                                person.deliveryLocation[0],
-                                person.deliveryLocation[1]
-                              )?.toFixed(2)}{" "}
-                              KM
-                            </span>
-                          </div>
-                        ) : null}{" "}
                         {person.orderAcceptStatus ===
-                          OrderAcceptStatus.ACCEPTED &&
-                        person.deliveryStatus !== DeliveryStatus.DELIVERED ? (
-                          <div>
-                            {person.deliveryStatus ===
-                            DeliveryStatus.PENDING ? (
-                              <Button
-                                mode="accept"
-                                className="m-2"
-                                onClick={() => {
-                                  setItem({
-                                    buyerId: person.buyerId,
-                                    orderId: person.orderId,
-                                    deliveryStatus:
-                                      person.deliveryStatus as DeliveryStatus,
-                                  });
-                                  setOpen(true);
-                                }}
-                              >
-                                PICKED UP
-                              </Button>
-                            ) : (
-                              <Button
-                                mode="accept"
-                                className="m-2"
-                                onClick={() => {
-                                  setItem({
-                                    buyerId: person.buyerId,
-                                    orderId: person.orderId,
-                                    deliveryStatus:
-                                      person.deliveryStatus as DeliveryStatus,
-                                  });
+                          OrderAcceptStatus.ACCEPTED ||
+                        person.orderAcceptStatus ===
+                          OrderAcceptStatus.REACHED_STORE ? (
+                          <>
+                            {person.orderAcceptStatus ===
+                            OrderAcceptStatus.REACHED_STORE ? (
+                              <p className="text-sm/6 font-semibold text-gray-900">
+                                {person.orderId}
+                              </p>
+                            ) : null}
+                            <p className="mt-1 truncate text-xs/5 text-gray-500">
+                              Store: {person.store}
+                            </p>
+                            <p className="mt-1 truncate text-xs/5 text-gray-500">
+                              Store Address: {person.storeAddress}
+                            </p>
+                            <div className="mt-1 truncate text-xs/5 text-gray-500">
+                              Total distance{" "}
+                              <span className="text-xl text-gray-900">
+                                {getDistance(
+                                  currentLocation
+                                    ? currentLocation.lat
+                                    : location.lat,
+                                  currentLocation
+                                    ? currentLocation.lng
+                                    : location.lng,
+                                  person.storeLocation[0],
+                                  person.storeLocation[1]
+                                )?.toFixed(2)}{" "}
+                                km
+                              </span>
+                            </div>
+                          </>
+                        ) : person.orderAcceptStatus ===
+                            OrderAcceptStatus.PICKED ||
+                          person.orderAcceptStatus ===
+                            OrderAcceptStatus.REACHED_DROP ? (
+                          <>
+                            <p className="text-sm/6 font-semibold text-gray-900">
+                              {person.orderId}
+                            </p>
+                            <p className="text-sm/6 font-semibold text-gray-900">
+                              {person.productName}
+                            </p>
+                            <p className="mt-1 truncate text-xs/5 text-gray-500">
+                              Delivery Address: {person.deliveryAddress}
+                            </p>
+                            <div className="mt-1 truncate text-xs/5 text-gray-500">
+                              Total distance{" "}
+                              <span className="text-xl text-gray-900">
+                                {getDistance(
+                                  person.storeLocation[0],
+                                  person.storeLocation[1],
+                                  person.deliveryLocation[0],
+                                  person.deliveryLocation[1]
+                                )?.toFixed(2)}{" "}
+                                km
+                              </span>
+                            </div>
+                          </>
+                        ) : null}
+                        {person.deliveryStatus === DeliveryStatus.DELIVERED ? (
+                          <>
+                            <p className="text-sm/6 font-semibold text-gray-900">
+                              {person.orderId}
+                            </p>
+                            <p className="mt-1 truncate text-xs/5 text-gray-500">
+                              Store: {person.store}
+                            </p>
+                            <p className="mt-1 truncate text-xs/5 text-gray-500">
+                              Store Address: {person.storeAddress}
+                            </p>
 
-                                  handleGenerateCode(
-                                    person.orderId,
-                                    person.buyerId
-                                  );
-                                }}
-                              >
-                                DELIVERY
-                              </Button>
-                            )}
-
-                            <Button mode="cancel" className="m-2">
-                              {" "}
-                              CANCLE
+                            <p className="text-sm/6 font-semibold text-gray-900">
+                              {person.productName}
+                            </p>
+                            <p className="mt-1 truncate text-xs/5 text-gray-500">
+                              Delivery Address: {person.deliveryAddress}
+                            </p>
+                            <div className="mt-1 truncate text-xs/5 text-gray-500">
+                              Total distance{" "}
+                              <span className="text-xl text-gray-900">
+                                {getDistance(
+                                  person.storeLocation[0],
+                                  person.storeLocation[1],
+                                  person.deliveryLocation[0],
+                                  person.deliveryLocation[1]
+                                )?.toFixed(2)}
+                                km
+                              </span>
+                            </div>
+                          </>
+                        ) : null}
+                        {person.deliveryStatus !== DeliveryStatus.DELIVERED ? (
+                          person.orderAcceptStatus ===
+                          OrderAcceptStatus.ACCEPTED ? (
+                            <Button
+                              mode="accept"
+                              className="m-2"
+                              onClick={() => {
+                                handleUpdateStatus(
+                                  person.orderId,
+                                  OrderAcceptStatus.REACHED_STORE
+                                );
+                              }}
+                            >
+                              REACHED PICKUP
                             </Button>
-                          </div>
+                          ) : person.orderAcceptStatus ===
+                            OrderAcceptStatus.REACHED_STORE ? (
+                            <Button
+                              mode="accept"
+                              className="m-2"
+                              onClick={() => {
+                                setItem({
+                                  buyerId: person.buyerId,
+                                  orderId: person.orderId,
+                                  deliveryStatus:
+                                    person.deliveryStatus as DeliveryStatus,
+                                });
+                                setOpen(true);
+                              }}
+                            >
+                              PICKED UP
+                            </Button>
+                          ) : person.orderAcceptStatus ===
+                            OrderAcceptStatus.PICKED ? (
+                            <Button
+                              mode="accept"
+                              className="m-2"
+                              onClick={() => {
+                                handleUpdateStatus(
+                                  person.orderId,
+                                  OrderAcceptStatus.REACHED_DROP
+                                );
+                              }}
+                            >
+                              REACHED DRAP
+                            </Button>
+                          ) : person.orderAcceptStatus ===
+                            OrderAcceptStatus.REACHED_DROP ? (
+                            <Button
+                              mode="accept"
+                              className="m-2"
+                              onClick={() => {
+                                setItem({
+                                  buyerId: person.buyerId,
+                                  orderId: person.orderId,
+                                  deliveryStatus:
+                                    person.deliveryStatus as DeliveryStatus,
+                                });
+
+                                handleGenerateCode(
+                                  person.orderId,
+                                  person.buyerId
+                                );
+                              }}
+                            >
+                              DELIVERY
+                            </Button>
+                          ) : null
+                        ) : null}
+                        {person.deliveryStatus !== DeliveryStatus.DELIVERED ? (
+                          <Button mode="cancel" className="m-2">
+                            CANCLE
+                          </Button>
                         ) : null}
                       </div>
                     </div>
@@ -335,6 +485,8 @@ const DeliveryOrderPage = () => {
               buyerId={item.buyerId}
               orderId={item.orderId}
               deliveryStatus={item.deliveryStatus}
+              refetchQuery={GetUsers}
+              UpdateRaiderStatus={handleUpdateStatus}
             />
           ) : null}
         </>

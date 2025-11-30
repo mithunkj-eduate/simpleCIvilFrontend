@@ -155,7 +155,6 @@ const GetOrderPage = () => {
         );
 
         if (res.status) {
-          GetUsers();
           setMessage({
             flag: true,
             message: "Update successfully",
@@ -172,6 +171,11 @@ const GetOrderPage = () => {
     }
   };
   console.log(Orders);
+
+  const handleClose = () => {
+    if (message.operation === Operation.CREATE) router.push("/dashboard/orders");
+    setMessage(emptyMessage);
+  };
   return (
     <div className="bg-white ">
       <Navbar NavType={LicenseTypes.RAIDER} />
@@ -279,7 +283,7 @@ const GetOrderPage = () => {
                           {person.createdAt}
                         </time>
                       </p>
-                      <Button
+                      {/* <Button
                         className=""
                         onClick={() => {
                           console.log(person.storeLocation, "location");
@@ -290,7 +294,7 @@ const GetOrderPage = () => {
                         }}
                       >
                         Map
-                      </Button>
+                      </Button> */}
                     </div>
                   </li>
                 ))}
@@ -309,9 +313,7 @@ const GetOrderPage = () => {
         </>
       )}
       <MessageModal
-        handleClose={() => {
-          setMessage(emptyMessage);
-        }}
+        handleClose={handleClose}
         modalFlag={message.flag}
         operation={message.operation}
         value={message.message}

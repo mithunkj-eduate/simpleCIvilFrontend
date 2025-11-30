@@ -20,6 +20,10 @@ export enum DeliveryStatus {
 export enum OrderAcceptStatus {
   PENDING = "PENDING",
   ACCEPTED = "ACCEPTED",
+  REACHED_STORE = "REACHED_STORE",
+  PICKED = "PICKED",
+  REACHED_DROP = "REACHED_DROP",
+  DELIVERED = "DELIVERED",
   CANCELLED = "CANCELLED",
 }
 
