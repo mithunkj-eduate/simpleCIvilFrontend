@@ -10,7 +10,6 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import { LoginSchema } from "@/validations/validationSchemas";
 
 // JSON Config

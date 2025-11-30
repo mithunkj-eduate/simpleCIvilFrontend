@@ -8,45 +8,7 @@ import { AppContext } from "@/context/context";
 import { Button } from "@/stories/Button/Button";
 import GenerateCode from "./GenerateCode";
 import { DeliveryProgress } from "./DeliveryProgress";
-import { OrderStatus, DeliveryStatus } from "@/types/order";
-
-/* ---------------------------
-   FIXED TYPES (Matches backend)
----------------------------- */
-
-// Product inside order.items
-interface OrderProduct {
-  _id: string;
-  name: string;
-  images?: string[];
-  saleTerms?: { salePrice: number };
-  categoryId?: { _id: string };
-  tags?: string[];
-}
-
-// Order Item (Mongo populated)
-interface OrderItem {
-  _id: string;
-  productId: OrderProduct;
-  quantity: number;
-  totalPrice: number;
-  variantId?: string;
-  selectedColor?: string;
-  selectedSize?: string;
-  selectedWeight?: string;
-}
-
-// Order level schema
-interface Order {
-  _id: string;
-  storeId?: { _id: string; name: string; address: string };
-  buyerId?: { _id: string; name: string; email: string; phoneNumber: string };
-  items: OrderItem[];
-  orderStatus: OrderStatus;
-  deliveryStatus: DeliveryStatus;
-  deliveryDate?: string;
-  createdAt: string;
-}
+import { DeliveryStatus } from "@/types/order";
 
 /* Similar Products */
 interface SimilarProduct {
@@ -94,9 +56,6 @@ export default function OrderHistoryPage() {
     fetchOrderHistory();
   }, [TOKEN, state.user?.id]);
 
-  /* ---------------------------
-     FETCH SIMILAR PRODUCTS
-  ---------------------------- */
   useEffect(() => {
     const fetchSimilarProducts = async () => {
       try {
@@ -142,7 +101,6 @@ export default function OrderHistoryPage() {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-        
         {/* HEADER */}
         <div className="flex items-center">
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 border-b border-gray-200 pt-2 pb-6 sticky top-0 bg-white z-10">
@@ -155,7 +113,9 @@ export default function OrderHistoryPage() {
         </div>
 
         {/* Recent Orders */}
-        <h2 className="text-xl font-medium text-gray-900 mt-8">Recent Orders</h2>
+        <h2 className="text-xl font-medium text-gray-900 mt-8">
+          Recent Orders
+        </h2>
 
         {orders.length === 0 ? (
           <p className="text-center text-gray-500 py-10">
@@ -262,7 +222,10 @@ export default function OrderHistoryPage() {
                   className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
                 >
                   <img
-                    src={product.image?.[0]?.url || "https://via.placeholder.com/96"}
+                    src={
+                      product.image?.[0]?.url ||
+                      "https://via.placeholder.com/96"
+                    }
                     alt={product.name}
                     className="h-32 w-full object-cover rounded-md"
                   />

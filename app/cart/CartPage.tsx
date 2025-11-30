@@ -12,6 +12,7 @@ import { Operation } from "@/utils/enum.types";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
+import { createOrdersFromCart } from "../checkout/page";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<ICartItem[]>([]);
@@ -90,7 +91,15 @@ export default function CartPage() {
       </p>
     );
 
-  
+  const subtotal = cartItems.reduce((sum, item) => {
+    const price = item.salePrice ? item.salePrice * item.quantity : 0;
+    return sum + price;
+  }, 0);
+
+  const totalPrice = cartItems.reduce((sum, item) => {
+    const price = item.salePrice ? item.salePrice * item.quantity : 0;
+    return sum + price;
+  }, 0);
 
   return (
     <div className="bg-white">
@@ -210,7 +219,7 @@ export default function CartPage() {
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-600">Subtotal</p>
                   <p className="text-sm font-medium text-gray-900">
-                    ₹{totalPrice.toFixed(2)}
+                    ₹{subtotal.toFixed(2)}
                   </p>
                 </div>
                 <div className="flex items-center justify-between">
@@ -220,7 +229,7 @@ export default function CartPage() {
                 <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                   <p className="text-base font-medium text-gray-900">Total</p>
                   <p className="text-base font-medium text-gray-900">
-                    {/* ₹{totalPrice.toFixed(2)} */}
+                    ₹{totalPrice.toFixed(2)}
                   </p>
                 </div>
               </div>
