@@ -27,7 +27,6 @@ import { Operation, UserType } from "@/utils/enum.types";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
-import { Button } from "@/stories/Button/Button";
 import Image from "next/image";
 
 // --- UPDATED INTERFACES TO MATCH JSON STRUCTURE ---
@@ -432,10 +431,7 @@ export default function OrdersPage() {
       // 1. Transform raw data
       const processedOrders = transformOrdersForTable(data);
 
-      // 2. Apply front-end filtering (only if not handled by API query, but here we rely on API query params)
-      // Since the API uses query params for filtering, we skip the front-end filter step,
-      // but keep it for logic consistency if needed later.
-
+  
       // 3. Apply front-end sorting logic if API doesn't fully support all sorts
       processedOrders.sort((a, b) => {
         if (selectedSort.value === "newest") {
