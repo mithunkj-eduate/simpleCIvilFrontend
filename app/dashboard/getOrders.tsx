@@ -36,25 +36,47 @@ const GetOrderPage = () => {
   const { state } = useContext(AppContext);
   const router = useRouter();
   const [message, setMessage] = useState<msgType>(emptyMessage);
-
+  const [currentLocation, setCurrentLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const location = {
     lat: 13.028473178767564,
     lng: 77.63284503525036,
   };
 
+  // GET USER'S CURRENT LOCATION
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setCurrentLocation({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          });
+        },
+        (err) => {
+          console.error("Error getting location:", err);
+          alert("Unable to get your location");
+        }
+      );
+    }
+  }, []);
+  console.log(currentLocation, "currentLocation");
   const GetUsers = async () => {
     setLoading(true);
     try {
       if (state.user && state.user.id) {
-        const res = await api.get(
-          `/raider/orders?lat=${location.lat}&&lng=${location.lng}`,
-          {
-            headers: {
-              Authorization: `Bearer ${TOKEN}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const path: string = currentLocation
+          ? `/raider/orders?lat=${currentLocation.lat}&&lng=${currentLocation.lng}`
+          : `/raider/orders?lat=${location.lat}&&lng=${location.lng}`;
+
+        const res = await api.get(path, {
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        });
         if (res) {
           setOrders(
             res.data.data.map((order: any) => {
@@ -133,6 +155,7 @@ const GetOrderPage = () => {
         );
 
         if (res.status) {
+          GetUsers();
           setMessage({
             flag: true,
             message: "Update successfully",
@@ -186,16 +209,35 @@ const GetOrderPage = () => {
                         <p className="mt-1 truncate text-xs/5 text-gray-500">
                           Delivery Address: {person.deliveryAddress}
                         </p>
-                        <div className="mt-1 truncate text-xs/5 text-gray-500">
-                          Total distance{" "}
-                          <span className="text-xl text-gray-900">
-                            {getDistance(
-                              person.storeLocation[0],
-                              person.storeLocation[1],
-                              person.deliveryLocation[0],
-                              person.deliveryLocation[1]
-                            )?.toFixed(2)}{" "}
-                            KM
+                        <div className="mt-1 truncate text-xs/5 text-gray-900">
+                          Pickup{" "}
+                          <span className="text-md text-gray-900">
+                            {(currentLocation || location) &&
+                            person.deliveryLocation
+                              ? getDistance(
+                                  currentLocation
+                                    ? currentLocation.lat
+                                    : location.lat,
+                                  currentLocation
+                                    ? currentLocation.lng
+                                    : location.lng,
+                                  person.deliveryLocation[0],
+                                  person.deliveryLocation[1]
+                                )?.toFixed(2)
+                              : null}{" "}
+                            km
+                          </span>{" "}
+                          Drop{" "}
+                          <span className="text-md text-gray-900">
+                            {person.storeLocation && person.deliveryLocation
+                              ? getDistance(
+                                  person.storeLocation[0],
+                                  person.storeLocation[1],
+                                  person.deliveryLocation[0],
+                                  person.deliveryLocation[1]
+                                )?.toFixed(2)
+                              : null}{" "}
+                            km
                           </span>
                         </div>
                         <div>

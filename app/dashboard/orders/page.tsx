@@ -22,12 +22,14 @@ interface Orders {
   createdAt: string;
   store: string;
   storeAddress: string;
+  storeNumber: string;
   orderAcceptStatus: string;
   deliveryAddress: string;
   deliveryStatus: string;
   storeLocation: number[];
   orderId: string;
   buyerId: string;
+  buyerNumber: string;
   deliveryLocation: number[];
 }
 
@@ -71,16 +73,17 @@ const DeliveryOrderPage = () => {
               productName:
                 product?.orderId?.items.map(
                   (item: any) => `${item?.productId?.name}, `
-                ) ||
-                "N/A",
+                ) || "N/A",
               paymentMethod: product?.orderId?.paymentMethod || "N/A",
               orderAcceptStatus: product.orderAcceptStatus,
               store: product?.orderId?.storeId?.name || "N/A",
-              storeAddress: product?.orderId?.storeId.address || "N/A",
+              storeAddress: product?.orderId?.storeId?.address || "N/A",
+              storeNumber: product?.orderId?.storeId?.phoneNumber || "N/A",
               deliveryAddress: product?.orderId?.deliveryAddress || "N/A",
               deliveryStatus: product?.orderId?.deliveryStatus || "N/A",
               orderId: product?.orderId?._id || "N/A",
               buyerId: product?.orderId?.buyerId._id || "N/A",
+              buyerNumber: product?.orderId?.buyerId?.phoneNumber || "N/A",
               storeLocation:
                 product?.orderId?.storeId?.location?.coordinates || [],
               createdAt: product.createdAt
@@ -265,8 +268,8 @@ const DeliveryOrderPage = () => {
                       </p>
                       {(person.deliveryStatus === DeliveryStatus.PENDING ||
                         person.deliveryStatus === DeliveryStatus.SHIPPED) && (
-                        <div className="text-sm/6 text-gray-900">
-                          <Button
+                        <div className="text-sm/6 mt-2 text-gray-900">
+                          {/* <Button
                             onClick={() => {
                               if (
                                 person.storeLocation.length &&
@@ -283,7 +286,31 @@ const DeliveryOrderPage = () => {
                             }}
                           >
                             Map
-                          </Button>
+                          </Button> */}
+
+                          <a
+                            href={`tel:${
+                              person.storeLocation.length &&
+                              person.deliveryStatus === DeliveryStatus.PENDING
+                                ? person.storeNumber
+                                : person.buyerNumber
+                            }`}
+                            className="rounded-md px-4 py-2.5 ms-2 bg-gray-200 text-gray-900 hover:bg-gray-300 focus-visible:outline-gray-300"
+                          >
+                            Call
+                          </a>
+
+                          <a
+                            className="rounded-md px-4 py-2.5 ms-2 text-sm font-semibold shadow-xs bg-indigo-600 text-white hover:bg-indigo-500 focus-visible:outline-indigo-600"
+                            href={`${
+                              person.storeLocation.length &&
+                              person.deliveryStatus === DeliveryStatus.PENDING
+                                ? `https://www.google.com/maps/search/?api=1&query=${person.storeLocation[0]}, ${person.storeLocation[1]}`
+                                : `https://www.google.com/maps/search/?api=1&query=${person.deliveryLocation[0]}, ${person.deliveryLocation[1]}`
+                            }`}
+                          >
+                            Map
+                          </a>
                         </div>
                       )}
                     </div>
