@@ -56,12 +56,10 @@ export default function CheckoutPage() {
 
   // CALCULATE TOTALS
   const subtotal = cartItems.reduce((sum, item) => {
-    const price = item.saleTerms
-      ? item.saleTerms.salePrice * item.quantity
-      : item.rentalTerms?.[0]?.pricePerUnit || 0;
+    const price = item.salePrice ? item.salePrice * item.quantity : 0;
     return sum + price;
   }, 0);
-
+  console.log(cartItems, "cartItems");
   const initialValues = {
     fullName: "",
     email: "",

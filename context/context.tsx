@@ -4,11 +4,11 @@ import { Actions } from "./types";
 import { payloadTypes, reducer } from "./reducer";
 import { User } from "@/commenType/commenTypes";
 import Api, { api } from "@/components/helpers/apiheader";
-import { CartItem, CartState, ICartItemsArray } from "@/types/cart";
+import { ICartItem } from "@/types/cart";
 
 export type InitialStateType = {
   user: User | null;
-  cart: ICartItemsArray[];
+  cart: ICartItem[];
 };
 
 export const initialState: InitialStateType = {

@@ -7,14 +7,14 @@ import Api, { api } from "@/components/helpers/apiheader";
 import { Button } from "@/stories/Button/Button";
 import { AppContext } from "@/context/context";
 import { payloadTypes } from "@/context/reducer";
-import { ICartItemsArray } from "@/types/cart";
+import { ICartItem } from "@/types/cart";
 import { Operation } from "@/utils/enum.types";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<ICartItemsArray[]>([]);
+  const [cartItems, setCartItems] = useState<ICartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { dispatch } = useContext(AppContext);
@@ -90,6 +90,8 @@ export default function CartPage() {
       </p>
     );
 
+  
+
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -104,8 +106,7 @@ export default function CartPage() {
                 {cartItems.map((item) => {
                   // Extract relevant data for clarity
                   const variant = item.customVariant || {};
-                  const displayPrice =
-                    item.salePrice || item.saleTerms?.salePrice || 0;
+                  const displayPrice = item.salePrice || 0;
                   const itemTotal = (displayPrice * item.quantity).toFixed(2);
 
                   return (
@@ -115,21 +116,22 @@ export default function CartPage() {
                           src={
                             "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"
                           }
-                          alt={item.name}
+                          alt={item.productId?.name}
                           className="h-full w-full object-cover object-center"
                         />
                       </div>
                       <div className="ml-4 flex flex-1 flex-col">
                         <div>
                           <div className="flex justify-between text-base font-medium text-gray-900">
-                            <h3>{item.name}</h3>
+                            <h3>{item.productId?.name}</h3>
                             {/* Display total item price */}
                             <p className="ml-4">
                               {item.salePrice ? `₹${itemTotal}` : "N/A"}
                             </p>
                           </div>
                           <p className="mt-1 text-sm text-gray-500">
-                            {item.storeId?.name} | Sold by: {item.ownerId?.name}
+                            {item.storeId?.name} | Sold by:{" "}
+                            {item.vendorId?.name}
                           </p>
 
                           {/* --- NEW VARIANT DISPLAY SECTION --- */}
@@ -208,7 +210,7 @@ export default function CartPage() {
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-600">Subtotal</p>
                   <p className="text-sm font-medium text-gray-900">
-                    {/* ₹{totalPrice.toFixed(2)} */}
+                    ₹{totalPrice.toFixed(2)}
                   </p>
                 </div>
                 <div className="flex items-center justify-between">

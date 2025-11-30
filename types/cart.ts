@@ -99,10 +99,6 @@ export interface ICartItem {
 }
 
 // 2. The type for the Cart's 'items' array
-export type ICartItemsArray = ICartItem[];
-
-// 3. The function signature for setCartItems (using React's Dispatch type)
-// This is the most accurate type for the setter function itself.
-export type SetCartItemsType = React.Dispatch<
-  React.SetStateAction<ICartItemsArray>
->;
+export interface ICartItemsArray {
+  CartItemsArray: ICartItem[];
+}
