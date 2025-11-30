@@ -4,18 +4,19 @@ import React, { useState } from "react";
 import { Label } from "@/stories/Label/Label";
 import { Input } from "@/stories/Input/Input";
 import NavBar from "@/components/commen/Navbar";
-import { AuthMethod, LicenseTypes, Operation, UserType } from "@/utils/enum.types";
+import {
+  AuthMethod,
+  LicenseTypes,
+  Operation,
+  UserType,
+} from "@/utils/enum.types";
 import { api } from "@/components/helpers/apiheader";
 import { useFormik, FormikHelpers } from "formik";
-import * as Yup from "yup";
 import { SignupSchema } from "@/validations/validationSchemas";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
 
-// -----------------------
-// 🔹 Strictly Typed Form
-// -----------------------
 export interface SignupFormValues {
   name: string;
   password: string;
@@ -53,21 +54,6 @@ export const UserTypeData: UserType[] = [
   UserType.RAIDER,
 ];
 
-// ----------------------------
-// 🔹 Yup Schema With Type Help
-// ----------------------------
-// const SignupSchema = Yup.object({
-//   name: Yup.string().required("Name is required"),
-//   password: Yup.string().min(6, "Min 6 chars").required("Password is required"),
-//   email: Yup.string().email("Invalid email").required("Email is required"),
-//   phoneNumber: Yup.string()
-//     .matches(/^[0-9]{10}$/, "Must be 10 digits")
-//     .required("Phone number required"),
-//   role: Yup.mixed<UserType>()
-//     .oneOf(UserTypeData, "Invalid role")
-//     .required("Role required"),
-// });
-
 const Signup: React.FC = () => {
   const initialValues: SignupFormValues = {
     name: "",
@@ -77,7 +63,6 @@ const Signup: React.FC = () => {
     role: UserType.USER,
   };
   const [message, setMessage] = useState<msgType>(emptyMessage);
-
 
   const formik = useFormik<SignupFormValues>({
     initialValues,
@@ -96,12 +81,12 @@ const Signup: React.FC = () => {
           headers: { "Content-Type": "application/json" },
         });
 
-        setMessage({
-          flag: true,
-          message: "Signup successful!",
-          operation: Operation.NONE,
-        });
-
+        if (res)
+          setMessage({
+            flag: true,
+            message: "Signup successful!",
+            operation: Operation.NONE,
+          });
       } catch (error) {
         console.error("Signup error:", error);
       }

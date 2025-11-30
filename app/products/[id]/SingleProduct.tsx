@@ -10,9 +10,10 @@ import { productType } from "@/types/product";
 import { Button } from "@/stories/Button/Button";
 import MessageModal from "@/customComponents/MessageModal";
 import { Operation } from "@/utils/enum.types";
-import { VariantType, msgType } from "@/utils/commenTypes";
+import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import { CartVariantType } from "@/types/cart";
+import Footer from "@/components/Footer";
 
 export default function ProductDetails() {
   const [product, setProduct] = useState<any>(null);
@@ -164,21 +165,21 @@ export default function ProductDetails() {
   if (error || !product)
     return <p className="text-red-500 text-center">{error}</p>;
 
-  // convenience values
-  const inStock =
-    matchedVariant?.stock !== undefined
-      ? matchedVariant.stock > 0
-      : product.saleTerms?.stock === undefined
-      ? true
-      : product.saleTerms.stock > 0;
+  // // convenience values
+  // const inStock =
+  //   matchedVariant?.stock !== undefined
+  //     ? matchedVariant.stock > 0
+  //     : product.saleTerms?.stock === undefined
+  //     ? true
+  //     : product.saleTerms.stock > 0;
 
-  // final price display string
-  const priceDisplay =
-    displayPrice !== null
-      ? product.type === productType.RENTAL && product.rentalTerms?.[0]
-        ? `₹${displayPrice} / ${product.rentalTerms[0].minduration}`
-        : `₹${displayPrice}`
-      : "N/A";
+  // // final price display string
+  // const priceDisplay =
+  //   displayPrice !== null
+  //     ? product.type === productType.RENTAL && product.rentalTerms?.[0]
+  //       ? `₹${displayPrice} / ${product.rentalTerms[0].minduration}`
+  //       : `₹${displayPrice}`
+  //     : "N/A";
 
   // ADD TO CART
   const addToCart = async () => {
@@ -427,16 +428,6 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          {/* ADD TO CART */}
-          {/* <Button
-            mode="primary"
-            disabled={!product.avilablity || !inStock}
-            className="mt-8 w-full sm:w-50"
-            onClick={() => addToCart()}
-          >
-            Add to Cart
-          </Button> */}
-
           {variants.length && selectedVariant ? (
             <Button
               disabled={variants.length && !selectedVariant ? true : false}
@@ -473,9 +464,8 @@ export default function ProductDetails() {
           )}
         </div>
       </div>
-
       {/* DETAILS SECTION */}
-      <div className="mt-10 border-t pt-6">
+      {/* <div className="mt-10 border-t pt-6">
         <h3 className="text-xl font-semibold">Product Details</h3>
         <p className="text-gray-700 mt-2">Type: {product.type}</p>
 
@@ -498,7 +488,9 @@ export default function ProductDetails() {
             <p className="text-gray-700">Stock: {product.saleTerms.stock}</p>
           </>
         )}
-      </div>
+      </div> */}
+
+      <Footer />
 
       <MessageModal
         handleClose={() => setMessage(emptyMessage)}

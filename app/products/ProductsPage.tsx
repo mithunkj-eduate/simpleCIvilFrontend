@@ -54,60 +54,6 @@ interface Product {
   variants: CartVariantType[];
 }
 
-// function ProductCard({ product }: { product: Product }) {
-//   const price = product.saleTerms
-//     ? product.saleTerms.salePrice || product.saleTerms.price
-//     : product.rentalTerms && product.rentalTerms.length > 0
-//     ? product.rentalTerms[0].pricePerUnit
-//     : 0;
-
-//   return (
-//     <div className="border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow bg-white">
-//       <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
-//       <p className="text-sm text-gray-600 mt-1">{product.description}</p>
-//       <p className="text-sm text-gray-500 mt-2">
-//         Store: {product.storeId.name}
-//       </p>
-//       <p className="text-sm text-gray-500">
-//         Category: {product.categoryId.name}
-//       </p>
-//       <p className="text-sm text-gray-500">Type: {product.type}</p>
-//       <p className="text-sm text-gray-500">
-//         Price: ₹{price ? price.toFixed(2) : price}{" "}
-//         {product.type === "rental" ? "/ unit" : ""}
-//       </p>
-//       <p className="text-sm text-gray-500">
-//         Availability: {product.avilablity ? "In Stock" : "Out of Stock"}
-//       </p>
-//       <p className="text-sm text-gray-500">Rating: {product.rating} / 5</p>
-//       {product.color && (
-//         <p className="text-sm text-gray-500">Color: {product.color}</p>
-//       )}
-//       {product.size && (
-//         <p className="text-sm text-gray-500">Size: {product.size}</p>
-//       )}
-//       {product.tags.length > 0 && (
-//         <div className="flex flex-wrap gap-2 mt-2">
-//           {product.tags.map((tag) => (
-//             <span
-//               key={tag}
-//               className="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded"
-//             >
-//               {tag}
-//             </span>
-//           ))}
-//         </div>
-//       )}
-//       <Link
-//         href={`/products/${product._id}`}
-//         className="text-indigo-600 hover:text-indigo-800"
-//       >
-//         {product.name}
-//       </Link>
-//     </div>
-//   );
-// }
-
 function ProductCard({ product }: { product: Product }) {
   const price = product.variants[0]?.price || 0;
 
@@ -159,7 +105,7 @@ function ProductCard({ product }: { product: Product }) {
         </p>
 
         {/* Availability */}
-        {product.variants && product.variants.length ?(
+        {product.variants && product.variants.length ? (
           <p
             className={`text-sm mt-1 ${
               product.avilablity ? "text-green-600" : "text-red-500"
@@ -560,22 +506,7 @@ export default function ProductsPage() {
     }
   }, [selectedSubCategory, selectedSort, memoizedFilters]);
 
-  // const getUserLocation = () => {
-  //   navigator.geolocation.getCurrentPosition(
-  //     (position) => {
-  //       updateLocationFilter(
-  //         position.coords.latitude.toString(),
-  //         position.coords.longitude.toString()
-  //       );
-  //     },
-  //     (err) => console.error("Geolocation error:", err)
-  //   );
-  // };
-
-  // useEffect(() => {
-  //   getUserLocation();
-  // }, []);
-
+ 
   // Initial fetch and refetch on filter/sort changes
   useEffect(() => {
     const handler = setTimeout(() => {

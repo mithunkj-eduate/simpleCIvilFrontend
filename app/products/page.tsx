@@ -5,7 +5,6 @@ import ProductsPage from "./ProductsPage";
 import Navbar from "@/components/commen/Navbar";
 import { LicenseTypes } from "@/utils/enum.types";
 import Footer from "@/components/Footer";
-// import useGetApi from "@/hooks/useGetApi"; // update with your actual file path?
 
 const Produtcs = () => {
   return (
