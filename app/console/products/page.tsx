@@ -37,50 +37,51 @@ const ProductsPage = () => {
     { name: "Action", className: "px-6 py-3" },
   ];
 
-  const GetUsers = async () => {
-    setLoading(true);
-    try {
-      if (state.user && state.user.id) {
-        const res = await api.get(`/products?ownerId=${state.user.id}`, {
-          headers: {
-            Authorization: `Bearer ${TOKEN}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (res) {
-          setProducts(
-            res.data.data.map((product: GetProductData) => ({
-              id: product._id,
-              name: product.name || "N/A",
-              description: product.description || "N/A",
-              mrpPrice: product.saleTerms?.mrpPrice || 0,
-              salePrice: product.saleTerms?.salePrice || 0,
-              group: product.groupId?.name || "N/A",
-              category: product.categoryId?.name || "N/A",
-              subsidiary: product.subsidiaryId?.name || "N/A",
-              stock: product.saleTerms?.stock || 0,
-              createdAt: product.createdAt
-                ? new Date(product.createdAt).toLocaleDateString()
-                : "N/A",
-            }))
-          );
-        } else {
-          console.error("Failed to fetch users:", res);
-        }
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     if (TOKEN) {
+      const GetUsers = async () => {
+        setLoading(true);
+        try {
+          if (state.user && state.user.id) {
+            const res = await api.get(`/products?ownerId=${state.user.id}`, {
+              headers: {
+                Authorization: `Bearer ${TOKEN}`,
+                "Content-Type": "application/json",
+              },
+            });
+    
+            if (res) {
+              setProducts(
+                res.data.data.map((product: GetProductData) => ({
+                  id: product._id,
+                  name: product.name || "N/A",
+                  description: product.description || "N/A",
+                  mrpPrice: product.saleTerms?.mrpPrice || 0,
+                  salePrice: product.saleTerms?.salePrice || 0,
+                  group: product.groupId?.name || "N/A",
+                  category: product.categoryId?.name || "N/A",
+                  subsidiary: product.subsidiaryId?.name || "N/A",
+                  stock: product.saleTerms?.stock || 0,
+                  createdAt: product.createdAt
+                    ? new Date(product.createdAt).toLocaleDateString()
+                    : "N/A",
+                }))
+              );
+            } else {
+              console.error("Failed to fetch users:", res);
+            }
+          }
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+          setLoading(false);
+        }
+      };
+    
       GetUsers();
     }
-  }, [TOKEN, state.user?.id]);
+  }, [TOKEN, state.user]);
 
   return (
     <>

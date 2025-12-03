@@ -53,33 +53,32 @@ const AddStore = ({ setModalFlag, selectedId, operations }: AddStoreProps) => {
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const [formData, setFormData] = useState(initialValues);
 
-  const getStore = async () => {
-    try {
-      const res = await api.get(`/stores/${selectedId}`, {
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (res.data.data) {
-        setFormData({
-          name: res.data.data.name,
-          address: res.data.data.address,
-          latitude: res.data.data.location.coordinates[0],
-          longitude: res.data.data.location.coordinates[1],
-          pincode: res.data.data.pincode,
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
     if (operations.operation === Operation.UPDATE && selectedId) {
       if (!TOKEN || !state.user) return;
 
+      const getStore = async () => {
+        try {
+          const res = await api.get(`/stores/${selectedId}`, {
+            headers: {
+              Authorization: `Bearer ${TOKEN}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (res.data.data) {
+            setFormData({
+              name: res.data.data.name,
+              address: res.data.data.address,
+              latitude: res.data.data.location.coordinates[0],
+              longitude: res.data.data.location.coordinates[1],
+              pincode: res.data.data.pincode,
+            });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
       getStore();
     }
   }, [operations.operation, TOKEN]);

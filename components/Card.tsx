@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 
 import Image from "next/image";
 
@@ -42,8 +41,8 @@ export default function Card() {
             {callouts.map((callout) => (
               <div key={callout.name} className="group relative">
                 <Image
-                  width={100}
-                  height={100}
+                  width={500}
+                  height={500}
                   alt={callout.imageAlt}
                   src={callout.imageSrc}
                   className="w-full rounded-lg bg-white object-cover group-hover:opacity-75 max-sm:h-80 sm:aspect-2/1 lg:aspect-square"

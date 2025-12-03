@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 /*
   This example requires some changes to your config:
   
@@ -16,65 +15,77 @@
   }
   ```
 */
-import { StarIcon } from '@heroicons/react/20/solid'
-import Image from 'next/image'
+import { StarIcon } from "@heroicons/react/20/solid";
+import Image from "next/image";
 
 const product = {
-  name: 'Basic Tee 6-Pack',
-  price: '$192',
-  href: '#',
+  name: "Basic Tee 6-Pack",
+  price: "$192",
+  href: "#",
   breadcrumbs: [
-    { id: 1, name: 'Men', href: '#' },
-    { id: 2, name: 'Clothing', href: '#' },
+    { id: 1, name: "Men", href: "#" },
+    { id: 2, name: "Clothing", href: "#" },
   ],
   images: [
     {
-      src: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-02-secondary-product-shot.jpg',
-      alt: 'Two each of gray, white, and black shirts laying flat.',
+      src: "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-02-secondary-product-shot.jpg",
+      alt: "Two each of gray, white, and black shirts laying flat.",
     },
     {
-      src: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg',
-      alt: 'Model wearing plain black basic tee.',
+      src: "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg",
+      alt: "Model wearing plain black basic tee.",
     },
     {
-      src: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg',
-      alt: 'Model wearing plain gray basic tee.',
+      src: "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg",
+      alt: "Model wearing plain gray basic tee.",
     },
     {
-      src: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-02-featured-product-shot.jpg',
-      alt: 'Model wearing plain white basic tee.',
+      src: "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-02-featured-product-shot.jpg",
+      alt: "Model wearing plain white basic tee.",
     },
   ],
   colors: [
-    { id: 'white', name: 'White', classes: 'bg-white checked:outline-gray-400' },
-    { id: 'gray', name: 'Gray', classes: 'bg-gray-200 checked:outline-gray-400' },
-    { id: 'black', name: 'Black', classes: 'bg-gray-900 checked:outline-gray-900' },
+    {
+      id: "white",
+      name: "White",
+      classes: "bg-white checked:outline-gray-400",
+    },
+    {
+      id: "gray",
+      name: "Gray",
+      classes: "bg-gray-200 checked:outline-gray-400",
+    },
+    {
+      id: "black",
+      name: "Black",
+      classes: "bg-gray-900 checked:outline-gray-900",
+    },
   ],
   sizes: [
-    {id:'XXS', name: 'XXS', inStock: false },
-    {id:'XS', name: 'XS', inStock: true },
-    {id:'S', name: 'S', inStock: true },
-    {id:'M', name: 'M', inStock: true },
-    {id:'L', name: 'L', inStock: true },
-    {id:'XL', name: 'XL', inStock: true },
-    {id:'2XL', name: '2XL', inStock: true },
-    {id:'3XL', name: '3XL', inStock: true },
+    { id: "XXS", name: "XXS", inStock: false },
+    { id: "XS", name: "XS", inStock: true },
+    { id: "S", name: "S", inStock: true },
+    { id: "M", name: "M", inStock: true },
+    { id: "L", name: "L", inStock: true },
+    { id: "XL", name: "XL", inStock: true },
+    { id: "2XL", name: "2XL", inStock: true },
+    { id: "3XL", name: "3XL", inStock: true },
   ],
   description:
     'The Basic Tee 6-Pack allows you to fully express your vibrant personality with three grayscale options. Feeling adventurous? Put on a heather gray tee. Want to be a trendsetter? Try our exclusive colorway: "Black". Need to add an extra pop of color to your outfit? Our white tee has you covered.',
   highlights: [
-    'Hand cut and sewn locally',
-    'Dyed with our proprietary colors',
-    'Pre-washed & pre-shrunk',
-    'Ultra-soft 100% cotton',
+    "Hand cut and sewn locally",
+    "Dyed with our proprietary colors",
+    "Pre-washed & pre-shrunk",
+    "Ultra-soft 100% cotton",
   ],
   details:
     'The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming "Charcoal Gray" limited release.',
-}
-const reviews = { href: '#', average: 4, totalCount: 117 }
+};
+const reviews = { href: "#", average: 4, totalCount: 117 };
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Product() {
@@ -82,11 +93,17 @@ export default function Product() {
     <div className="bg-white">
       <div className="pt-6">
         <nav aria-label="Breadcrumb">
-          <ol role="list" className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+          <ol
+            role="list"
+            className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
+          >
             {product.breadcrumbs.map((breadcrumb) => (
               <li key={breadcrumb.id}>
                 <div className="flex items-center">
-                  <a href={breadcrumb.href} className="mr-2 text-sm font-medium text-gray-900">
+                  <a
+                    href={breadcrumb.href}
+                    className="mr-2 text-sm font-medium text-gray-900"
+                  >
                     {breadcrumb.name}
                   </a>
                   <svg
@@ -103,7 +120,11 @@ export default function Product() {
               </li>
             ))}
             <li className="text-sm">
-              <a href={product.href} aria-current="page" className="font-medium text-gray-500 hover:text-gray-600">
+              <a
+                href={product.href}
+                aria-current="page"
+                className="font-medium text-gray-500 hover:text-gray-600"
+              >
                 {product.name}
               </a>
             </li>
@@ -137,13 +158,17 @@ export default function Product() {
         {/* Product info */}
         <div className="mx-auto max-w-2xl px-4 pt-10 pb-16 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto_auto_1fr] lg:gap-x-8 lg:px-8 lg:pt-16 lg:pb-24">
           <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-            <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">{product.name}</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+              {product.name}
+            </h1>
           </div>
 
           {/* Options */}
           <div className="mt-4 lg:row-span-3 lg:mt-0">
             <h2 className="sr-only">Product information</h2>
-            <p className="text-3xl tracking-tight text-gray-900">{product.price}</p>
+            <p className="text-3xl tracking-tight text-gray-900">
+              {product.price}
+            </p>
 
             {/* Reviews */}
             <div className="mt-6">
@@ -155,14 +180,19 @@ export default function Product() {
                       key={rating}
                       aria-hidden="true"
                       className={classNames(
-                        reviews.average > rating ? 'text-gray-900' : 'text-gray-200',
-                        'size-5 shrink-0',
+                        reviews.average > rating
+                          ? "text-gray-900"
+                          : "text-gray-200",
+                        "size-5 shrink-0"
                       )}
                     />
                   ))}
                 </div>
                 <p className="sr-only">{reviews.average} out of 5 stars</p>
-                <a href={reviews.href} className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                <a
+                  href={reviews.href}
+                  className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                >
                   {reviews.totalCount} reviews
                 </a>
               </div>
@@ -176,7 +206,10 @@ export default function Product() {
                 <fieldset aria-label="Choose a color" className="mt-4">
                   <div className="flex items-center gap-x-3">
                     {product.colors.map((color) => (
-                      <div key={color.id} className="flex rounded-full outline -outline-offset-1 outline-black/10">
+                      <div
+                        key={color.id}
+                        className="flex rounded-full outline -outline-offset-1 outline-black/10"
+                      >
                         <input
                           defaultValue={color.id}
                           defaultChecked={color === product.colors[0]}
@@ -185,7 +218,7 @@ export default function Product() {
                           aria-label={color.name}
                           className={classNames(
                             color.classes,
-                            'size-8 appearance-none rounded-full forced-color-adjust-none checked:outline-2 checked:outline-offset-2 focus-visible:outline-3 focus-visible:outline-offset-3',
+                            "size-8 appearance-none rounded-full forced-color-adjust-none checked:outline-2 checked:outline-offset-2 focus-visible:outline-3 focus-visible:outline-offset-3"
                           )}
                         />
                       </div>
@@ -198,7 +231,10 @@ export default function Product() {
               <div className="mt-10">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-medium text-gray-900">Size</h3>
-                  <a href="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                  <a
+                    href="#"
+                    className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                  >
                     Size guide
                   </a>
                 </div>
@@ -219,7 +255,9 @@ export default function Product() {
                           disabled={!size.inStock}
                           className="absolute inset-0 appearance-none focus:outline-none disabled:cursor-not-allowed"
                         />
-                        <span className="text-sm font-medium uppercase group-has-checked:text-white">{size.name}</span>
+                        <span className="text-sm font-medium uppercase group-has-checked:text-white">
+                          {size.name}
+                        </span>
                       </label>
                     ))}
                   </div>
@@ -270,5 +308,5 @@ export default function Product() {
         </div>
       </div>
     </div>
-  )
+  );
 }

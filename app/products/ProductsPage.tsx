@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
@@ -69,6 +68,8 @@ function ProductCard({ product }: { product: Product }) {
         <Image
           src={image}
           alt={product.name}
+          width={200}
+          height={100}
           className="h-full w-full object-cover group-hover:scale-105 transition-transform"
         />
       </div>

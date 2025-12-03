@@ -92,6 +92,7 @@ export default function ProductDetails() {
         });
 
         const data = res.data.data;
+        console.log(data);
         setProduct(data);
         console.log(data, "data");
         // set default image
@@ -276,6 +277,8 @@ export default function ProductDetails() {
         {/* LEFT: IMAGE */}
         <div>
           <Image
+            width={500}
+            height={500}
             src={selectedImage}
             className="w-full rounded-xl border border-gray-300 object-cover"
             alt={product.name}
@@ -490,7 +493,6 @@ export default function ProductDetails() {
         )}
       </div> */}
 
-      <Footer />
 
       <MessageModal
         handleClose={() => setMessage(emptyMessage)}

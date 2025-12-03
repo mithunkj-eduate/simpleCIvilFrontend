@@ -110,7 +110,7 @@ export default function Example() {
             {posts.map((post) => (
               <article
                 key={post.id}
-                className="flex max-w-xl flex-col items-start justify-between"
+                className="flex max-w-xl flex-col items-start justify-between rounded-md shadow-sm p-3"
               >
                 <div className="flex items-center gap-x-4 text-xs">
                   <time dateTime={post.datetime} className="text-gray-500">
@@ -137,6 +137,8 @@ export default function Example() {
                 <div className="relative mt-8 flex items-center gap-x-4 justify-self-end">
                   <Image
                     alt=""
+                    width={100}
+                    height={100}
                     // src={post.author.imageUrl}
                     src={"/profile.svg"}
                     className="size-10 rounded-full bg-gray-50"

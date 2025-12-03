@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState, useEffect, useContext } from "react";
@@ -176,6 +175,8 @@ export default function OrderHistoryPage() {
                       }
                       alt={item.productId?.name ?? "/"}
                       className="h-20 w-20 rounded-md object-cover"
+                      width={100}
+                      height={100}
                     />
                   </div>
                 ))}

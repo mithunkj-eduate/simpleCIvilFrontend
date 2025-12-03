@@ -22,7 +22,7 @@ export default function RouteMap() {
   const lat = Number(searchParams.get("lat"));
   const lng = Number(searchParams.get("lng"));
 
-  const destination = { lat, lng };
+  const destination: { lat: number; lng: number } = { lat, lng };
 
   // USER'S LIVE SOURCE LOCATION
   const [source, setSource] = useState<{ lat: number; lng: number } | null>(
@@ -75,7 +75,7 @@ export default function RouteMap() {
         }
       );
     }
-  }, [isLoaded, source, lat, lng, destination]);
+  }, [isLoaded, source, lat, lng]);
 
   if (!isLoaded) return <p>Loading Map...</p>;
   if (!source) return <p>Fetching your current location...</p>;
