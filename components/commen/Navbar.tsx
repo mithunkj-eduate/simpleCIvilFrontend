@@ -151,8 +151,8 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               alt=""
               src={icon ? icon : ""} // Adjust the path to your logo
               className="h-8 w-auto"
-              width={32} // Adjust width as needed
-              height={32} // Adjust height as needed
+              width={200} // Adjust width as needed
+              height={200} // Adjust height as needed
             />
           </a>
         </div>
@@ -249,8 +249,8 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                 alt=""
                 src={icon ? icon : ""} // Adjust the path to your logo
                 className="h-8 w-auto"
-                width={32} // Adjust width as needed
-                height={32} // Adjust height as needed
+                width={200} // Adjust width as needed
+                height={200} // Adjust height as needed
               />
             </a>
             <button

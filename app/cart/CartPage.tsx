@@ -126,6 +126,8 @@ export default function CartPage() {
                           }
                           alt={item.productId?.name ?? "/"}
                           className="h-full w-full object-cover object-center"
+                          width={100}
+                          height={100}
                         />
                       </div>
                       <div className="ml-4 flex flex-1 flex-col">
