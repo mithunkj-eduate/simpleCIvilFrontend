@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 
 const products = [
   {
@@ -85,7 +86,7 @@ export default function RightDrawer() {
                           {products.map((product) => (
                             <li key={product.id} className="flex py-6">
                               <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                <img alt={product.imageAlt} src={product.imageSrc} className="size-full object-cover" />
+                                <Image alt={product.imageAlt} src={product.imageSrc} className="size-full object-cover" />
                               </div>
 
                               <div className="ml-4 flex flex-1 flex-col">

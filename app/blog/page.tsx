@@ -1,8 +1,8 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/commen/Navbar";
 import { LicenseTypes } from "@/utils/enum.types";
+import Image from "next/image";
 
-/* eslint-disable @next/next/no-img-element */
 const posts = [
   {
     id: 1,
@@ -135,7 +135,7 @@ export default function Example() {
                   </p>
                 </div>
                 <div className="relative mt-8 flex items-center gap-x-4 justify-self-end">
-                  <img
+                  <Image
                     alt=""
                     // src={post.author.imageUrl}
                     src={"/profile.svg"}

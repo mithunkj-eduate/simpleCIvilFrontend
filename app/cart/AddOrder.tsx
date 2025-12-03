@@ -64,10 +64,9 @@ export default function AddOrder({
   const { TOKEN } = Api();
   const [message, setMessage] = useState<msgType>(emptyMessage);
 
-
   const handleAddOrder = async () => {
     setLoading(true);
-    setError(null);  
+    setError(null);
 
     try {
       if (!TOKEN) throw new Error("Authentication token is missing");
@@ -108,8 +107,8 @@ export default function AddOrder({
         onOrderAdded?.();
         setModalFlag(false);
       }
-    } catch (err: any) {
-      setError(err.message || "Failed to place order. Please try again.");
+    } catch (err) {
+      setError("Failed to place order. Please try again.");
       console.error(err);
     } finally {
       setLoading(false);

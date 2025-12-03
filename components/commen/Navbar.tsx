@@ -99,7 +99,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
           }
         : { name: "", href: "", current: false },
     ],
-    []
+    [state.user]
   );
 
   const ConsoleDelveryBoyNavigation = useMemo(
@@ -121,7 +121,13 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     } else if (NavType === LicenseTypes.NONE) {
       setItems([]);
     }
-  }, [NavType, Navigation, ConsoleNavigation]);
+  }, [
+    NavType,
+    Navigation,
+    ConsoleNavigation,
+    state.user,
+    ConsoleDelveryBoyNavigation,
+  ]);
 
   return (
     <header

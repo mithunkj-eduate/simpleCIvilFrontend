@@ -22,7 +22,6 @@ export enum productType {
   RESALE = "resale",
 }
 
-import { productType } from "./commenTypes";
 
 export interface SaleTerms {
   mrpPrice: number;
@@ -49,7 +48,6 @@ export interface VariantType {
   };
   images?: string[];
 }
-
 
 export interface ProductInputType {
   name: string;
@@ -79,9 +77,9 @@ export interface ProductInputType {
   variants?: VariantType[];
 }
 
-
 export interface msgType {
   message: string;
   flag: boolean;
   operation: Operation;
 }
+

@@ -23,12 +23,12 @@ import { Formik, Form, ErrorMessage } from "formik";
 import { checkoutValidation } from "@/validations/validationSchemas";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
 
-const calculateSubtotal = (cart: any) =>
-  cart.reduce((sum, item) => {
-    const price = item.isRental ? item.rentalPricePerUnit : item.salePrice;
+// const calculateSubtotal = (cart: any) =>
+//   cart.reduce((sum, item) => {
+//     const price = item.isRental ? item.rentalPricePerUnit : item.salePrice;
 
-    return sum + price * item.quantity;
-  }, 0);
+//     return sum + price * item.quantity;
+//   }, 0);
 
 export default function CheckoutPage() {
   const { state } = useContext(AppContext);
@@ -97,8 +97,13 @@ export default function CheckoutPage() {
           operation: Operation.CREATE,
         });
       }
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      setMessage({
+        flag:true,
+        message:"error",
+        operation:Operation.NONE
+      })
+      console.error(err)
     }
   };
 

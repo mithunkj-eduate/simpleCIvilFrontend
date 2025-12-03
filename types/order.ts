@@ -73,3 +73,13 @@ export interface IOrder {
   createdAt: Date;
   updatedAt: Date;
 }
+
+
+export interface ResOrderType{
+_id:string,
+items:[]
+}
+
+export interface getOrdersType{
+  OrderType:ResOrderType
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Api, { api } from "@/components/helpers/apiheader";
 import { PaymentMethod } from "@/types/order";
@@ -9,7 +9,6 @@ import Loading from "@/components/helpers/Loading";
 import { PaymentStatus } from "@/types/payment";
 import Navbar from "@/components/commen/Navbar";
 import { LicenseTypes } from "@/utils/enum.types";
-import { AppContext } from "@/context/context";
 
 interface Payment {
   _id: string;
@@ -26,14 +25,11 @@ export default function AllPaymentsPage() {
   const { TOKEN } = Api();
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { state } = useContext(AppContext);
 
   useEffect(() => {
     const fetchPayments = async () => {
       setLoading(true);
-      setError(null);
       try {
         if (!TOKEN) throw new Error("Authentication token is missing");
 
@@ -42,8 +38,7 @@ export default function AllPaymentsPage() {
         });
         if (!response.data.data) throw new Error("No payments found");
         setPayments(response.data.data);
-      } catch (err: any) {
-        setError(err.message || "Failed to fetch payments.");
+      } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
@@ -53,35 +48,37 @@ export default function AllPaymentsPage() {
     fetchPayments();
   }, [TOKEN]);
 
-  const handleAction = async (paymentId: string, action: string) => {
-    // setLoading(true);
-    // try {
-    //   const response = await api.post(`/payments/${paymentId}/action`, { action }, {
-    //     headers: { Authorization: `Bearer ${TOKEN}` },
-    //   });
-    //   setPayments((prev) =>
-    //     prev.map((p) => (p._id === paymentId ? response.data.data : p))
-    //   );
-    //   alert(`Payment ${action} ${action === "refund" ? "requested" : "successfully"}`);
-    // } catch (err: any) {
-    //   setError(err.response?.data?.message || `Failed to ${action} payment.`);
-    //   console.error(err);
-    // } finally {
-    //   setLoading(false);
-    // }
-  };
+  //const handleAction = async () => {
+  // setLoading(true);
+  // try {
+  //   const response = await api.post(`/payments/${paymentId}/action`, { action }, {
+  //     headers: { Authorization: `Bearer ${TOKEN}` },
+  //   });
+  //   setPayments((prev) =>
+  //     prev.map((p) => (p._id === paymentId ? response.data.data : p))
+  //   );
+  //   alert(`Payment ${action} ${action === "refund" ? "requested" : "successfully"}`);
+  // } catch (err) {
+  //   setError(err.response?.data?.message || `Failed to ${action} payment.`);
+  //   console.error(err);
+  // } finally {
+  //   setLoading(false);
+  // }
+  //};
 
   const getAvailableActions = (
     method: PaymentMethod,
-    status: PaymentStatus,
-    paymentId: string
+    status: PaymentStatus
+    // paymentId: string
   ) => {
     if (method === PaymentMethod.CASH) {
       return status === PaymentStatus.CAPTURED ? (
         <Button
           mode="secondary"
           className="px-2 py-1 text-xs md:text-sm bg-orange-600 hover:bg-orange-700 text-white rounded-md"
-          onClick={() => handleAction(paymentId, "refund")}
+          // onClick={() =>
+          //   handleAction(paymentId, "refund")
+          // }
         >
           Request Refund
         </Button>
@@ -93,7 +90,7 @@ export default function AllPaymentsPage() {
             <Button
               mode="primary"
               className="px-2 py-1 text-xs md:text-sm bg-orange-600 hover:bg-orange-700 text-white rounded-md"
-              onClick={() => handleAction(paymentId, "capture")}
+              // onClick={() => handleAction(paymentId, "capture")}
             >
               Capture
             </Button>
@@ -103,7 +100,7 @@ export default function AllPaymentsPage() {
             <Button
               mode="secondary"
               className="px-2 py-1 text-xs md:text-sm bg-orange-600 hover:bg-orange-700 text-white rounded-md"
-              onClick={() => handleAction(paymentId, "refund")}
+              // onClick={() => handleAction(paymentId, "refund")}
             >
               Refund
             </Button>

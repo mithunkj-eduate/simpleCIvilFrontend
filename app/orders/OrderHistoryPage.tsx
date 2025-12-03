@@ -9,6 +9,7 @@ import { Button } from "@/stories/Button/Button";
 import GenerateCode from "./GenerateCode";
 import { DeliveryProgress } from "./DeliveryProgress";
 import { DeliveryStatus } from "@/types/order";
+import Image from "next/image";
 
 /* Similar Products */
 interface SimilarProduct {
@@ -168,12 +169,12 @@ export default function OrderHistoryPage() {
                       )}
                     </div>
 
-                    <img
+                    <Image
                       src={
                         item.productId?.images?.[0] ||
                         "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-05.jpg"
                       }
-                      alt={item.productId?.name}
+                      alt={item.productId?.name ?? "/"}
                       className="h-20 w-20 rounded-md object-cover"
                     />
                   </div>
@@ -221,12 +222,12 @@ export default function OrderHistoryPage() {
                   key={product._id}
                   className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
                 >
-                  <img
+                  <Image
                     src={
                       product.image?.[0]?.url ||
                       "https://via.placeholder.com/96"
                     }
-                    alt={product.name}
+                    alt={product.name ?? "/"}
                     className="h-32 w-full object-cover rounded-md"
                   />
 

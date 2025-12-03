@@ -1,5 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 
+import Image from "next/image";
+
 const callouts = [
   {
     name: "Desk and Office",
@@ -29,7 +31,7 @@ const callouts = [
   },
 ];
 
-export default function   Card() {
+export default function Card() {
   return (
     <div className="bg-gray-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -39,7 +41,9 @@ export default function   Card() {
           <div className="mt-6 space-y-12 lg:grid lg:grid-cols-3 lg:space-y-0 lg:gap-x-6">
             {callouts.map((callout) => (
               <div key={callout.name} className="group relative">
-                <img
+                <Image
+                  width={100}
+                  height={100}
                   alt={callout.imageAlt}
                   src={callout.imageSrc}
                   className="w-full rounded-lg bg-white object-cover group-hover:opacity-75 max-sm:h-80 sm:aspect-2/1 lg:aspect-square"

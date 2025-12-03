@@ -1,8 +1,8 @@
 import Footer from "@/components/Footer";
 import NavBar from "@/components/commen/Navbar";
 import { LicenseTypes, PageForNav } from "@/utils/enum.types";
+import Image from "next/image";
 
-/* eslint-disable @next/next/no-img-element */
 const links = [
   {
     name: "Buy New",
@@ -33,8 +33,8 @@ export default function Example() {
       <NavBar NavType={LicenseTypes.USER} pageForNav={PageForNav.aboutus} />
 
       <div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32">
-        <img
-          alt=""
+        <Image
+          alt="/"
           src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&crop=focalpoint&fp-y=.8&w=2830&h=1500&q=80&blend=111827&sat=-100&exp=15&blend-mode=multiply"
           className="absolute inset-0 -z-10 size-full object-cover object-right md:object-center"
         />

@@ -45,8 +45,8 @@ export default function PaymentPage() {
         });
         if (!response.data.data) throw new Error("Payment not found");
         setPayment(response.data.data);
-      } catch (err: any) {
-        setError(err.message || "Failed to fetch payment details.");
+      } catch (err) {
+        setError("Failed to fetch payment details.");
         console.error(err);
       } finally {
         setLoading(false);
@@ -77,8 +77,8 @@ export default function PaymentPage() {
         }`,
         operation: Operation.CREATE,
       });
-    } catch (err: any) {
-      setError(err.response?.data?.message || `Failed to ${action} payment.`);
+    } catch (err) {
+      setError(`Failed to ${action} payment.`);
       console.error(err);
     } finally {
       setLoading(false);

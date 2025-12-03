@@ -26,6 +26,7 @@ import { productSortQuery } from "@/types/productSchemaTypes";
 import { api } from "@/components/helpers/apiheader";
 import Link from "next/link";
 import { CartVariantType } from "@/types/cart";
+import Image from "next/image";
 
 // Sample ProductCard component
 interface Product {
@@ -65,7 +66,7 @@ function ProductCard({ product }: { product: Product }) {
     <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-300 group cursor-pointer overflow-hidden">
       {/* Product Image */}
       <div className="w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
-        <img
+        <Image
           src={image}
           alt={product.name}
           className="h-full w-full object-cover group-hover:scale-105 transition-transform"

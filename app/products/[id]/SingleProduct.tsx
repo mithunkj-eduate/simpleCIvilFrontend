@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState, useEffect, useContext } from "react";
@@ -14,6 +13,7 @@ import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import { CartVariantType } from "@/types/cart";
 import Footer from "@/components/Footer";
+import Image from "next/image";
 
 export default function ProductDetails() {
   const [product, setProduct] = useState<any>(null);
@@ -27,9 +27,9 @@ export default function ProductDetails() {
   const [selectedWeight, setSelectedWeight] = useState<string>("");
 
   // Derived lists
-  const [colors, setColors] = useState<string[]>([]);
-  const [sizes, setSizes] = useState<string[]>([]);
-  const [weights, setWeights] = useState<string[]>([]);
+  // const [colors, setColors] = useState<string[]>([]);
+  // const [sizes, setSizes] = useState<string[]>([]);
+  // const [weights, setWeights] = useState<string[]>([]);
 
   const [matchedVariant, setMatchedVariant] = useState<any>(null); // current variant object
   const [displayPrice, setDisplayPrice] = useState<number | null>(null);
@@ -102,9 +102,9 @@ export default function ProductDetails() {
 
         // build attribute lists from variants (Option B)
         const { colors, sizes, weights } = extractAttributes(data.variants);
-        setColors(colors);
-        setSizes(sizes);
-        setWeights(weights);
+        // setColors(colors);
+        // setSizes(sizes);
+        // setWeights(weights);
         setVariants(data.variants);
         // preselect first available attribute if present
         if (colors.length) setSelectedColor(colors[0]);
@@ -275,7 +275,7 @@ export default function ProductDetails() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* LEFT: IMAGE */}
         <div>
-          <img
+          <Image
             src={selectedImage}
             className="w-full rounded-xl border border-gray-300 object-cover"
             alt={product.name}

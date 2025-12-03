@@ -35,7 +35,7 @@ interface ProductDetails {
   _id: string;
   name: string;
   saleTerms?: { salePrice: number };
-  rentalTerms: any[]; // Assuming any[] based on your JSON
+  rentalTerms: []; // Assuming any[] based on your JSON
 }
 
 interface OrderItem {
@@ -431,7 +431,6 @@ export default function OrdersPage() {
       // 1. Transform raw data
       const processedOrders = transformOrdersForTable(data);
 
-  
       // 3. Apply front-end sorting logic if API doesn't fully support all sorts
       processedOrders.sort((a, b) => {
         if (selectedSort.value === "newest") {
@@ -569,13 +568,13 @@ export default function OrdersPage() {
           });
           await fetchOrders();
         }
-      } catch (err: any) {
+      } catch (err) {
         setMessage({
-          message:
-            err.response?.data?.message || "An unexpected error occurred.",
+          message: "An unexpected error occurred.",
           flag: true,
           operation: Operation.NONE,
         });
+        console.error(err)
       } finally {
         setLoading(false);
       }

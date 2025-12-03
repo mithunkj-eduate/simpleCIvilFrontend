@@ -11,7 +11,7 @@ import {
   UserType,
 } from "@/utils/enum.types";
 import { api } from "@/components/helpers/apiheader";
-import { useFormik, FormikHelpers } from "formik";
+import { useFormik } from "formik";
 import { SignupSchema } from "@/validations/validationSchemas";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
@@ -67,10 +67,7 @@ const Signup: React.FC = () => {
   const formik = useFormik<SignupFormValues>({
     initialValues,
     validationSchema: SignupSchema,
-    onSubmit: async (
-      values: SignupFormValues,
-      _: FormikHelpers<SignupFormValues>
-    ) => {
+    onSubmit: async (values: SignupFormValues) => {
       try {
         const body = {
           ...values,

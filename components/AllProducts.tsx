@@ -1,6 +1,6 @@
+import Image from "next/image";
 import { useParams } from "next/navigation";
 
-/* eslint-disable @next/next/no-img-element */
 const products = [
   {
     id: 1,
@@ -96,7 +96,7 @@ export default function AllProducts() {
         <div className="grid grid-cols-3 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           {products.map((product) => (
             <a key={product.id} href={product.href} className="group">
-              <img
+              <Image
                 alt={product.imageAlt}
                 src={product.imageSrc}
                 className="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8"

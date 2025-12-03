@@ -75,7 +75,7 @@ export default function RouteMap() {
         }
       );
     }
-  }, [isLoaded, source, lat, lng]);
+  }, [isLoaded, source, lat, lng, destination]);
 
   if (!isLoaded) return <p>Loading Map...</p>;
   if (!source) return <p>Fetching your current location...</p>;
