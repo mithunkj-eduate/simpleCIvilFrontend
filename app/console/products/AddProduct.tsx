@@ -7,7 +7,7 @@ import AutoSelect from "./AutoSelect";
 import {
   AutoCompleteOption,
   ProductInputType,
-  VariantType,
+  // VariantType,
   msgType,
   productType,
 } from "@/utils/commenTypes";
@@ -182,7 +182,7 @@ const AddProduct = ({
   );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [availability] = useState(true); // Fixed typo + moved out of formData
+
 
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);

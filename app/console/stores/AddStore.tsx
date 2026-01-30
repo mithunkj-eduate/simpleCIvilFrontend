@@ -81,7 +81,7 @@ const AddStore = ({ setModalFlag, selectedId, operations }: AddStoreProps) => {
       };
       getStore();
     }
-  }, [operations.operation, TOKEN]);
+  }, [operations.operation, TOKEN,selectedId,state.user]);
 
   const submitForm = async (values: typeof initialValues) => {
     try {

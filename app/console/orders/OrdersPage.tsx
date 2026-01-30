@@ -574,7 +574,7 @@ export default function OrdersPage() {
           flag: true,
           operation: Operation.NONE,
         });
-        console.error(err)
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -590,7 +590,6 @@ export default function OrdersPage() {
       const newFilters = { ...prevFilters };
       const sectionKey = sectionId as keyof typeof newFilters;
 
-      // @ts-ignore
       newFilters[sectionKey] = newFilters[sectionKey].map((option) =>
         option.value === optionValue
           ? { ...option, checked: !option.checked }
@@ -732,7 +731,7 @@ export default function OrdersPage() {
                           onClick={() => {
                             setSelectedSort(option);
                             // Also update the current state in all sort options for UI
-                            const updatedOptions = sortOptions.map((o) => ({
+                            sortOptions.map((o) => ({
                               ...o,
                               current: o.value === option.value,
                             }));

@@ -12,7 +12,6 @@ import { Operation } from "@/utils/enum.types";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import { CartVariantType } from "@/types/cart";
-import Footer from "@/components/Footer";
 import Image from "next/image";
 
 export default function ProductDetails() {
@@ -31,7 +30,7 @@ export default function ProductDetails() {
   // const [sizes, setSizes] = useState<string[]>([]);
   // const [weights, setWeights] = useState<string[]>([]);
 
-  const [matchedVariant, setMatchedVariant] = useState<any>(null); // current variant object
+  const [matchedVariant, setMatchedVariant] = useState<unknown>(null); // current variant object
   const [displayPrice, setDisplayPrice] = useState<number | null>(null);
 
   const [variants, setVariants] = useState<CartVariantType[]>([]);
@@ -120,7 +119,7 @@ export default function ProductDetails() {
     };
 
     if (id && TOKEN) fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [id, TOKEN]);
 
   // When variants or selections change → compute matchedVariant & displayPrice & image
@@ -228,7 +227,7 @@ export default function ProductDetails() {
     console.log(product.storeId._id, "product.storeId._id");
     try {
       // payload includes variant sku + attribute snapshot for later receipt
-      const payload: any = {
+      const payload: unknown = {
         productId: product._id,
         storeId: product.storeId._id,
         vendorId: product.ownerId._id,

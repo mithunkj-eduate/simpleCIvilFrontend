@@ -22,6 +22,7 @@ import MessageModal from "@/customComponents/MessageModal";
 import { Formik, Form, ErrorMessage } from "formik";
 import { checkoutValidation } from "@/validations/validationSchemas";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
+import { ICartItem } from "@/types/cart";
 
 // const calculateSubtotal = (cart: any) =>
 //   cart.reduce((sum, item) => {
@@ -60,7 +61,15 @@ export default function CheckoutPage() {
     return sum + price;
   }, 0);
   console.log(cartItems, "cartItems");
-  const initialValues = {
+  interface initialValuesTypes {
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    deliveryAddress: string;
+    paymentMethod: string;
+  }
+
+  const initialValues: initialValuesTypes = {
     fullName: "",
     email: "",
     phoneNumber: "",
@@ -73,7 +82,7 @@ export default function CheckoutPage() {
    * HANDLE ORDER CREATE - FOR NEW SCHEMA
    * ---------------------------------------------------------
    */
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: initialValuesTypes) => {
     try {
       if (!TOKEN) throw new Error("Authentication token missing");
       if (state.cart) {
@@ -99,11 +108,11 @@ export default function CheckoutPage() {
       }
     } catch (err) {
       setMessage({
-        flag:true,
-        message:"error",
-        operation:Operation.NONE
-      })
-      console.error(err)
+        flag: true,
+        message: "error",
+        operation: Operation.NONE,
+      });
+      console.error(err);
     }
   };
 
@@ -300,7 +309,7 @@ export default function CheckoutPage() {
 }
 
 function createOrdersFromCart(
-  cartItems: any[], // Using 'any' for the provided JSON structure
+  cartItems: ICartItem[], // Using 'any' for the provided JSON structure
   buyerId: string,
   deliveryAddress: string,
   coordinates: [number, number]
@@ -308,10 +317,10 @@ function createOrdersFromCart(
   // Use a Map to group items by storeId
   const ordersByStore = new Map<
     string,
-    { items: IOrderItem[]; vendorId: string; storeDetails: any }
+    { items: IOrderItem[]; vendorId: string; storeDetails:  unknown }
   >();
 
-  let tempSubtotal = 0; // Temp variable to calculate subtotal during grouping
+  // let tempSubtotal = 0; // Temp variable to calculate subtotal during grouping
 
   // 1. Group items by store and calculate subtotals
   for (const item of cartItems) {
@@ -320,8 +329,8 @@ function createOrdersFromCart(
     const storeDetails = item.storeId;
 
     // Calculate the total price for this item
-    const itemTotal = (item.salePrice || 0) * item.quantity;
-    tempSubtotal += itemTotal;
+    // const itemTotal = (item.salePrice || 0) * item.quantity;
+    // tempSubtotal += itemTotal;
 
     if (!ordersByStore.has(storeId)) {
       ordersByStore.set(storeId, {

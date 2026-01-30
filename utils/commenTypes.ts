@@ -22,7 +22,6 @@ export enum productType {
   RESALE = "resale",
 }
 
-
 export interface SaleTerms {
   mrpPrice: number;
   salePrice: number;
@@ -83,3 +82,8 @@ export interface msgType {
   operation: Operation;
 }
 
+export interface commenTypes {
+  _id: string;
+  id: string;
+  name: string;
+}

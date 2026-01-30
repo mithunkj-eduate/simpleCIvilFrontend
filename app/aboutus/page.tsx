@@ -1,7 +1,6 @@
 import Footer from "@/components/Footer";
 import NavBar from "@/components/commen/Navbar";
 import { LicenseTypes, PageForNav } from "@/utils/enum.types";
-import Image from "next/image";
 
 const links = [
   {
