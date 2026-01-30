@@ -1,11 +1,14 @@
 import RouteMap from "@/components/RouteMap";
-import React from "react";
+import React, { Suspense } from "react";
 
 const page = () => {
   return (
-    <div>
-      <RouteMap />
-    </div>
+    <section>
+      <h1>Orders Map</h1>
+      <Suspense fallback={<div>Loading Map...</div>}>
+        <RouteMap />
+      </Suspense>
+    </section>
   );
 };
 

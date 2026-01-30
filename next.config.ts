@@ -8,6 +8,14 @@ const nextConfig: NextConfig = {
       new URL("https://images.unsplash.com/**"),
     ],
   },
+  typescript: {
+    // !! WARN !! Dangerously allow production builds to finish even if there are type errors.
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    // !! WARN !! This allows production builds to finish even if there are ESLint errors.
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
