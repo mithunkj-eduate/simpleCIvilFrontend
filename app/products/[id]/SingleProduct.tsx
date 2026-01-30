@@ -334,7 +334,7 @@ export default function ProductDetails() {
               All Product Variants
             </h3>
 
-            {/* Header Row (Optional, but helpful for clarity) */}
+          
             <div className="hidden md:flex text-xs font-medium text-gray-500 border-b pb-2 mb-2">
               <div className="w-1/4">SKU</div>
               <div className="w-1/4">Attributes</div>

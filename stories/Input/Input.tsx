@@ -10,7 +10,7 @@ export type Props = {
   // Auto-focus input
   autoFocus?: boolean;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  // Component label.
+// Component label.
   label?: string;
   id?: string;
 

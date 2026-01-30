@@ -1,21 +1,50 @@
+// import type { NextConfig } from "next";
+
+// const nextConfig: NextConfig = {
+//   allowedDevOrigins: ["192.168.0.117", "localhost", "*.local-origin.dev"],
+//   images: {
+//     remotePatterns: [
+//       new URL("https://tailwindcss.com/**"),
+//       new URL("https://images.unsplash.com/**"),
+//     ],
+//   },
+//   typescript: {
+//     // !! WARN !! Dangerously allow production builds to finish even if there are type errors.
+//     ignoreBuildErrors: true,
+//   },
+//   eslint: {
+//     // !! WARN !! This allows production builds to finish even if there are ESLint errors.
+//     ignoreDuringBuilds: true,
+//   },
+// };
+
+// export default nextConfig;
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["192.168.0.117", "localhost", "*.local-origin.dev"],
+  // 1. Remove allowedDevOrigins if not strictly needed for build
   images: {
     remotePatterns: [
-      new URL("https://tailwindcss.com/**"),
-      new URL("https://images.unsplash.com/**"),
+      {
+        protocol: 'https',
+        hostname: 'tailwindcss.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
     ],
   },
   typescript: {
-    // !! WARN !! Dangerously allow production builds to finish even if there are type errors.
     ignoreBuildErrors: true,
   },
   eslint: {
-    // !! WARN !! This allows production builds to finish even if there are ESLint errors.
     ignoreDuringBuilds: true,
   },
 };
 
 export default nextConfig;
+
