@@ -16,6 +16,7 @@ import { SignupSchema } from "@/validations/validationSchemas";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
+import { useRouter } from "next/router";
 
 export interface SignupFormValues {
   name: string;
@@ -55,6 +56,7 @@ export const UserTypeData: UserType[] = [
 ];
 
 const Signup: React.FC = () => {
+  const nav = useRouter()
   const initialValues: SignupFormValues = {
     name: "",
     password: "",
@@ -78,12 +80,16 @@ const Signup: React.FC = () => {
           headers: { "Content-Type": "application/json" },
         });
 
-        if (res)
+        if (res){
           setMessage({
             flag: true,
             message: "Signup successful!",
-            operation: Operation.NONE,
+            operation: Operation.CREATE,
           });
+        
+          nav.push("/login");
+        }
+          
       } catch (error) {
         console.error("Signup error:", error);
       }

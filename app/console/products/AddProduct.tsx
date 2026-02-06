@@ -353,7 +353,7 @@ const AddProduct = ({
         longitude: formData.longitude,
         avilablity: true,
         type: selectedType.value as productType,
-
+        
         // NEW: attach variants
         variants: checkVariants.map((v) => ({
           sku: v.sku,
