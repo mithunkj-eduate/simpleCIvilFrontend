@@ -44,7 +44,79 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+
+  // ✅ fixes chunk caching problems
+  generateBuildId: async () => {
+    return Date.now().toString();
+  },
+
+  // ✅ correct static cache for Next chunks
+  async headers() {
+    return [
+      {
+        source: "/_next/static/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
+  }
 };
 
 export default nextConfig;
 
+
+// import type { NextConfig } from "next";
+
+// const nextConfig: NextConfig = {
+//   reactStrictMode: true,
+
+//   images: {
+//     remotePatterns: [
+//       {
+//         protocol: "https",
+//         hostname: "tailwindcss.com",
+//         pathname: "/**",
+//       },
+//       {
+//         protocol: "https",
+//         hostname: "images.unsplash.com",
+//         pathname: "/**",
+//       },
+//     ],
+//   },
+
+  
+//   typescript: {
+//     ignoreBuildErrors: true,
+//   },
+
+//   eslint: {
+//     ignoreDuringBuilds: true,
+//   },
+
+//   // ✅ fixes chunk caching problems
+//   generateBuildId: async () => {
+//     return Date.now().toString();
+//   },
+
+//   // ✅ correct static cache for Next chunks
+//   async headers() {
+//     return [
+//       {
+//         source: "/_next/static/:path*",
+//         headers: [
+//           {
+//             key: "Cache-Control",
+//             value: "public, max-age=31536000, immutable",
+//           },
+//         ],
+//       },
+//     ];
+//   },
+// };
+
+// export default nextConfig;

@@ -16,7 +16,8 @@ import { SignupSchema } from "@/validations/validationSchemas";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+
 
 export interface SignupFormValues {
   name: string;
