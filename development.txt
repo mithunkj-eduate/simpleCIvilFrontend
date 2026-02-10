@@ -1,8 +1,12 @@
+      
+      production:
        NODE_ENV=production
        NEXT_PUBLIC_DEVELOPMENT_BASE_URL=https://apisr.shareurinterest.com
        
 
-        # # NODE_ENV=development
+
+development:
+         NODE_ENV=development
         # # NODE_LOCATION=office
         # # NODE_LOCATION=home
         # NODE_LOCATION=local

@@ -17,6 +17,7 @@ import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
 import Api, { api } from "@/components/helpers/apiheader";
 import MessageModal from "@/customComponents/MessageModal";
 import { emptyMessage } from "@/utils/constants";
+import Image from "next/image";
 
 export const StoreFormJson = [
   {
@@ -183,13 +184,14 @@ const AddProduct = ({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
   const [message, setMessage] = useState<msgType>(emptyMessage);
 
   const [formData, setFormData] = useState<ProductFormData>(initialFormData);
   const [variants, setVariants] = useState<any[]>([]);
+  const [productImages, setProductImages] = useState<File[]>([]);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
 
   const SaleTypeOption: AutoCompleteOption[] = [
     { label: productType.SALE, value: productType.SALE },
@@ -341,62 +343,140 @@ const AddProduct = ({
         return;
       }
 
-      const body: ProductInputType = {
-        name: formData.name.trim(),
-        description: formData.description.trim(),
-        storeId: selectedStore.value as string,
-        ownerId: state.user?.id as string,
-        groupId: selectedGroup?.value ?? "",
-        categoryId: selectedCategory?.value,
-        subsidiaryId: selectedSubsidiary?.value,
-        latitude: formData.latitude,
-        longitude: formData.longitude,
-        avilablity: true,
-        type: selectedType.value as productType,
-        
-        // NEW: attach variants
-        variants: checkVariants.map((v) => ({
-          sku: v.sku,
-          price: v.price,
-          stock: v.stock ?? 0, // optional fallback
-          attributes: {
-            color: v.color ?? "",
-            size: v.size ?? "",
-            weight: v.weight ?? "",
-            material: v.material ?? "",
-          },
-          images: v.images ?? [],
-        })),
+      const form = new FormData();
 
-        tags: formData.tags
-          ? formData.tags.split(",").map((t) => t.trim())
-          : [],
-      };
-
-      const path =
-        operations.operation === Operation.UPDATE
-          ? `/products/${selectedId}`
-          : "/products";
+      productImages.forEach((file) => {
+        form.append("images", file);
+      });
 
       const res = await api({
-        method: operations.operation === Operation.UPDATE ? "put" : "post",
-        url: path,
-        data: body,
+        method: "post",
+        url: "/images/upload",
+        data: form,
         headers: {
           Authorization: `Bearer ${TOKEN}`,
+          "Content-Type": "multipart/form-data",
         },
       });
-      console.log(res, "res");
-      setMessage({
-        flag: true,
-        message:
-          operations.operation === Operation.UPDATE
-            ? "Product updated successfully!"
-            : "Product added successfully!",
-        operation: Operation.CREATE,
-      });
 
-      onProductAdded?.();
+      const imagePaths = res.data.images.map((i: any) => i.path);
+
+      if (productImages.length && imagePaths && imagePaths.length) {
+        const body: ProductInputType = {
+          name: formData.name.trim(),
+          description: formData.description.trim(),
+          storeId: selectedStore.value as string,
+          ownerId: state.user?.id as string,
+          groupId: selectedGroup?.value ?? "",
+          categoryId: selectedCategory?.value,
+          subsidiaryId: selectedSubsidiary?.value,
+          latitude: formData.latitude,
+          longitude: formData.longitude,
+          avilablity: true,
+          type: selectedType.value as productType,
+          image: imagePaths && imagePaths.length ? [imagePaths[0]] : [],
+
+          // NEW: attach variants
+          variants: checkVariants.map((v) => ({
+            sku: v.sku,
+            price: v.price,
+            stock: v.stock ?? 0, // optional fallback
+            attributes: {
+              color: v.color ?? "",
+              size: v.size ?? "",
+              weight: v.weight ?? "",
+              material: v.material ?? "",
+            },
+            images: v.images ?? [],
+          })),
+
+          tags: formData.tags
+            ? formData.tags.split(",").map((t) => t.trim())
+            : [],
+        };
+
+        const path =
+          operations.operation === Operation.UPDATE
+            ? `/products/${selectedId}`
+            : "/products";
+
+        const res = await api({
+          method: operations.operation === Operation.UPDATE ? "put" : "post",
+          url: path,
+          data: body,
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        });
+        console.log(res, "res");
+        setMessage({
+          flag: true,
+          message:
+            operations.operation === Operation.UPDATE
+              ? "Product updated successfully!"
+              : "Product added successfully!",
+          operation: Operation.CREATE,
+        });
+
+        onProductAdded?.();
+      } else {
+        const body: ProductInputType = {
+          name: formData.name.trim(),
+          description: formData.description.trim(),
+          storeId: selectedStore.value as string,
+          ownerId: state.user?.id as string,
+          groupId: selectedGroup?.value ?? "",
+          categoryId: selectedCategory?.value,
+          subsidiaryId: selectedSubsidiary?.value,
+          latitude: formData.latitude,
+          longitude: formData.longitude,
+          avilablity: true,
+          type: selectedType.value as productType,
+
+          // NEW: attach variants
+          variants: checkVariants.map((v) => ({
+            sku: v.sku,
+            price: v.price,
+            stock: v.stock ?? 0, // optional fallback
+            attributes: {
+              color: v.color ?? "",
+              size: v.size ?? "",
+              weight: v.weight ?? "",
+              material: v.material ?? "",
+            },
+            images: v.images ?? [],
+          })),
+
+          tags: formData.tags
+            ? formData.tags.split(",").map((t) => t.trim())
+            : [],
+        };
+
+        const path =
+          operations.operation === Operation.UPDATE
+            ? `/products/${selectedId}`
+            : "/products";
+
+        const res = await api({
+          method: operations.operation === Operation.UPDATE ? "put" : "post",
+          url: path,
+          data: body,
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        });
+        console.log(res, "res");
+        setMessage({
+          flag: true,
+          message:
+            operations.operation === Operation.UPDATE
+              ? "Product updated successfully!"
+              : "Product added successfully!",
+          operation: Operation.CREATE,
+        });
+
+        onProductAdded?.();
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || "Operation failed");
       console.error(err);
@@ -424,6 +504,22 @@ const AddProduct = ({
 
   const removeVariant = (index: number) => {
     setVariants(variants.filter((_, i) => i !== index));
+  };
+
+  // upload
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+
+    setProductImages((prev) => [...prev, ...files]);
+
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setPreviewImages((prev) => [...prev, ...previews]);
+  };
+
+  // delete
+  const handleRemoveImage = (index: number) => {
+    setProductImages((prev) => prev.filter((_, i) => i !== index));
+    setPreviewImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -663,6 +759,47 @@ const AddProduct = ({
               </Button>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* ================= IMAGES ================= */}
+      <div className="space-y-3">
+        <label className="block font-medium text-sm">Product Images</label>
+
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleImageChange}
+          className="block w-full text-sm border rounded-md p-2 cursor-pointer
+               file:mr-4 file:py-2 file:px-4 file:rounded-md
+               file:border-0 file:bg-blue-500 file:text-white hover:file:bg-blue-600"
+          max={1}
+        />
+
+        {/* preview grid */}
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-3 mt-3">
+          {previewImages.map((img, index) => (
+            <div key={index} className="relative group">
+              <Image
+                width={50}
+                height={50}
+                src={img}
+                alt="preview"
+                className="w-full h-24 object-cover rounded-lg border"
+              />
+
+              {/* delete button */}
+              <button
+                onClick={() => handleRemoveImage(index)}
+                className="absolute top-1 right-1 bg-red-500 text-white text-xs
+                     rounded-full px-2 py-1 opacity-0 group-hover:opacity-100
+                     transition"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
         </div>
       </div>
 

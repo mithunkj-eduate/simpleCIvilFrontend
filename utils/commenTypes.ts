@@ -63,6 +63,7 @@ export interface ProductInputType {
   color?: string;
   size?: string;
   tags?: string[];
+  image?: string[];
   saleTerms?: {
     mrpPrice?: number;
     salePrice?: number;
