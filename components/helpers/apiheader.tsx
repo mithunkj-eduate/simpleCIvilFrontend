@@ -47,10 +47,9 @@ export const BASE_URL =
     ? process.env.NEXT_PUBLIC_DEVELOPMENT_BASE_URL_HOME
     : process.env.NEXT_PUBLIC_DEVELOPMENT_BASE_URL;
 
-    console.log(BASE_URL,"BASE_URL")
+console.log(BASE_URL, "BASE_URL");
 
-export const BASE_URL_IMAGE = `${BASE_URL}/api`
 export const api = axios.create({
-  baseURL: `${"http://localhost:9000"}/api`,
+  baseURL: `${BASE_URL || "http://localhost:9000"}/api`,
   withCredentials: true,
 });

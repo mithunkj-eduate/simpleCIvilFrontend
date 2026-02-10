@@ -22,7 +22,7 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import { productSortQuery } from "@/types/productSchemaTypes";
-import { api } from "@/components/helpers/apiheader";
+import { BASE_URL_IMAGE, api } from "@/components/helpers/apiheader";
 import Link from "next/link";
 import { CartVariantType } from "@/types/cart";
 import Image from "next/image";
@@ -57,9 +57,12 @@ interface Product {
 function ProductCard({ product }: { product: Product }) {
   const price = product.variants[0]?.price || 0;
 
-  const image = product.image.length
-    ? product.image[0]
-    : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
+  // const image = product.image.length
+  //   ? `${BASE_URL_IMAGE}${product.image[0]}`
+  //   : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
+
+  const image =
+    "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
 
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-300 group cursor-pointer overflow-hidden">
@@ -508,7 +511,6 @@ export default function ProductsPage() {
     }
   }, [selectedSubCategory, selectedSort, memoizedFilters]);
 
- 
   // Initial fetch and refetch on filter/sort changes
   useEffect(() => {
     const handler = setTimeout(() => {

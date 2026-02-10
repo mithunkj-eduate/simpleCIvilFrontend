@@ -119,7 +119,6 @@ export default function ProductDetails() {
     };
 
     if (id && TOKEN) fetchData();
-
   }, [id, TOKEN]);
 
   // When variants or selections change → compute matchedVariant & displayPrice & image
@@ -154,10 +153,13 @@ export default function ProductDetails() {
     // set image to variant image if available, otherwise product.image[0]
     const variantImage = variant?.images?.[0];
     if (variantImage) setSelectedImage(variantImage);
+    // setSelectedImage(
+    //   product.image?.[0] ||
+    //     "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"
+    // );
     else
       setSelectedImage(
-        product.image?.[0] ||
-          "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"
+        "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"
       );
   }, [product, selectedColor, selectedSize, selectedWeight]);
 
@@ -334,7 +336,6 @@ export default function ProductDetails() {
               All Product Variants
             </h3>
 
-          
             <div className="hidden md:flex text-xs font-medium text-gray-500 border-b pb-2 mb-2">
               <div className="w-1/4">SKU</div>
               <div className="w-1/4">Attributes</div>
@@ -491,7 +492,6 @@ export default function ProductDetails() {
           </>
         )}
       </div> */}
-
 
       <MessageModal
         handleClose={() => setMessage(emptyMessage)}

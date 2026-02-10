@@ -111,12 +111,10 @@ export default function OrderHistoryPage() {
             <GenerateCode open={open} setOpen={setOpen} />
           </div>
         </div>
-
         {/* Recent Orders */}
         <h2 className="text-xl font-medium text-gray-900 mt-8">
           Recent Orders
         </h2>
-
         {orders.length === 0 ? (
           <p className="text-center text-gray-500 py-10">
             No recent orders found.
@@ -209,9 +207,8 @@ export default function OrderHistoryPage() {
             ))}
           </div>
         )}
-
         {/* SIMILAR PRODUCTS */}
-        {similarProducts.length > 0 && (
+        {/* {similarProducts.length > 0 && (
           <div className="mt-12">
             <h2 className="text-xl font-medium text-gray-900">
               Similar Products
@@ -224,9 +221,14 @@ export default function OrderHistoryPage() {
                   className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
                 >
                   <Image
+                    // src={
+                    //   // product.image?.[0]?.url ||
+                    //   "https://via.placeholder.com/96"
+                    // }
+                    width={200}
+                    height={200}
                     src={
-                      product.image?.[0]?.url ||
-                      "https://via.placeholder.com/96"
+                      "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg" // fallback image in public folder
                     }
                     alt={product.name ?? "/"}
                     className="h-32 w-full object-cover rounded-md"
@@ -251,7 +253,7 @@ export default function OrderHistoryPage() {
               ))}
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
