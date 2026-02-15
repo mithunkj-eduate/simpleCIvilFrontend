@@ -3,7 +3,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams } from "next/navigation";
 import { StarIcon } from "@heroicons/react/20/solid";
-import Api, { api } from "@/components/helpers/apiheader";
+import Api, { api, BASE_URL } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { productType } from "@/types/product";
 import { Button } from "@/stories/Button/Button";
@@ -97,7 +97,7 @@ export default function ProductDetails() {
         // set default image
         setSelectedImage(
           data.image.length
-            ? data.image[0]
+            ? `${BASE_URL}${data.image[0]}`
             : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg",
         );
 
@@ -151,9 +151,10 @@ export default function ProductDetails() {
     }
     setDisplayPrice(price);
 
-    console.log(variant,"variant")
+    console.log(variant, "variant");
     // set image to variant image if available, otherwise product.image[0]
-    const variantImage =variant && variant?.images.length &&  variant?.images?.[0];
+    const variantImage =
+      variant && variant?.images.length && `${BASE_URL}${variant.images[0]}`;
     if (variantImage) setSelectedImage(variantImage);
     // setSelectedImage(
     //   product.image?.[0] ||

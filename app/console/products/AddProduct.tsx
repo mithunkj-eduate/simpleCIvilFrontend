@@ -14,7 +14,7 @@ import {
 import { ApiPathType, Operation } from "@/utils/enum.types";
 import { AppContext } from "@/context/context";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
-import Api, { api } from "@/components/helpers/apiheader";
+import Api, { api, BASE_URL } from "@/components/helpers/apiheader";
 import MessageModal from "@/customComponents/MessageModal";
 import { emptyMessage } from "@/utils/constants";
 import { SafeImage } from "@/app/utils/SafeImage";
@@ -169,17 +169,17 @@ const AddProduct = ({
   selectedId,
 }: AddProductProps) => {
   const [selectedStore, setSelectedStore] = useState<AutoCompleteOption | null>(
-    null
+    null,
   );
   const [selectedCategory, setSelectedCategory] =
     useState<AutoCompleteOption | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<AutoCompleteOption | null>(
-    null
+    null,
   );
   const [selectedSubsidiary, setSelectedSubsidiary] =
     useState<AutoCompleteOption | null>(null);
   const [selectedType, setSelectedType] = useState<AutoCompleteOption | null>(
-    null
+    null,
   );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -228,6 +228,10 @@ const AddProduct = ({
           rentalMinDuration: data.rentalMinDuration || 0,
         });
 
+        if (data.image && data.image.length) {
+          setPreviewImages([`${BASE_URL}${data.image[0]}`]);
+        }
+
         if (data.storeId?._id) {
           setSelectedStore({
             label: data.storeId.name,
@@ -267,7 +271,7 @@ const AddProduct = ({
               weight: v.attributes.weight ?? "",
               material: v.attributes.material ?? "",
               images: v.images ?? [],
-            }))
+            })),
           );
         }
       }
@@ -331,7 +335,7 @@ const AddProduct = ({
         return;
       }
       const checkVariants = variants.filter(
-        (i) => i.sku !== "" && i.price !== 0
+        (i) => i.sku !== "" && i.price !== 0,
       );
       console.log(checkVariants, "checkVariants");
       if (!checkVariants.length) {
@@ -349,17 +353,22 @@ const AddProduct = ({
         form.append("images", file);
       });
 
-      const res = await api({
-        method: "post",
-        url: "/images/upload",
-        data: form,
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const imagePaths: string[] = [];
 
-      const imagePaths = res.data.images.map((i: any) => i.path);
+      if (operations.operation === Operation.CREATE) {
+        const res = await api({
+          method: "post",
+          url: "/images/upload",
+          data: form,
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        const images = res.data.images.map((i: any) => i.path);
+        imagePaths.push(images);
+      }
+      console.log(imagePaths, "imagespath");
 
       if (productImages.length && imagePaths && imagePaths.length) {
         const body: ProductInputType = {
@@ -387,7 +396,11 @@ const AddProduct = ({
               weight: v.weight ?? "",
               material: v.material ?? "",
             },
-            images: v.images ?? [],
+            images: v.images
+              ? v.images
+              : imagePaths && imagePaths.length
+                ? [imagePaths[0]]
+                : [],
           })),
 
           tags: formData.tags

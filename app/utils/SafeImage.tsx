@@ -34,7 +34,7 @@ export function SafeImage({
       className={className}
       onClick={onClick ? onClick : () => {}}
       unoptimized
-      onError={() => {
+      onError={()=> {
         setImgSrc("/placeholder.jpg"); // must exist in frontend /public
       }}
     />

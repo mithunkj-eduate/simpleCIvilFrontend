@@ -62,9 +62,11 @@ function ProductCard({ product }: { product: Product }) {
   //   : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
 
   const image = product.image.length
-    ? `${BASE_URL}/${product.image[0]}`
+    ? `${BASE_URL}${product.image[0]}`
     : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
 
+
+    console.log(image,"image")
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-300 group cursor-pointer overflow-hidden">
       {/* Product Image */}
