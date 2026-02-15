@@ -31,7 +31,6 @@ const AppProvider: React.FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { TOKEN: token } = Api();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const getUser = async () => {
     try {
       const res = await api.get(`/user/verify`, {

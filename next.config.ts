@@ -20,54 +20,78 @@
 
 // export default nextConfig;
 
-import type { NextConfig } from "next";
+// import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  // 1. Remove allowedDevOrigins if not strictly needed for build
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'tailwindcss.com',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        pathname: '/**',
-      },
-    ],
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+// const nextConfig: NextConfig = {
+//   // 1. Remove allowedDevOrigins if not strictly needed for build
+//   images: {
+//     remotePatterns: [
+//       {
+//         protocol: "https",
+//         hostname: "tailwindcss.com",
+//         pathname: "/**",
+//       },
+//       {
+//         protocol: "https",
+//         hostname: "images.unsplash.com",
+//         pathname: "/**",
+//       },
+//     ],
+//   },
+//   // typescript: {
+//   //   ignoreBuildErrors: true,
+//   // },
+//   // eslint: {
+//   //   ignoreDuringBuilds: true,
+//   // },
 
-  // ✅ fixes chunk caching problems
-  generateBuildId: async () => {
-    return Date.now().toString();
-  },
+//   // // ✅ fixes chunk caching problems
+//   // generateBuildId: async () => {
+//   //   return Date.now().toString();
+//   // },
 
-  // ✅ correct static cache for Next chunks
-  async headers() {
-    return [
-      {
-        source: "/_next/static/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-    ];
-  }
-};
+//   // // // ✅ correct static cache for Next chunks
+//   // async headers() {
+//   //   return [
+//   //     {
+//   //       source: "/_next/static/:path*",
+//   //       headers: [
+//   //         {
+//   //           key: "Cache-Control",
+//   //           value: "public, max-age=31536000, immutable",
+//   //         },
+//   //       ],
+//   //     },
+//   //   ];
+//   // },
 
-export default nextConfig;
+//   async headers() {
+//   return [
+//     {
+//       source: "/",
+//       headers: [
+//         {
+//           key: "Cache-Control",
+//           value: "no-store, no-cache, must-revalidate, proxy-revalidate",
+//         },
+//       ],
+//     },
+//   ];
+// },
 
+//   typescript: {
+//     ignoreBuildErrors: true,
+//   },
+
+//   eslint: {
+//     ignoreDuringBuilds: true,
+//   },
+//   generateEtags: false,
+// poweredByHeader: false,
+
+// };
+
+// export default nextConfig;
 
 // import type { NextConfig } from "next";
 
@@ -89,7 +113,6 @@ export default nextConfig;
 //     ],
 //   },
 
-  
 //   typescript: {
 //     ignoreBuildErrors: true,
 //   },
@@ -120,3 +143,49 @@ export default nextConfig;
 // };
 
 // export default nextConfig;
+
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  // 1. Remove allowedDevOrigins if not strictly needed for build
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "tailwindcss.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
+      },
+    ],
+  },
+
+  async headers() {
+    return [
+      {
+        source: "/",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate, proxy-revalidate",
+          },
+        ],
+      },
+    ];
+  },
+
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  generateEtags: false,
+  poweredByHeader: false,
+};
+
+export default nextConfig;

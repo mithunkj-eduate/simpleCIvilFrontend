@@ -10,6 +10,9 @@ export default function Home() {
     <>
       <Navbar NavType={LicenseTypes.USER} />
       <HeroSection />
+        <h1>Mithun new build</h1>
+        <h1>Mithun new build new build two</h1>
+
       {/* ⭐ Categories */}
       <div className="bg-gray-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

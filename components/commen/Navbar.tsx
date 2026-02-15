@@ -45,35 +45,46 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const Navigation = useMemo(
-    () => [
-      { name: "Home", href: "/", current: true },
+
+  const Navigation = useMemo(() => {
+    const items = [
+        { name: "Home", href: "/", current: true },
       { name: "Product", href: "/products", current: false },
       // { name: "Contact", href: "/contactus", current: false },
       // { name: "Marketplace", href: "#", current: false },
       { name: "Company", href: "/aboutus", current: false },
       { name: "Blog", href: "/blog", current: false },
+    ];
 
-      state.user && state.user.id
-        ? { name: "Orders", href: "/orders", current: false }
-        : { name: "", href: "", current: false },
+    if (state.user?.id) {
+      items.push({ name: "Orders", href: "/orders" ,current: false});
+    }
+
+    if (
       state.user &&
-      (state.user.role === UserType.ADMIN ||
-        state.user.role === UserType.PICE_WORKER ||
-        state.user.role === UserType.PROJECT_MANAGER ||
-        state.user.role === UserType.RESELLER ||
-        state.user.role === UserType.SELLER ||
-        state.user.role === UserType.SYSTEM_ADMIN)
-        ? { name: "Console", href: "/console", current: false }
-        : state.user && state.user.role === UserType.RAIDER
-        ? { name: "Console", href: "/dashboard", current: false }
-        : { name: "", href: "", current: false },
-    ],
-    [state.user]
-  );
+      state.user.role &&
+      [
+        UserType.ADMIN,
+        UserType.PICE_WORKER,
+        UserType.PROJECT_MANAGER,
+        UserType.RESELLER,
+        UserType.SELLER,
+        UserType.SYSTEM_ADMIN,
+      ].includes(state.user.role as UserType)
+    ) {
+      items.push({ name: "Console", href: "/console",current: false });
+    }
 
-  const ConsoleNavigation = useMemo(
-    () => [
+    if (state.user && state.user?.role === UserType.RAIDER) {
+      items.push({ name: "Console", href: "/dashboard" ,current: false});
+    }
+
+    return items;
+  }, [state.user]);
+
+
+  const ConsoleNavigation = useMemo(() => {
+    const items = [
       { name: "Dashboard", href: "/console", current: true },
       { name: "Stores", href: "/console/stores", current: false },
       // { name: "Categories", href: "/console/categories", current: false },
@@ -81,26 +92,28 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       { name: "Products", href: "/console/products", current: false },
       { name: "Orders", href: "/console/orders", current: false },
       { name: "Payments", href: "/console/payments", current: false },
-      state.user &&
-      state.user.id &&
-      (state.user.role === UserType.ADMIN ||
-        state.user.role === UserType.SYSTEM_ADMIN)
-        ? { name: "Users", href: "/console/users", current: false }
-        : { name: "", href: "", current: false },
+    ];
 
+    if (
       state.user &&
-      state.user.id &&
-      (state.user.role === UserType.ADMIN ||
-        state.user.role === UserType.SYSTEM_ADMIN)
-        ? {
-            name: "Categories",
-            href: "/console/categories",
-            current: false,
-          }
-        : { name: "", href: "", current: false },
-    ],
-    [state.user]
-  );
+      state.user.role &&
+      [UserType.ADMIN, UserType.SYSTEM_ADMIN].includes(
+        state.user.role as UserType,
+      )
+    ) {
+      items.push(
+        { name: "Users", href: "/console/users", current: false },
+
+        {
+          name: "Categories",
+          href: "/console/categories",
+          current: false,
+        },
+      );
+    }
+
+    return items;
+  }, [state.user]);
 
   const ConsoleDelveryBoyNavigation = useMemo(
     () => [
@@ -108,7 +121,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       { name: "Orders", href: "/dashboard/orders", current: false },
       // { name: "Map", href: "/dashboard/routemap", current: false },
     ],
-    []
+    [],
   );
 
   useEffect(() => {
@@ -174,7 +187,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               // className={`text-sm/6 font-semibold text-gray-900 text-white`}
               className={classNames(
                 className ? className : "",
-                `text-sm/6 font-semibold text-gray-900`
+                `text-sm/6 font-semibold text-gray-900`,
               )}
               // className={classNames(
               //   item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white',
@@ -192,7 +205,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               href="/cart"
               className={classNames(
                 className ? className : "",
-                "text-sm/6 font-semibold text-gray-900 me-2"
+                "text-sm/6 font-semibold text-gray-900 me-2",
               )}
             >
               <svg
@@ -216,7 +229,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
             href="/login"
             className={classNames(
               className ? className : "",
-              "text-sm/6 font-semibold text-gray-900"
+              "text-sm/6 font-semibold text-gray-900",
             )}
           >
             Log in <span aria-hidden="true">&rarr;</span>

@@ -189,7 +189,7 @@ export default function AllPaymentsPage() {
                     {getAvailableActions(
                       payment.method,
                       payment.status,
-                      payment._id
+                      // payment._id
                     )}
                   </td>
                 </tr>

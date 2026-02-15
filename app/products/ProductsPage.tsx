@@ -22,7 +22,7 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import { productSortQuery } from "@/types/productSchemaTypes";
-import { BASE_URL_IMAGE, api } from "@/components/helpers/apiheader";
+import {  api } from "@/components/helpers/apiheader";
 import Link from "next/link";
 import { CartVariantType } from "@/types/cart";
 import Image from "next/image";
