@@ -12,7 +12,7 @@ import { Operation } from "@/utils/enum.types";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import { CartVariantType } from "@/types/cart";
-import Image from "next/image";
+import { SafeImage } from "@/app/utils/SafeImage";
 
 export default function ProductDetails() {
   const [product, setProduct] = useState<any>(null);
@@ -66,7 +66,7 @@ export default function ProductDetails() {
     variants: any[] = [],
     color?: string,
     size?: string,
-    weight?: string
+    weight?: string,
   ) => {
     if (!variants || variants.length === 0) return null;
     // exact match priority: color + size + weight
@@ -86,7 +86,7 @@ export default function ProductDetails() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await api.get(`/products/${id}`, {
+        const res = await api.get(`/commen/products/${id}`, {
           headers: { Authorization: `Bearer ${TOKEN}` },
         });
 
@@ -96,8 +96,9 @@ export default function ProductDetails() {
         console.log(data, "data");
         // set default image
         setSelectedImage(
-          data.image?.[0] ??
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"
+          data.image.length
+            ? data.image[0]
+            : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg",
         );
 
         // build attribute lists from variants (Option B)
@@ -129,7 +130,7 @@ export default function ProductDetails() {
       product.variants || [],
       selectedColor,
       selectedSize,
-      selectedWeight
+      selectedWeight,
     );
     console.log(variant, "variant");
     setMatchedVariant(variant);
@@ -150,8 +151,9 @@ export default function ProductDetails() {
     }
     setDisplayPrice(price);
 
+    console.log(variant,"variant")
     // set image to variant image if available, otherwise product.image[0]
-    const variantImage = variant?.images?.[0];
+    const variantImage =variant && variant?.images.length &&  variant?.images?.[0];
     if (variantImage) setSelectedImage(variantImage);
     // setSelectedImage(
     //   product.image?.[0] ||
@@ -159,7 +161,7 @@ export default function ProductDetails() {
     // );
     else
       setSelectedImage(
-        "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"
+        "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg",
       );
   }, [product, selectedColor, selectedSize, selectedWeight]);
 
@@ -277,7 +279,7 @@ export default function ProductDetails() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* LEFT: IMAGE */}
         <div>
-          <Image
+          <SafeImage
             width={500}
             height={500}
             src={selectedImage}
@@ -365,8 +367,8 @@ export default function ProductDetails() {
                       isOutOfStock
                         ? "opacity-50 cursor-not-allowed line-through border-gray-200 text-gray-400 bg-gray-50"
                         : isSelected
-                        ? "border-indigo-600 bg-indigo-50 text-indigo-700 ring-2 ring-indigo-300"
-                        : "border-gray-300 text-gray-800 bg-white hover:border-gray-500"
+                          ? "border-indigo-600 bg-indigo-50 text-indigo-700 ring-2 ring-indigo-300"
+                          : "border-gray-300 text-gray-800 bg-white hover:border-gray-500"
                     }
                   `}
                       onClick={() => setSelectedVariant(item)}
@@ -392,7 +394,7 @@ export default function ProductDetails() {
                               {key.charAt(0).toUpperCase() + key.slice(1)}:{" "}
                               {value}
                             </span>
-                          )
+                          ),
                         )}
                       </div>
 
@@ -411,8 +413,8 @@ export default function ProductDetails() {
                   item.stock > 10
                     ? "bg-green-100 text-green-800"
                     : item.stock > 0
-                    ? "bg-yellow-100 text-yellow-800"
-                    : "bg-red-100 text-red-800"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : "bg-red-100 text-red-800"
                 }
               `}
                           >

@@ -27,7 +27,7 @@ import { Operation, UserType } from "@/utils/enum.types";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
-import Image from "next/image";
+import { SafeImage } from "@/app/utils/SafeImage";
 
 // --- UPDATED INTERFACES TO MATCH JSON STRUCTURE ---
 
@@ -100,7 +100,7 @@ interface FlattenedOrderRow {
 
 // Function to transform the raw, nested orders into a flattened array for the table
 const transformOrdersForTable = (
-  rawOrders: RawOrder[]
+  rawOrders: RawOrder[],
 ): FlattenedOrderRow[] => {
   const flattened: FlattenedOrderRow[] = [];
 
@@ -422,7 +422,7 @@ export default function OrdersPage() {
         .filter((opt) => opt.checked)
         .map((opt) => opt.value),
     }),
-    [filters, filterVersion]
+    [filters, filterVersion],
   );
 
   // Apply sorting and filtering logic to the fetched/transformed data
@@ -455,7 +455,7 @@ export default function OrdersPage() {
 
       setFilteredOrders(processedOrders);
     },
-    [selectedSort]
+    [selectedSort],
   );
 
   const fetchOrders = useCallback(async () => {
@@ -470,13 +470,13 @@ export default function OrdersPage() {
     if (memoizedFilters.paymentMethod.length > 0) {
       queryParams.append(
         "paymentMethod",
-        memoizedFilters.paymentMethod.join(",")
+        memoizedFilters.paymentMethod.join(","),
       );
     }
     if (memoizedFilters.deliveryStatus.length > 0) {
       queryParams.append(
         "deliveryStatus",
-        memoizedFilters.deliveryStatus.join(",")
+        memoizedFilters.deliveryStatus.join(","),
       );
     }
 
@@ -550,15 +550,15 @@ export default function OrdersPage() {
             data: prev.data.map((order) =>
               order._id === orderId
                 ? { ...order, ...response.data.data }
-                : order
+                : order,
             ),
           }));
           setFilteredOrders((prev) =>
             prev.map((order) =>
               order._id === orderId
                 ? { ...order, ...response.data.data }
-                : order
-            )
+                : order,
+            ),
           );
 
           setMessage({
@@ -579,7 +579,7 @@ export default function OrdersPage() {
         setLoading(false);
       }
     },
-    [TOKEN, fetchOrders]
+    [TOKEN, fetchOrders],
   );
 
   // ... rest of the component (Modal, UI structure for filters/sorts)
@@ -593,7 +593,7 @@ export default function OrdersPage() {
       newFilters[sectionKey] = newFilters[sectionKey].map((option) =>
         option.value === optionValue
           ? { ...option, checked: !option.checked }
-          : option
+          : option,
       );
       return newFilters;
     });
@@ -687,7 +687,7 @@ export default function OrdersPage() {
                                   {option.label}
                                 </label>
                               </div>
-                            )
+                            ),
                           )}
                         </div>
                       </DisclosurePanel>
@@ -744,7 +744,7 @@ export default function OrdersPage() {
                               ? "font-medium text-gray-900"
                               : "text-gray-500",
                             focus ? "bg-gray-100" : "",
-                            "block px-4 py-2 text-sm"
+                            "block px-4 py-2 text-sm",
                           )}
                         >
                           {option.name}
@@ -755,14 +755,14 @@ export default function OrdersPage() {
                 </div>
               </MenuItems>
             </Menu>
-            <Image
+            <SafeImage
               src={"/card.svg"}
               alt="/card"
               width={20}
               height={20}
               onClick={() => setTableScreen(false)}
             />
-            <Image
+            <SafeImage
               src={"/tableImg.svg"}
               alt="/card"
               width={20}
@@ -853,7 +853,7 @@ export default function OrdersPage() {
                                   {option.label}
                                 </label>
                               </div>
-                            )
+                            ),
                           )}
                         </div>
                       </DisclosurePanel>
@@ -966,7 +966,7 @@ function OrderCard({
           <span
             className={classNames(
               getStatusColor(order.orderStatus),
-              "inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
+              "inline-flex items-center rounded-full px-3 py-1 text-sm font-medium",
             )}
           >
             {order.orderStatus}
@@ -1110,7 +1110,7 @@ function OrderCard({
               <dd
                 className={classNames(
                   getStatusColor(order.deliveryStatus),
-                  "font-medium rounded-md px-2 py-0.5 text-center"
+                  "font-medium rounded-md px-2 py-0.5 text-center",
                 )}
               >
                 {order.deliveryStatus}

@@ -89,7 +89,7 @@ export function SafeImage({ src, width, height, alt }: Props) {
       alt={alt}
       unoptimized
       onError={() => {
-        setImgSrc("/placeholder.png"); // must exist in frontend /public
+        setImgSrc("/placeholder.jpg"); // must exist in frontend /public
       }}
     />
   );

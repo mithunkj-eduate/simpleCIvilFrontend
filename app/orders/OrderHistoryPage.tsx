@@ -8,7 +8,7 @@ import { Button } from "@/stories/Button/Button";
 import GenerateCode from "./GenerateCode";
 import { DeliveryProgress } from "./DeliveryProgress";
 import { DeliveryStatus } from "@/types/order";
-import Image from "next/image";
+import { SafeImage } from "../utils/SafeImage";
 
 /* Similar Products */
 interface SimilarProduct {
@@ -166,7 +166,7 @@ export default function OrderHistoryPage() {
                       )}
                     </div>
 
-                    <Image
+                    <SafeImage
                       src={
                         item.productId?.images?.[0] ||
                         "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-05.jpg"
@@ -220,7 +220,7 @@ export default function OrderHistoryPage() {
                   key={product._id}
                   className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
                 >
-                  <Image
+                  <SafeImage
                     // src={
                     //   // product.image?.[0]?.url ||
                     //   "https://via.placeholder.com/96"

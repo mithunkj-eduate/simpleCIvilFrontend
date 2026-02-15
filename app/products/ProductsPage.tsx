@@ -22,10 +22,10 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import { productSortQuery } from "@/types/productSchemaTypes";
-import {  api } from "@/components/helpers/apiheader";
+import { api, BASE_URL } from "@/components/helpers/apiheader";
 import Link from "next/link";
 import { CartVariantType } from "@/types/cart";
-import Image from "next/image";
+import { SafeImage } from "../utils/SafeImage";
 
 // Sample ProductCard component
 interface Product {
@@ -61,14 +61,15 @@ function ProductCard({ product }: { product: Product }) {
   //   ? `${BASE_URL_IMAGE}${product.image[0]}`
   //   : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
 
-  const image =
-    "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
+  const image = product.image.length
+    ? `${BASE_URL}/${product.image[0]}`
+    : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
 
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-300 group cursor-pointer overflow-hidden">
       {/* Product Image */}
       <div className="w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
-        <Image
+        <SafeImage
           src={image}
           alt={product.name}
           width={200}
@@ -245,7 +246,7 @@ const extractSubsidiary = (products: Product[]) => {
   const subs = products
     .map(
       (p) =>
-        p.subsidiaryId && { id: p.subsidiaryId._id, name: p.subsidiaryId.name }
+        p.subsidiaryId && { id: p.subsidiaryId._id, name: p.subsidiaryId.name },
     )
     .filter(Boolean);
 
@@ -266,7 +267,7 @@ const extractStores = (products: Product[]) => {
       value: store.id,
       label: store.name,
       checked: false,
-    })
+    }),
   );
 };
 
@@ -376,7 +377,7 @@ export default function ProductsPage() {
       availability: filters.availability,
       location: filters.location,
     }),
-    [filterVersion]
+    [filterVersion],
   );
 
   // Fetch products from API
@@ -417,7 +418,7 @@ export default function ProductsPage() {
     }
 
     const selectedPriceRange = filters.priceRange.find(
-      (range) => range.checked
+      (range) => range.checked,
     );
     if (selectedPriceRange) {
       queryParams.append("minPrice", selectedPriceRange.min.toString());
@@ -462,7 +463,7 @@ export default function ProductsPage() {
     console.log("Fetching products with query params:", queryParams.toString());
     try {
       const response = await api.get(
-        `/commen/products?${queryParams.toString()}`
+        `/commen/products?${queryParams.toString()}`,
       );
 
       if (response.status !== 200) {
@@ -523,12 +524,12 @@ export default function ProductsPage() {
   const updateFilter = (
     filterType: string,
     value: string,
-    checked: boolean
+    checked: boolean,
   ) => {
     setFilters((prev) => ({
       ...prev,
       [filterType]: prev[filterType].map((option) =>
-        option.value === value ? { ...option, checked } : option
+        option.value === value ? { ...option, checked } : option,
       ),
     }));
     setFilterVersion((prev) => prev + 1); // Trigger fetch
@@ -634,7 +635,7 @@ export default function ProductsPage() {
                           selectedSubCategory === category.name.toLowerCase()
                             ? "bg-indigo-600 text-white"
                             : "text-gray-900 hover:bg-gray-50",
-                          "block w-full px-2 py-3 rounded-md text-left"
+                          "block w-full px-2 py-3 rounded-md text-left",
                         )}
                       >
                         {category.name}
@@ -699,7 +700,7 @@ export default function ProductsPage() {
                                   updateFilter(
                                     section,
                                     option.value,
-                                    !option.checked
+                                    !option.checked,
                                   );
                                 }
                               }}
@@ -795,7 +796,7 @@ export default function ProductsPage() {
                           onChange={(e) =>
                             updateLocationFilter(
                               e.target.value,
-                              filters.location.lng
+                              filters.location.lng,
                             )
                           }
                           className="border rounded-md p-2 text-sm"
@@ -813,7 +814,7 @@ export default function ProductsPage() {
                           onChange={(e) =>
                             updateLocationFilter(
                               filters.location.lat,
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className="border rounded-md p-2 text-sm"
@@ -894,7 +895,7 @@ export default function ProductsPage() {
                             selectedSort.value === option.value
                               ? "font-medium text-gray-900 bg-gray-100"
                               : "text-gray-500 hover:bg-gray-50",
-                            "block w-full px-4 py-2 text-left text-sm"
+                            "block w-full px-4 py-2 text-left text-sm",
                           )}
                         >
                           {option.name}
@@ -946,7 +947,7 @@ export default function ProductsPage() {
                           selectedSubCategory === category.name.toLowerCase()
                             ? "text-indigo-600 font-semibold"
                             : "text-gray-900 hover:text-indigo-500",
-                          "flex items-center"
+                          "flex items-center",
                         )}
                       >
                         {category.name}
@@ -1016,7 +1017,7 @@ export default function ProductsPage() {
                                   updateFilter(
                                     section,
                                     option.value,
-                                    !option.checked
+                                    !option.checked,
                                   );
                                 }
                               }}
@@ -1107,7 +1108,7 @@ export default function ProductsPage() {
                           onChange={(e) =>
                             updateLocationFilter(
                               e.target.value,
-                              filters.location.lng
+                              filters.location.lng,
                             )
                           }
                           className="border rounded-md p-2 text-sm"
@@ -1128,7 +1129,7 @@ export default function ProductsPage() {
                           onChange={(e) =>
                             updateLocationFilter(
                               filters.location.lat,
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className="border rounded-md p-2 text-sm"

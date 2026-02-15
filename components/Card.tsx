@@ -1,5 +1,5 @@
 
-import Image from "next/image";
+import { SafeImage } from "@/app/utils/SafeImage";
 
 const callouts = [
   {
@@ -40,7 +40,7 @@ export default function Card() {
           <div className="mt-6 space-y-12 lg:grid lg:grid-cols-3 lg:space-y-0 lg:gap-x-6">
             {callouts.map((callout) => (
               <div key={callout.name} className="group relative">
-                <Image
+                <SafeImage
                   width={500}
                   height={500}
                   alt={callout.imageAlt}

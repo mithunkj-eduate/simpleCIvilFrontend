@@ -17,7 +17,7 @@ import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
 import Api, { api } from "@/components/helpers/apiheader";
 import MessageModal from "@/customComponents/MessageModal";
 import { emptyMessage } from "@/utils/constants";
-import Image from "next/image";
+import { SafeImage } from "@/app/utils/SafeImage";
 
 export const StoreFormJson = [
   {
@@ -781,7 +781,7 @@ const AddProduct = ({
         <div className="grid grid-cols-3 md:grid-cols-5 gap-3 mt-3">
           {previewImages.map((img, index) => (
             <div key={index} className="relative group">
-              <Image
+              <SafeImage
                 width={50}
                 height={50}
                 src={img}

@@ -11,7 +11,7 @@ import { Operation } from "@/utils/enum.types";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
-import Image from "next/image";
+import { SafeImage } from "../utils/SafeImage";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<ICartItem[]>([]);
@@ -120,7 +120,7 @@ export default function CartPage() {
                   return (
                     <li key={item._id} className="flex py-6">
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                        <Image
+                        <SafeImage
                           src={
                             "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"
                           }

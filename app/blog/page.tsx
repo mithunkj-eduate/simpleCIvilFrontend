@@ -1,7 +1,7 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/commen/Navbar";
 import { LicenseTypes } from "@/utils/enum.types";
-import Image from "next/image";
+import { SafeImage } from "../utils/SafeImage";
 
 const posts = [
   {
@@ -135,7 +135,7 @@ export default function Example() {
                   </p>
                 </div>
                 <div className="relative mt-8 flex items-center gap-x-4 justify-self-end">
-                  <Image
+                  <SafeImage
                     alt=""
                     width={100}
                     height={100}

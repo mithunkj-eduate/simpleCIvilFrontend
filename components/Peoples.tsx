@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { SafeImage } from "@/app/utils/SafeImage";
 
 const people = [
   {
@@ -61,7 +61,9 @@ export default function Peoples() {
       {people.map((person) => (
         <li key={person.email} className="flex justify-between gap-x-6 py-5">
           <div className="flex min-w-0 gap-x-4">
-            <Image
+            <SafeImage
+              height={200}
+              width={200}
               alt=""
               src={person.imageUrl}
               className="size-12 flex-none rounded-full bg-gray-50"

@@ -15,8 +15,8 @@
   }
   ```
 */
+import { SafeImage } from "@/app/utils/SafeImage";
 import { StarIcon } from "@heroicons/react/20/solid";
-import Image from "next/image";
 
 const product = {
   name: "Basic Tee 6-Pack",
@@ -133,22 +133,30 @@ export default function Product() {
 
         {/* Image gallery */}
         <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-8 lg:px-8">
-          <Image
+          <SafeImage
+            height={200}
+            width={200}
             alt={product.images[0].alt}
             src={product.images[0].src}
             className="row-span-2 aspect-3/4 size-full rounded-lg object-cover max-lg:hidden"
           />
-          <Image
+          <SafeImage
+            height={200}
+            width={200}
             alt={product.images[1].alt}
             src={product.images[1].src}
             className="col-start-2 aspect-3/2 size-full rounded-lg object-cover max-lg:hidden"
           />
-          <Image
+          <SafeImage
+            height={200}
+            width={200}
             alt={product.images[2].alt}
             src={product.images[2].src}
             className="col-start-2 row-start-2 aspect-3/2 size-full rounded-lg object-cover max-lg:hidden"
           />
-          <Image
+          <SafeImage
+            height={200}
+            width={200}
             alt={product.images[3].alt}
             src={product.images[3].src}
             className="row-span-2 aspect-4/5 size-full object-cover sm:rounded-lg lg:aspect-3/4"
@@ -183,7 +191,7 @@ export default function Product() {
                         reviews.average > rating
                           ? "text-gray-900"
                           : "text-gray-200",
-                        "size-5 shrink-0"
+                        "size-5 shrink-0",
                       )}
                     />
                   ))}
@@ -218,7 +226,7 @@ export default function Product() {
                           aria-label={color.name}
                           className={classNames(
                             color.classes,
-                            "size-8 appearance-none rounded-full forced-color-adjust-none checked:outline-2 checked:outline-offset-2 focus-visible:outline-3 focus-visible:outline-offset-3"
+                            "size-8 appearance-none rounded-full forced-color-adjust-none checked:outline-2 checked:outline-offset-2 focus-visible:outline-3 focus-visible:outline-offset-3",
                           )}
                         />
                       </div>

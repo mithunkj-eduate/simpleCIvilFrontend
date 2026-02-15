@@ -10,7 +10,7 @@ import { LicenseTypes, Operation } from "@/utils/enum.types";
 import React, { useContext, useEffect, useState } from "react";
 import AddProduct from "./AddProduct";
 import { AppContext } from "@/context/context";
-import Image from "next/image";
+import { SafeImage } from "@/app/utils/SafeImage";
 
 const ProductsPage = () => {
   const { TOKEN } = Api();
@@ -161,7 +161,7 @@ const ProductsPage = () => {
                           {product.createdAt}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500 flex">
-                          <Image
+                          <SafeImage
                             width={50}
                             height={50}
                             src={"/EyeIcon.svg"}
@@ -173,7 +173,7 @@ const ProductsPage = () => {
                               setModalFlag(true);
                             }}
                           />
-                          <Image
+                          <SafeImage
                             width={50}
                             height={50}
                             src={"/Edit.svg"}

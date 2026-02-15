@@ -160,6 +160,17 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "apicivil.shareurinterest.com",
+        pathname: "/public/**",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "9000",
+        pathname: "/public/**",
+      },
     ],
   },
 
