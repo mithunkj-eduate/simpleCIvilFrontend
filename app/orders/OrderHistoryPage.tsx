@@ -88,7 +88,7 @@ export default function OrderHistoryPage() {
   };
 
   const handleViewSimilar = (productId: string) => {
-    router.push(`/products/${productId}`);
+    router.push(`/products/${productId}?v=2`);
   };
 
   /* ---------------------------

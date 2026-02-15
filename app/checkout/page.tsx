@@ -119,7 +119,7 @@ export default function CheckoutPage() {
   const handleClose = () => {
     setMessage(emptyMessage);
     state.cart = [];
-    router.push("/orders");
+    router.push("/orders?v=2");
   };
 
   const paymentMethodOptions = Object.values(PaymentMethod).map((method) => ({

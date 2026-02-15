@@ -10,6 +10,7 @@ npm list @next/swc
 
 npm list next
 
+importent evry time hosting bifore run in production host and local both:
  npm install tailwindcss @tailwindcss/postcss postcss autoprefixer --save
 
 https://apisr.shareurinterest.com/?v=2

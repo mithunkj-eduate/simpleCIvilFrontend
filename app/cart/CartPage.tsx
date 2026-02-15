@@ -243,7 +243,7 @@ export default function CartPage() {
                     payload: { cart: cartItems },
                   });
 
-                  router.push("/checkout");
+                  router.push("/checkout?v=2");
                 }}
                 mode="primary"
                 className="mt-6 w-full"

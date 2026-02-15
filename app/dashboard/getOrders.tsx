@@ -173,7 +173,7 @@ const GetOrderPage = () => {
   console.log(Orders);
 
   const handleClose = () => {
-    if (message.operation === Operation.CREATE) router.push("/dashboard/orders");
+    if (message.operation === Operation.CREATE) router.push("/dashboard/orders?v=2");
     setMessage(emptyMessage);
   };
   return (

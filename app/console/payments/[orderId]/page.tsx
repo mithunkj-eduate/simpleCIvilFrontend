@@ -190,7 +190,7 @@ export default function PaymentPage() {
           <Button
             mode="secondary"
             className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md"
-            onClick={() => router.push("/orders")}
+            onClick={() => router.push("/orders?v=2")}
           >
             Back to Orders
           </Button>

@@ -35,7 +35,7 @@ interface LoginFormValues {
 }
 
 const Login: React.FC = () => {
-  const nav = useRouter();
+  const router = useRouter();
 
   const formik = useFormik<LoginFormValues>({
     initialValues: {
@@ -53,7 +53,7 @@ const Login: React.FC = () => {
           localStorage.setItem("token", res.data.token);
           Cookies.set("token", res.data.token, { expires: 7 });
 
-          nav.push("/?v=2");
+          router.push("/?v=2");
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -131,7 +131,7 @@ const Login: React.FC = () => {
           </div>
 
           <p className="mt-4">
-            Not a member? <a href="/signup">Signup</a>
+            Not a member? <a href="/signup?v=2">Signup</a>
           </p>
         </form>
       </div>

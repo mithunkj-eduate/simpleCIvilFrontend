@@ -57,7 +57,7 @@ export const UserTypeData: UserType[] = [
 ];
 
 const Signup: React.FC = () => {
-  const nav = useRouter()
+  const router = useRouter()
   const initialValues: SignupFormValues = {
     name: "",
     password: "",
@@ -88,7 +88,7 @@ const Signup: React.FC = () => {
             operation: Operation.CREATE,
           });
         
-          nav.push("/login?v=2");
+          router.push("/login?v=2");
         }
           
       } catch (error) {
@@ -198,7 +198,7 @@ const Signup: React.FC = () => {
 
           <p className="mt-4 text-center text-sm">
             Already a member?{" "}
-            <a href="/login" className="text-indigo-600">
+            <a href="/login?v=2" className="text-indigo-600">
               Login
             </a>
           </p>
