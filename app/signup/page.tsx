@@ -88,7 +88,7 @@ const Signup: React.FC = () => {
             operation: Operation.CREATE,
           });
         
-          nav.push("/login");
+          nav.push("/login?v=2");
         }
           
       } catch (error) {

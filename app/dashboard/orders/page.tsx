@@ -79,7 +79,7 @@ const DeliveryOrderPage = () => {
               id: product._id,
               productName:
                 product?.orderId?.items.map(
-                  (item: any) => `${item?.productId?.name}, `
+                  (item: any) => `${item?.productId?.name}, `,
                 ) || "N/A",
               paymentMethod: product?.orderId?.paymentMethod || "N/A",
               orderAcceptStatus: product.orderAcceptStatus,
@@ -97,7 +97,7 @@ const DeliveryOrderPage = () => {
                 ? new Date(product.createdAt).toLocaleDateString()
                 : "N/A",
               deliveryLocation: product?.orderId?.location?.coordinates || [],
-            }))
+            })),
           );
         } else {
           console.error("Failed to fetch users:", res);
@@ -139,7 +139,7 @@ const DeliveryOrderPage = () => {
               Authorization: `Bearer ${TOKEN}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         if (res) {
@@ -156,7 +156,7 @@ const DeliveryOrderPage = () => {
 
   const handleUpdateStatus = async (
     orderId: string,
-    acceptStatus: OrderAcceptStatus
+    acceptStatus: OrderAcceptStatus,
   ) => {
     try {
       if (!TOKEN || !state.user?.id || !orderId || !acceptStatus) return;
@@ -170,7 +170,7 @@ const DeliveryOrderPage = () => {
         },
         {
           headers: { Authorization: `Bearer ${TOKEN}` },
-        }
+        },
       );
       if (response.data.status) {
         GetUsers();
@@ -198,7 +198,7 @@ const DeliveryOrderPage = () => {
         (err) => {
           console.error("Error getting location:", err);
           alert("Unable to get your location");
-        }
+        },
       );
     }
   }, []);
@@ -224,17 +224,21 @@ const DeliveryOrderPage = () => {
             <div className="mt-8 overflow-x-auto rounded-md bg-white m-2">
               <ul role="list" className="divide-y divide-gray-100">
                 {Orders.map((person, index) => (
-                  <li key={index} className="flex justify-between gap-x-6 py-5">
+                  <li
+                    className="flex flex-col sm:flex-row sm:justify-between gap-y-4 sm:gap-x-6 py-5"
+                    key={index}
+                  >
                     <div className="flex min-w-0 gap-x-4">
+                      
                       <div className="size-12 flex-none rounded-full bg-gray-50">
                         <div>
                           {person.orderAcceptStatus ===
                           OrderAcceptStatus.ACCEPTED
                             ? "A"
                             : person.orderAcceptStatus ===
-                              OrderAcceptStatus.CANCELLED
-                            ? "C"
-                            : "P"}
+                                OrderAcceptStatus.CANCELLED
+                              ? "C"
+                              : "P"}
                         </div>
                       </div>
 
@@ -267,7 +271,7 @@ const DeliveryOrderPage = () => {
                                     ? currentLocation.lng
                                     : location.lng,
                                   person.storeLocation[0],
-                                  person.storeLocation[1]
+                                  person.storeLocation[1],
                                 )?.toFixed(2)}{" "}
                                 km
                               </span>
@@ -294,7 +298,7 @@ const DeliveryOrderPage = () => {
                                   person.storeLocation[0],
                                   person.storeLocation[1],
                                   person.deliveryLocation[0],
-                                  person.deliveryLocation[1]
+                                  person.deliveryLocation[1],
                                 )?.toFixed(2)}{" "}
                                 km
                               </span>
@@ -326,7 +330,7 @@ const DeliveryOrderPage = () => {
                                   person.storeLocation[0],
                                   person.storeLocation[1],
                                   person.deliveryLocation[0],
-                                  person.deliveryLocation[1]
+                                  person.deliveryLocation[1],
                                 )?.toFixed(2)}
                                 km
                               </span>
@@ -342,7 +346,7 @@ const DeliveryOrderPage = () => {
                               onClick={() => {
                                 handleUpdateStatus(
                                   person.orderId,
-                                  OrderAcceptStatus.REACHED_STORE
+                                  OrderAcceptStatus.REACHED_STORE,
                                 );
                               }}
                             >
@@ -373,7 +377,7 @@ const DeliveryOrderPage = () => {
                               onClick={() => {
                                 handleUpdateStatus(
                                   person.orderId,
-                                  OrderAcceptStatus.REACHED_DROP
+                                  OrderAcceptStatus.REACHED_DROP,
                                 );
                               }}
                             >
@@ -394,7 +398,7 @@ const DeliveryOrderPage = () => {
 
                                 handleGenerateCode(
                                   person.orderId,
-                                  person.buyerId
+                                  person.buyerId,
                                 );
                               }}
                             >
@@ -409,7 +413,7 @@ const DeliveryOrderPage = () => {
                         ) : null}
                       </div>
                     </div>
-                    <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                    <div className="flex flex-col sm:items-end shrink-0 items-center">
                       <p className="text-sm/6 text-gray-900">
                         Delivery Status : {person.deliveryStatus}
                       </p>

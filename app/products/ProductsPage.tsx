@@ -139,7 +139,7 @@ function ProductCard({ product }: { product: Product }) {
 
         {/* Button / Link */}
         <Link
-          href={`/products/${product._id}`}
+          href={`/products/${product._id}?v=2`}
           className="block mt-4 text-center bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-all"
         >
           View Product

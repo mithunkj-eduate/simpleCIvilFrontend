@@ -48,16 +48,16 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
 
   const Navigation = useMemo(() => {
     const items = [
-        { name: "Home", href: "/", current: true },
-      { name: "Product", href: "/products", current: false },
+        { name: "Home", href: "/?v=2", current: true },
+      { name: "Product", href: "/products?v=2", current: false },
       // { name: "Contact", href: "/contactus", current: false },
       // { name: "Marketplace", href: "#", current: false },
-      { name: "Company", href: "/aboutus", current: false },
-      { name: "Blog", href: "/blog", current: false },
+      { name: "Company", href: "/aboutus?v=2", current: false },
+      { name: "Blog", href: "/blog?v=2", current: false },
     ];
 
     if (state.user?.id) {
-      items.push({ name: "Orders", href: "/orders" ,current: false});
+      items.push({ name: "Orders", href: "/orders?v=2" ,current: false});
     }
 
     if (
@@ -72,11 +72,11 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         UserType.SYSTEM_ADMIN,
       ].includes(state.user.role as UserType)
     ) {
-      items.push({ name: "Console", href: "/console",current: false });
+      items.push({ name: "Console", href: "/console?v=2",current: false });
     }
 
     if (state.user && state.user?.role === UserType.RAIDER) {
-      items.push({ name: "Console", href: "/dashboard" ,current: false});
+      items.push({ name: "Console", href: "/dashboard?v=2" ,current: false});
     }
 
     return items;
@@ -85,13 +85,13 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
 
   const ConsoleNavigation = useMemo(() => {
     const items = [
-      { name: "Dashboard", href: "/console", current: true },
-      { name: "Stores", href: "/console/stores", current: false },
+      { name: "Dashboard", href: "/console?v=2", current: true },
+      { name: "Stores", href: "/console/stores?v=2", current: false },
       // { name: "Categories", href: "/console/categories", current: false },
 
-      { name: "Products", href: "/console/products", current: false },
-      { name: "Orders", href: "/console/orders", current: false },
-      { name: "Payments", href: "/console/payments", current: false },
+      { name: "Products", href: "/console/products?v=2", current: false },
+      { name: "Orders", href: "/console/orders?v=2", current: false },
+      { name: "Payments", href: "/console/payments?v=2", current: false },
     ];
 
     if (
@@ -102,11 +102,11 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       )
     ) {
       items.push(
-        { name: "Users", href: "/console/users", current: false },
+        { name: "Users", href: "/console/users?v=2", current: false },
 
         {
           name: "Categories",
-          href: "/console/categories",
+          href: "/console/categories?v=2",
           current: false,
         },
       );
@@ -117,8 +117,8 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
 
   const ConsoleDelveryBoyNavigation = useMemo(
     () => [
-      { name: "Dashboard", href: "/dashboard", current: true },
-      { name: "Orders", href: "/dashboard/orders", current: false },
+      { name: "Dashboard", href: "/dashboard?v=2", current: true },
+      { name: "Orders", href: "/dashboard/orders?v=2", current: false },
       // { name: "Map", href: "/dashboard/routemap", current: false },
     ],
     [],
@@ -158,7 +158,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         className="flex items-center justify-between p-6 lg:px-8"
       >
         <div className="flex lg:flex-1">
-          <a href="/" className="-m-1.5 p-1.5">
+          <a href="/?v=2" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <Image
               alt=""
@@ -202,7 +202,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           {state.user && state.user.id ? (
             <Link
-              href="/cart"
+              href="/cart?v=2"
               className={classNames(
                 className ? className : "",
                 "text-sm/6 font-semibold text-gray-900 me-2",
@@ -226,7 +226,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
           ) : null}
 
           <a
-            href="/login"
+            href="/login?v=2"
             className={classNames(
               className ? className : "",
               "text-sm/6 font-semibold text-gray-900",
@@ -311,7 +311,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               </div>
               <div className="py-6">
                 <a
-                  href="/login"
+                  href="/login?v=2"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                 >
                   Log in
@@ -319,7 +319,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               </div>
               <div className="py-6">
                 <a
-                  href="/signup"
+                  href="/signup?v=2"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                 >
                   SignUp

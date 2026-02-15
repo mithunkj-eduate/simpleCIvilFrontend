@@ -53,7 +53,7 @@ const Login: React.FC = () => {
           localStorage.setItem("token", res.data.token);
           Cookies.set("token", res.data.token, { expires: 7 });
 
-          nav.push("/");
+          nav.push("/?v=2");
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {
