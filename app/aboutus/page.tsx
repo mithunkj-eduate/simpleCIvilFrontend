@@ -183,7 +183,7 @@ export default function Example() {
             and rent with confidence.
           </p>
           <a
-            href="/signup"
+            href="/signup?v=2"
             className="inline-block bg-blue-600 text-white px-6 py-3 rounded-xl text-lg hover:bg-blue-700 transition"
           >
             Get Started
