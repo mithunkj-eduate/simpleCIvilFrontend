@@ -7,7 +7,8 @@ export enum LicenseTypes {
   PROJECT_MANAGER = "PROJECT_MANAGER",
   SYSTEM_ADMIN = "SYSTEM_ADMIN",
   PICE_WORKER = "PICE_WORKER",
-  RAIDER = "raider"
+  RAIDER = "raider",
+  FARMER = "farmer"
 }
 
 export enum AuthMethod {
