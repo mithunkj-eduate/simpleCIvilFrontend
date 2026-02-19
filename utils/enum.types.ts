@@ -26,7 +26,8 @@ export enum UserType {
   PROJECT_MANAGER = "project_manager",
   SYSTEM_ADMIN = "system_admin",
   PICE_WORKER = "pice_worker",
-  RAIDER = "raider"
+  RAIDER = "raider",
+  FARMER = "FARMER"
 }
 
 export enum CategoryLevelType {

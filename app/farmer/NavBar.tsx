@@ -64,7 +64,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     } else if (NavType === LicenseTypes.NONE) {
       setItems([]);
     }
-  }, [state.user, ConsoleDelveryBoyNavigation]);
+  }, [state.user, ConsoleDelveryBoyNavigation, NavType]);
 
   return (
     <header
