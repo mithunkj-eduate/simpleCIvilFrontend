@@ -63,3 +63,10 @@ export enum Operation {
 export enum PageForNav{
   aboutus= "aboutus"
 }
+
+
+export enum FarmingTypeEnum {
+  ORGANIC = "ORGANIC",
+  CONVENTIONAL = "CONVENTIONAL",
+  MIXED = "MIXED",
+}

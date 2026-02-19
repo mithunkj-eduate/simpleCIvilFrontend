@@ -8,6 +8,8 @@ export default function BottomNav() {
       <Link href="/farmer/addReport">➕ Add</Link>
       <Link href="/farmer/myReports">📄 Reports</Link>
       <Link href="/farmer/suggestions">🌱 Tips</Link>
+      <Link href="/farmer/profile">🌱 Tips</Link>
+
     </div>
   );
 }

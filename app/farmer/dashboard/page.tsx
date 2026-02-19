@@ -1,14 +1,23 @@
 "use client";
+import CropTrends from "@/components/farmer/CropTrends";
+import OversupplyAlert from "@/components/farmer/OversupplyAlert";
+import ProfitSummary from "@/components/farmer/ProfitSummary";
+import Recommendations from "@/components/farmer/Recommendations";
+import { AppContext } from "@/context/context";
 import Link from "next/link";
+import { useContext } from "react";
 
 export default function FarmerDashboard() {
+  const {state} = useContext(AppContext)
   return (
     <div className="p-4 space-y-4">
       {/* Welcome */}
       <div className="bg-green-100 p-4 rounded-2xl shadow">
-        <h2 className="text-xl font-bold">Welcome Mithun 👨‍🌾</h2>
+        <h2 className="text-xl font-bold">Welcome {state.user && state.user.name} 👨‍🌾</h2>
         <p className="text-sm text-gray-600">Here is today’s crop insight</p>
       </div>
+
+      
 
       {/* Insights */}
       <div className="grid grid-cols-2 gap-3">
@@ -34,6 +43,11 @@ export default function FarmerDashboard() {
           ➕ Add Crop Report
         </button>
       </Link>
+
+      <ProfitSummary />
+      <OversupplyAlert />
+      <CropTrends />
+      <Recommendations />
     </div>
   );
 }
