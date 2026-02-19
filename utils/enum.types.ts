@@ -70,3 +70,9 @@ export enum FarmingTypeEnum {
   CONVENTIONAL = "CONVENTIONAL",
   MIXED = "MIXED",
 }
+
+export enum CropPlanStatusEnum {
+  PLANNED = "PLANNED",
+  PLANTED = "PLANTED",
+  HARVESTED = "HARVESTED",
+}

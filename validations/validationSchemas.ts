@@ -68,3 +68,19 @@ export const AddFarmerProfileValidation = Yup.object().shape({
     .matches(/^[1-9][0-9]{5}$/, "Enter a valid 6-digit pincode")
     .required("Pincode is required"),
 });
+
+//  VALIDATION SCHEMA ADD STORE
+export const AddCropPlanValidation = Yup.object().shape({
+  cropName: Yup.string().required("Name is required"),
+  plannedLandAcres: Yup.string().required("PlannedLandAcres is required"),
+});
+
+
+
+//  VALIDATION SCHEMA ADD STORE
+export const AddFarmSeasonValidation = Yup.object().shape({
+  seasonName: Yup.string().required("Name is required"),
+  startDate:Yup.string().required("Name is required"),
+  endDate:Yup.string().required("Name is required"),
+});
+ 
