@@ -21,6 +21,7 @@ import React, {
 import { Formik, Form, ErrorMessage } from "formik";
 import { AddCropPlanValidation } from "@/validations/validationSchemas";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
+import AutoFarmSeasonSelect from "./AutoFarmSeasonSelect";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -87,6 +88,8 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
   const [formData, setFormData] = useState(initialCropPlanValues);
   const [selectedFarmingType, setFarmingType] =
     useState<AutoCompleteOption | null>(null);
+  const [selectedSeason, setSelectedSeason] =
+    useState<AutoCompleteOption | null>(null);
 
   useEffect(() => {
     if (operations.operation === Operation.UPDATE) {
@@ -128,7 +131,7 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
 
       const body = {
         ...values,
-
+        seasonId: selectedSeason?.value,
       };
 
       const res = await api({
@@ -208,6 +211,15 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
                   </DialogTitle>
 
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols">
+                    <div>
+                      <AutoFarmSeasonSelect
+                        selectedItem={selectedSeason}
+                        setSelectedItem={setSelectedSeason}
+                        path={"farmer/season"}
+                        label="Search Season"
+                        disabled={operations.operation === Operation.VIEW}
+                      />
+                    </div>
                     {CropPlanFormJson.map((item, index) => (
                       <div key={index} className="sm:col-span-3 w-80">
                         <Label>{item.labelName}</Label>
