@@ -8,7 +8,7 @@ export enum LicenseTypes {
   SYSTEM_ADMIN = "SYSTEM_ADMIN",
   PICE_WORKER = "PICE_WORKER",
   RAIDER = "raider",
-  FARMER = "farmer"
+  FARMER = "farmer",
 }
 
 export enum AuthMethod {
@@ -27,7 +27,7 @@ export enum UserType {
   SYSTEM_ADMIN = "system_admin",
   PICE_WORKER = "pice_worker",
   RAIDER = "raider",
-  FARMER = "FARMER"
+  FARMER = "FARMER",
 }
 
 export enum CategoryLevelType {
@@ -60,10 +60,9 @@ export enum Operation {
   CLOSE = "CLOSE",
 }
 
-export enum PageForNav{
-  aboutus= "aboutus"
+export enum PageForNav {
+  aboutus = "aboutus",
 }
-
 
 export enum FarmingTypeEnum {
   ORGANIC = "ORGANIC",
@@ -75,4 +74,13 @@ export enum CropPlanStatusEnum {
   PLANNED = "PLANNED",
   PLANTED = "PLANTED",
   HARVESTED = "HARVESTED",
+}
+
+export enum CropPlanNameEnum {
+  Rice = "Rice",
+  Ragi = "Ragi",
+  Tomato = "Tomato",
+  Onion = "Onion",
+  Cotton = "Cotton",
+  Chili = "Chili",
 }

@@ -7,9 +7,9 @@ import { Button } from "@/stories/Button/Button";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
 import { TextArea } from "@/stories/TextArea/TextArea";
-import { AutoCompleteOption, msgType } from "@/utils/commenTypes";
+import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
-import {  CropPlanStatusEnum, Operation } from "@/utils/enum.types";
+import { Operation } from "@/utils/enum.types";
 import { DialogTitle } from "@headlessui/react";
 import React, {
   Dispatch,
@@ -19,9 +19,7 @@ import React, {
   useState,
 } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
-import { AddCropPlanValidation } from "@/validations/validationSchemas";
-import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
-import AutoFarmSeasonSelect from "./AutoFarmSeasonSelect";
+import { AddProductionReportValidation } from "@/validations/validationSchemas";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -33,91 +31,59 @@ interface AddProfileProps {
 
 export const CropPlanFormJson = [
   { labelName: "Crop Name", inputName: "cropName", dataType: "text" },
+
   {
-    labelName: "Land Allocation (Acres)",
-    inputName: "plannedLandAcres",
+    labelName: "Season",
+    inputName: "season",
+    dataType: "string",
+  },
+  {
+    labelName: "Land Used Acres",
+    inputName: "landUsedAcres",
+    dataType: "string",
+  },
+  {
+    labelName: "Investment Cost",
+    inputName: "investmentCost",
     dataType: "number",
   },
   {
-    labelName: "Planting Date",
-    inputName: "expectedPlantingDate",
-    dataType: "date",
+    labelName: "Other Expenses",
+    inputName: "otherExpenses",
+    dataType: "number",
   },
+  { labelName: "Yield Kg", inputName: "yieldKg", dataType: "number" },
   {
-    labelName: "Harvest Date",
-    inputName: "expectedHarvestDate",
-    dataType: "date",
+    labelName: "Selling Price Per Kg",
+    inputName: "sellingPricePerKg",
+    dataType: "number",
   },
-  { labelName: "Status", inputName: "status", dataType: "status" },
-
+  { labelName: "Total Revenue", inputName: "totalRevenue", dataType: "number" },
+  { labelName: "Profit", inputName: "profit", dataType: "number" },
   { labelName: "State", inputName: "state", dataType: "text" },
   { labelName: "District", inputName: "district", dataType: "text" },
 ];
 
-const LevelOption: AutoCompleteOption[] = [
-  {
-    label: CropPlanStatusEnum.PLANNED,
-    value: CropPlanStatusEnum.PLANNED,
-  },
-  {
-    label: CropPlanStatusEnum.PLANTED,
-    value: CropPlanStatusEnum.PLANTED,
-  },
-  {
-    label: CropPlanStatusEnum.HARVESTED,
-    value: CropPlanStatusEnum.HARVESTED,
-  },
-];
-
-
-// const CropOption: AutoCompleteOption[] = [
-//   {
-//     label: CropPlanNameEnum.Chili,
-//     value: CropPlanNameEnum.Chili,
-//   },
-//   {
-//     label: CropPlanNameEnum.Cotton,
-//     value: CropPlanNameEnum.Cotton,
-//   },
-//   {
-//     label: CropPlanNameEnum.Tomato,
-//     value: CropPlanNameEnum.Tomato,
-//   },
-//   {
-//     label: CropPlanNameEnum.Onion,
-//     value: CropPlanNameEnum.Onion,
-//   },
-//   {
-//     label: CropPlanNameEnum.Ragi,
-//     value: CropPlanNameEnum.Ragi,
-//   },
-//   {
-//     label: CropPlanNameEnum.Rice,
-//     value: CropPlanNameEnum.Rice,
-//   },
-// ];
-
 export const initialCropPlanValues = {
   cropName: "",
-  plannedLandAcres: "",
-  expectedPlantingDate: "",
-  expectedHarvestDate: "",
-  seasonId: "",
-  status: "PLANNED",
+  season: "",
+  landUsedAcres: 0,
+  investmentCost: 0,
+  otherExpenses: 0,
+  yieldKg: 0,
+  sellingPricePerKg: 0,
+  totalRevenue: 0,
+  profit: 0,
   state: "",
   district: "",
 };
 
-const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
+const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
 
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const [formData, setFormData] = useState(initialCropPlanValues);
-  const [selectedFarmingType, setFarmingType] =
-    useState<AutoCompleteOption | null>(null);
-  const [selectedSeason, setSelectedSeason] =
-    useState<AutoCompleteOption | null>(null);
 
   useEffect(() => {
     if (operations.operation === Operation.UPDATE) {
@@ -125,25 +91,28 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
 
       const getStore = async () => {
         try {
-          const res = await api.get(`/farmer/profile`, {
+          const res = await api.get(`/farmer/production`, {
             headers: {
               Authorization: `Bearer ${TOKEN}`,
               "Content-Type": "application/json",
             },
           });
-
-          if (res.data) {
-            setFormData({
-              cropName: res.data.cropName,
-              plannedLandAcres: res.data.plannedLandAcres,
-              expectedPlantingDate: res.data.expectedPlantingDate,
-              expectedHarvestDate: res.data.expectedHarvestDate,
-              seasonId: res.data.seasonId,
-              status: res.data.status,
-              state: res.data.state,
-              district: res.data.district,
-            });
-          }
+          console.log(res);
+          //   if (res.data) {
+          //     setFormData({
+          //       cropName: res.data.cropName,
+          //       season: res.data.season,
+          //       landUsedAcres: res.data.landUsedAcres,
+          //       investmentCost: res.data.investmentCost,
+          //       otherExpenses: res.data.otherExpenses,
+          //       yieldKg: res.data.yieldKg,
+          //       sellingPricePerKg: res.data.sellingPricePerKg,
+          //       totalRevenue: res.data.totalRevenue,
+          //       profit: res.data.profit,
+          //       state: res.data.state,
+          //       district: res.data.district,
+          //     });
+          //   }
         } catch (error) {
           console.log(error);
         }
@@ -153,29 +122,26 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
   }, [operations.operation, TOKEN, state.user]);
 
   const submitForm = async (values: typeof initialCropPlanValues) => {
-    if (!selectedSeason)
-      setMessage({
-        message: "Select Season",
-        flag: true,
-        operation: Operation.NONE,
-      });
     try {
-      console.log("submited", formData);
       if (!TOKEN || !state.user) return;
+      console.log("submited", values);
 
       const body = {
         ...values,
-        seasonId: selectedSeason?.value,
       };
+      console.log(body, "body");
+
+      const path = "/farmer/production";
 
       const res = await api({
         method: "post",
-        url: "/farmer/cropPlan",
+        url: path,
         data: body,
         headers: {
           Authorization: `Bearer ${TOKEN}`,
         },
       });
+
       console.log(res, "res");
       if (res.status === 200 && res.data) {
         setMessage({
@@ -209,7 +175,7 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
       <Formik
         initialValues={formData}
         enableReinitialize={true}
-        validationSchema={AddCropPlanValidation}
+        validationSchema={AddProductionReportValidation}
         onSubmit={submitForm}
       >
         {({ handleChange, values }) => (
@@ -241,19 +207,10 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
                     {operations.operation === Operation.UPDATE
                       ? "Update"
                       : "Add"}{" "}
-                    Crop Plan
+                    Production Report
                   </DialogTitle>
 
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols">
-                    <div>
-                      <AutoFarmSeasonSelect
-                        selectedItem={selectedSeason}
-                        setSelectedItem={setSelectedSeason}
-                        path={"farmer/season"}
-                        label="Search Season"
-                        disabled={operations.operation === Operation.VIEW}
-                      />
-                    </div>
                     {CropPlanFormJson.map((item, index) => (
                       <div key={index} className="sm:col-span-3 w-80">
                         <Label>{item.labelName}</Label>
@@ -266,27 +223,6 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
                                 values[item.inputName as keyof typeof values]
                               }
                             />
-                          ) : item.dataType === "status" ? (
-                            <div key={index} className="sm:col-span-2">
-                              <div className="mt-2">
-                                <AutocompleteSelect
-                                  label={""}
-                                  options={LevelOption}
-                                  value={selectedFarmingType}
-                                  onChange={(e, newValue) => {
-                                    if (newValue) {
-                                      setFarmingType(
-                                        newValue as AutoCompleteOption | null,
-                                      );
-                                      setFormData({
-                                        ...formData,
-                                        status: newValue?.value,
-                                      });
-                                    }
-                                  }}
-                                />
-                              </div>
-                            </div>
                           ) : (
                             <Input
                               type={item.dataType}
@@ -338,4 +274,4 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
   );
 };
 
-export default AddCropPlan;
+export default AddProductionReport;

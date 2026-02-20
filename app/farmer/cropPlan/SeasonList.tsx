@@ -44,27 +44,46 @@ const SeasonList = () => {
   }, [TOKEN, state.user]);
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-3">Seasons</h2>
+  <div className="p-4 max-w-xl mx-auto">
+    <h2 className="text-2xl font-bold text-green-700 mb-4">
+      🌾 Seasons
+    </h2>
 
-      <div className="space-y-2">
-        {formData.map((crop) => (
+    {formData.length === 0 ? (
+      <p className="text-gray-500 text-center mt-6">
+        No seasons available
+      </p>
+    ) : (
+      <div className="space-y-3">
+        {formData.map((season) => (
           <div
-            key={crop.seasonName}
-            className="bg-white p-3 rounded-xl shadow flex justify-between"
+            key={season.seasonName}
+            className="bg-white border border-gray-200 p-4 rounded-2xl shadow-sm hover:shadow-md transition duration-200"
           >
-            <div>
-              <p className="font-semibold">{crop.seasonName}</p>
-              <p className="text-sm text-gray-500">
-                {toStandardDate(crop.endDate)} to{" "}
-                {toStandardDate(crop.startDate)}
-              </p>
+            <div className="flex justify-between items-center">
+              {/* Season Name */}
+              <div>
+                <p className="text-lg font-semibold text-gray-800">
+                  {season.seasonName}
+                </p>
+
+                <p className="text-sm text-gray-500 mt-1">
+                  {toStandardDate(season.startDate)} →{" "}
+                  {toStandardDate(season.endDate)}
+                </p>
+              </div>
+
+              {/* Badge */}
+              <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
+                Active
+              </span>
             </div>
           </div>
         ))}
       </div>
-    </div>
-  );
+    )}
+  </div>
+);
 };
 
 export default SeasonList;

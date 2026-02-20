@@ -16,3 +16,19 @@ const layout = ({ children }: Props) => {
 };
 
 export default layout;
+
+// Dashboard
+//  ├── Farmer Profile Card
+//  ├── Crop Plan Summary
+//  ├── Profit Summary
+//  ├── Market Trends
+//  └── Recommendations
+
+//1️⃣ Login
+// 2️⃣ Create profile
+// 3️⃣ Add crop plan
+// 4️⃣ Add production report
+// 5️⃣ See profit summary
+// 6️⃣ See district trends
+// 7️⃣ Avoid oversupply
+// 8️⃣ Follow recommendations

@@ -6,6 +6,7 @@ import AddCropPlan from "./AddCropPlan";
 import { useState } from "react";
 import AddSession from "./AddSession";
 import SeasonList from "./SeasonList";
+import CropPlanList from "./CropPlanList";
 
 const CropPlan = () => {
   const [modalFlag, setModalFlag] = useState(false);
@@ -13,59 +14,63 @@ const CropPlan = () => {
   const [sessionModal, setSeesionModal] = useState(false);
 
   return (
-    <div>
-      <Button
-        mode="primary"
-        className="ms-auto m-2"
-        onClick={() => {
-          setOperation(Operation.CREATE);
-          setModalFlag(true);
-        }}
-      >
-        Create Crop Plan
-      </Button>
-      <Button
-        mode="primary"
-        className="ms-auto m-2"
-        onClick={() => {
-          setOperation(Operation.CREATE);
-          setSeesionModal(true);
-        }}
-      >
-        Create Session
-      </Button>
-      <div>
-        <SeasonList />
-      </div>
-      <AddModal
-        modalFlag={modalFlag}
-        setModalFlag={setModalFlag}
-        // eslint-disable-next-line react/no-children-prop
-        children={
-          <AddCropPlan
-            setModalFlag={setModalFlag}
-            operations={{
-              operation,
-              setOperation,
-            }}
-          />
-        }
-      />
+    <div className="p-4 max-w-5xl mx-auto pb-24">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+        <h1 className="text-2xl font-bold text-green-700">🌾 Crop Planning</h1>
 
-      <AddModal
-        modalFlag={sessionModal}
-        setModalFlag={setSeesionModal}
-        // eslint-disable-next-line react/no-children-prop
-        children={
-          <AddSession
-            setModalFlag={setSeesionModal}
-            operations={{
-              operation,
-              setOperation,
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button
+            mode="primary"
+            onClick={() => {
+              setOperation(Operation.CREATE);
+              setModalFlag(true);
             }}
-          />
-        }
-      />
+          >
+            + Crop Plan
+          </Button>
+
+          <Button
+            mode="secondary"
+            onClick={() => {
+              setOperation(Operation.CREATE);
+              setSeesionModal(true);
+            }}
+          >
+            + Season
+          </Button>
+        </div>
+      </div>
+
+      {/* Content Cards */}
+      <div className="space-y-6">
+        {/* Season Section */}
+        <div className="bg-white rounded-2xl shadow-sm border p-4">
+          <SeasonList />
+        </div>
+
+        {/* Crop Plans Section */}
+        <div className="bg-white rounded-2xl shadow-sm border p-4">
+          <CropPlanList />
+        </div>
+      </div>
+
+      {/* Add Crop Plan Modal */}
+      <AddModal modalFlag={modalFlag} setModalFlag={setModalFlag}>
+        {" "}
+        <AddCropPlan
+          setModalFlag={setModalFlag}
+          operations={{ operation, setOperation }}
+        />
+      </AddModal>
+
+      {/* Add Season Modal */}
+      <AddModal modalFlag={sessionModal} setModalFlag={setSeesionModal}>
+        <AddSession
+          setModalFlag={setSeesionModal}
+          operations={{ operation, setOperation }}
+        />
+      </AddModal>
     </div>
   );
 };

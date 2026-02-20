@@ -1,45 +1,80 @@
 "use client";
+import AddModal from "@/components/helpers/AddModal";
+import { Button } from "@/stories/Button/Button";
 import { useState } from "react";
+import ProductionReportList from "./ProductionReportList";
+import { Operation } from "@/utils/enum.types";
+import AddProductionReport from "./AddProductionReport";
 
-export default function AddReport() {
-  const [form, setForm] = useState({
-    cropName: "",
-    landSize: "",
-    investment: "",
-    sales: "",
-    otherCharges: "",
-  });
+export default function ReportPage() {
+  const [modalFlag, setModalFlag] = useState(false);
+  const [operation, setOperation] = useState(Operation.NONE);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  // const [form, setForm] = useState({
+  //   cropName: "",
+  //   landSize: "",
+  //   investment: "",
+  //   sales: "",
+  //   otherCharges: "",
+  // });
 
-  const profit =
-    Number(form.sales) - (Number(form.investment) + Number(form.otherCharges));
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setForm({ ...form, [e.target.name]: e.target.value });
+  // };
+
+  // const profit =
+  //   Number(form.sales) - (Number(form.investment) + Number(form.otherCharges));
 
   return (
-    <div className="p-4 space-y-3">
-      <h2 className="text-xl font-bold">Add Crop Report</h2>
+    <div className="p-4 max-w-5xl mx-auto pb-24">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+        <h1 className="text-2xl font-bold text-green-700">🌾 Production Reports</h1>
 
-      {["cropName", "landSize", "investment", "sales", "otherCharges"].map(
-        (field) => (
-          <input
-            key={field}
-            name={field}
-            placeholder={field}
-            onChange={handleChange}
-            className="w-full border p-3 rounded-lg"
-          />
-        ),
-      )}
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button
+            mode="primary"
+            onClick={() => {
+              setOperation(Operation.CREATE);
+              setModalFlag(true);
+            }}
+          >
+            + Production Report
+          </Button>
 
-      <div className="bg-green-100 p-3 rounded-xl">
-        Estimated Profit: ₹{profit || 0}
+          {/* <Button
+            mode="secondary"
+            onClick={() => {
+              setOperation(Operation.CREATE);
+              setSeesionModal(true);
+            }}
+          >
+            + Season
+          </Button> */}
+        </div>
       </div>
 
-      <button className="w-full bg-green-600 text-white py-3 rounded-xl">
-        Submit
-      </button>
+      {/* Content Cards */}
+      <div className="space-y-6">
+        {/* Season Section */}
+        <div className="bg-white rounded-2xl shadow-sm border p-4">
+          <ProductionReportList />
+        </div>
+
+        {/* Crop Plans Section */}
+        {/* <div className="bg-white rounded-2xl shadow-sm border p-4">
+          <CropPlanList />
+        </div> */}
+      </div>
+
+      {/* Add Crop Plan Modal */}
+      <AddModal modalFlag={modalFlag} setModalFlag={setModalFlag}>
+        {" "}
+        <AddProductionReport
+          setModalFlag={setModalFlag}
+          operations={{ operation, setOperation }}
+        />
+      </AddModal>
     </div>
   );
 }
