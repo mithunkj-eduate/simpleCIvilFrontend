@@ -19,7 +19,7 @@ import React, {
   useState,
 } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
-import {  AddFarmSeasonValidation } from "@/validations/validationSchemas";
+import { AddFarmSeasonValidation } from "@/validations/validationSchemas";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -30,7 +30,7 @@ interface AddProfileProps {
 }
 
 export const CropPlanFormJson = [
-  { labelName: "seasonName", inputName: "seasonName", dataType: "text" },
+  { labelName: "Season Name", inputName: "seasonName", dataType: "text" },
 
   {
     labelName: "Start Date",
@@ -87,21 +87,33 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
 
   const submitForm = async (values: typeof initialCropPlanValues) => {
     try {
-      console.log("submited", formData);
       if (!TOKEN || !state.user) return;
+      console.log("submited", values);
 
+      if (!values.seasonName || !values.startDate || !values.endDate)
+        setMessage({
+          flag: true,
+          message: "Required all field",
+          operation: Operation.NONE,
+        });
       const body = {
-        ...values,
+        seasonName: values.seasonName,
+        startDate: values.startDate,
+        endDate: values.endDate,
       };
+      console.log(body, "body");
+
+      const path = "/farmer/season";
 
       const res = await api({
         method: "post",
-        url: "/farmer/season",
+        url: path,
         data: body,
         headers: {
           Authorization: `Bearer ${TOKEN}`,
         },
       });
+
       console.log(res, "res");
       if (res.status === 200 && res.data) {
         setMessage({

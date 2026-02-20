@@ -125,6 +125,12 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
   }, [operations.operation, TOKEN, state.user]);
 
   const submitForm = async (values: typeof initialCropPlanValues) => {
+    if (!selectedSeason)
+      setMessage({
+        message: "Select Season",
+        flag: true,
+        operation: Operation.NONE,
+      });
     try {
       console.log("submited", formData);
       if (!TOKEN || !state.user) return;
