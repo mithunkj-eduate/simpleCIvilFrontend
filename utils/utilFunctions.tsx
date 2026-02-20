@@ -1,3 +1,7 @@
+
+import dayjs from "dayjs";
+
+
 export const getDistance = (
   lat1: number,
   lon1: number,
@@ -18,4 +22,15 @@ export const getDistance = (
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c; // km
 };
+
+export const toStandardDate = (date: string) => {
+  const parsedDate = dayjs(date);
+
+  if (!parsedDate.isValid()) {
+    return "Invalid Date";
+  }
+  return parsedDate.format("DD-MM-YYYY");
+};
+
+
 

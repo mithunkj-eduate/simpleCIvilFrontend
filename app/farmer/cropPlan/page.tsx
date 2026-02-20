@@ -5,6 +5,7 @@ import { Operation } from "@/utils/enum.types";
 import AddCropPlan from "./AddCropPlan";
 import { useState } from "react";
 import AddSession from "./AddSession";
+import SeasonList from "./SeasonList";
 
 const CropPlan = () => {
   const [modalFlag, setModalFlag] = useState(false);
@@ -33,7 +34,9 @@ const CropPlan = () => {
       >
         Create Session
       </Button>
-
+      <div>
+        <SeasonList />
+      </div>
       <AddModal
         modalFlag={modalFlag}
         setModalFlag={setModalFlag}
