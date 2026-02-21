@@ -88,7 +88,7 @@ export default function AnalyticsPage() {
     <div className="p-4 md:p-6 space-y-6 bg-gray-50 min-h-screen">
       {/* HEADER */}
       <h1 className="text-2xl font-bold text-gray-800">
-        Crop Analytics Dashboard
+        Crop Dashboard
       </h1>
 
       {/* FILTER */}

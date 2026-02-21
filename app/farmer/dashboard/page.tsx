@@ -1,11 +1,7 @@
 "use client";
-import CropTrends from "@/components/farmer/CropTrends";
-import OversupplyAlert from "@/components/farmer/OversupplyAlert";
-import ProfitSummary from "@/components/farmer/ProfitSummary";
-import Recommendations from "@/components/farmer/Recommendations";
 import { AppContext } from "@/context/context";
-import Link from "next/link";
 import { useContext } from "react";
+import AnalyticsPage from "../analytics/page";
 
 export default function FarmerDashboard() {
   const {state} = useContext(AppContext)
@@ -17,10 +13,9 @@ export default function FarmerDashboard() {
         <p className="text-sm text-gray-600">Here is today’s crop insight</p>
       </div>
 
-      
+      <AnalyticsPage />
 
-      {/* Insights */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* <div className="grid grid-cols-2 gap-3">
         <div className="bg-white p-3 rounded-xl shadow">
           <p className="text-gray-500 text-sm">Top Crop</p>
           <h3 className="font-bold text-lg">Tomato</h3>
@@ -32,12 +27,10 @@ export default function FarmerDashboard() {
         </div>
       </div>
 
-      {/* District Alert */}
       <div className="bg-yellow-100 p-3 rounded-xl">
         ⚠ Too many farmers planting Tomato in your district
       </div>
 
-      {/* Quick Actions */}
       <Link href="/farmer/addReport">
         <button className="w-full bg-green-600 text-white py-3 rounded-xl font-semibold">
           ➕ Add Crop Report
@@ -47,7 +40,7 @@ export default function FarmerDashboard() {
       <ProfitSummary />
       <OversupplyAlert />
       <CropTrends />
-      <Recommendations />
+      <Recommendations /> */}
     </div>
   );
 }

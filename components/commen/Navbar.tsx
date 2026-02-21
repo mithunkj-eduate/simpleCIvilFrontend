@@ -97,7 +97,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         state.user.role as UserType,
       )
     ) {
-      items.push({ name: "Farmer", href: "/farmer?v=2", current: false });
+      items.push({ name: "Farmer", href: "/farmer/dashboard?v=2", current: false });
     }
 
     return items;
