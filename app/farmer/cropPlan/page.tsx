@@ -8,9 +8,11 @@ import AddSession from "./AddSession";
 import SeasonList from "./SeasonList";
 import CropPlanList from "./CropPlanList";
 import { AppContext } from "@/context/context";
+import { dashboardText } from "@/app/utils/DashbordText";
 
 const CropPlan = () => {
   const { state } = useContext(AppContext);
+  const lang = state.lang ?? "en"
   const [modalFlag, setModalFlag] = useState(false);
   const [operation, setOperation] = useState(Operation.NONE);
   const [sessionModal, setSeesionModal] = useState(false);
@@ -19,7 +21,9 @@ const CropPlan = () => {
     <div className="p-4 max-w-5xl mx-auto pb-24">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-        <h1 className="text-2xl font-bold text-green-700">🌾 Crop Planning</h1>
+        <h1 className="text-2xl font-bold text-green-700">🌾 {dashboardText.planning[lang as keyof typeof dashboardText.cropDashboard]}
+
+        </h1>
 
         <div className="flex flex-col sm:flex-row gap-2">
           <Button

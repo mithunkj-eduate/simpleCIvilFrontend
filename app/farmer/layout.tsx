@@ -8,8 +8,8 @@ interface Props {
 const layout = ({ children }: Props) => {
   return (
     <div>
-      <Navbar NavType={LicenseTypes.FARMER} />
-      {children}
+        <Navbar NavType={LicenseTypes.FARMER} />
+        {children}
       {/* <BottomNav /> */}
     </div>
   );
@@ -32,7 +32,6 @@ export default layout;
 // 6️⃣ See district trends
 // 7️⃣ Avoid oversupply
 // 8️⃣ Follow recommendations
-
 
 // Login
 //    ↓

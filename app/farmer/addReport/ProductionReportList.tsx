@@ -1,5 +1,6 @@
 "use client";
 
+import { dashboardText } from "@/app/utils/DashbordText";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import React, { useContext, useEffect, useState } from "react";
@@ -20,6 +21,7 @@ interface ProductionType {
 const ProductionReportList = () => {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
+  const lang = state.lang ?? "en"
 
   const [reports, setReports] = useState<ProductionType[]>([]);
 
@@ -50,7 +52,8 @@ const ProductionReportList = () => {
   return (
     <div className="p-4 max-w-xl mx-auto pb-24">
       <h2 className="text-2xl font-bold text-green-700 mb-4">
-        💰 Production Reports
+        💰 {dashboardText.reports[lang as keyof typeof dashboardText.cropDashboard]}
+
       </h2>
 
       {reports.length === 0 ? (

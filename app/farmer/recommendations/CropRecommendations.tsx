@@ -5,6 +5,7 @@ import { AutoCompleteOption } from "@/utils/commenTypes";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import AutoStateAndDistrictSelect from "@/Autocomplents/AutoStateAndDistrictSelect";
+import { dashboardText } from "@/app/utils/DashbordText";
 
 interface Recommendation {
   crop: string;
@@ -14,7 +15,7 @@ interface Recommendation {
 export default function CropRecommendations() {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
-
+  const lang = state.lang ?? "en";
   const [data, setData] = useState<Recommendation[]>([]);
 
   const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
@@ -64,7 +65,11 @@ export default function CropRecommendations() {
     <div className="bg-gray-50 min-h-screen p-4 md:p-6 space-y-6">
       {/* Header */}
       <h1 className="text-2xl font-bold text-gray-800">
-        Smart Crop Recommendations
+        {
+          dashboardText.reports[
+            lang as keyof typeof dashboardText.cropDashboard
+          ]
+        }
       </h1>
 
       {/* District Filter */}

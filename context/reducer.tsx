@@ -4,6 +4,8 @@ import { Actions } from "./types";
 export enum payloadTypes {
   SET_USER = "SET_USER",
   SET_CART = "SET_CART",
+  SET_LANG = "SET_LANG",
+
   RESET = "RESET",
 }
 export const reducer = (state: InitialStateType, action: Actions) => {
@@ -18,7 +20,13 @@ export const reducer = (state: InitialStateType, action: Actions) => {
         ...state,
         cart: action.payload.cart,
       };
-   
+
+    case payloadTypes.SET_LANG:
+      return {
+        ...state,
+        lang: action.payload.lang,
+      };
+
     case payloadTypes.RESET:
       return {
         ...initialState,

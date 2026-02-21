@@ -5,6 +5,7 @@ import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import AutoStateAndDistrictSelect from "@/Autocomplents/AutoStateAndDistrictSelect";
 import { AutoCompleteOption } from "@/utils/commenTypes";
+import { dashboardText } from "@/app/utils/DashbordText";
 
 interface ProfitCrop {
   _id: string;
@@ -33,6 +34,7 @@ const summaryData = {
 export default function AnalyticsPage() {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
+  const lang = state.lang ?? "en"
 
   const [summary, setSummary] = useState<summaryTypes>(summaryData);
   const [profitCrops, setProfitCrops] = useState<ProfitCrop[]>([]);
@@ -88,7 +90,7 @@ export default function AnalyticsPage() {
     <div className="p-4 md:p-6 space-y-6 bg-gray-50 min-h-screen">
       {/* HEADER */}
       <h1 className="text-2xl font-bold text-gray-800">
-        Crop Dashboard
+           {dashboardText.cropDashboard[lang as keyof typeof dashboardText.cropDashboard]}
       </h1>
 
       {/* FILTER */}
@@ -125,7 +127,8 @@ export default function AnalyticsPage() {
       </div>
 
       {/* MOST PROFITABLE */}
-      <Section title="Most Profitable Crops">
+      <Section title=           {dashboardText.profitable[lang as keyof typeof dashboardText.cropDashboard]}
+      >
         <div className="grid md:grid-cols-3 gap-4">
           {profitCrops.map((crop) => (
             <InsightCard
@@ -139,7 +142,8 @@ export default function AnalyticsPage() {
       </Section>
 
       {/* OVERSUPPLY */}
-      <Section title="Oversupply Crops">
+      <Section title=           {dashboardText.oversupply[lang as keyof typeof dashboardText.cropDashboard]}
+      >
         <div className="grid md:grid-cols-3 gap-4">
           {oversupply.map((crop) => (
             <div

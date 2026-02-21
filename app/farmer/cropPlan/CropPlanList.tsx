@@ -1,5 +1,6 @@
 "use client";
 
+import { dashboardText } from "@/app/utils/DashbordText";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { toStandardDate } from "@/utils/utilFunctions";
@@ -17,7 +18,7 @@ interface CropPlanType {
 const CropPlanList = () => {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
-
+const lang = state.lang ?? "en"
   const [plans, setPlans] = useState<CropPlanType[]>([]);
 
   useEffect(() => {
@@ -44,7 +45,8 @@ const CropPlanList = () => {
   return (
     <div className="p-4 max-w-xl mx-auto pb-24">
       <h2 className="text-2xl font-bold text-green-700 mb-4">
-        🌱 My Crop Plans
+        🌱 {dashboardText.myPlans[lang as keyof typeof dashboardText.cropDashboard]}
+
       </h2>
 
       {plans.length === 0 ? (

@@ -29,32 +29,106 @@ interface AddProfileProps {
     setOperation: Dispatch<SetStateAction<Operation>>;
   };
 }
+export const farmProfileLabels = {
+  farmerName: {
+    en: "Farmer Name",
+    kn: "ರೈತನ ಹೆಸರು",
+  },
+  landSize: {
+    en: "Total Land Size (Acres)",
+    kn: "ಒಟ್ಟು ಭೂಮಿ (ಎಕರೆ)",
+  },
+  soilType: {
+    en: "Soil Type",
+    kn: "ಮಣ್ಣಿನ ಪ್ರಕಾರ",
+  },
+  irrigationType: {
+    en: "Irrigation Method",
+    kn: "ನೀರಾವರಿ ವಿಧಾನ",
+  },
+  farmingType: {
+    en: "Farming Method",
+    kn: "ಕೃಷಿ ವಿಧಾನ",
+  },
+  village: {
+    en: "Village",
+    kn: "ಗ್ರಾಮ",
+  },
+  pincode: {
+    en: "Pincode",
+    kn: "ಪಿನ್ ಕೋಡ್",
+  },
+  latitude: {
+    en: "Latitude",
+    kn: "ಅಕ್ಷಾಂಶ",
+  },
+  longitude: {
+    en: "Longitude",
+    kn: "ರೇಖಾಂಶ",
+  },
+  state: {
+    en: "State",
+    kn: "ರಾಜ್ಯ",
+  },
+  district: {
+    en: "District",
+    kn: "ಜಿಲ್ಲೆ",
+  },
+};
 
 export const StoreFormJson = [
-  { labelName: "Name", inputName: "name", dataType: "text" },
   {
-    labelName: "Land Size Acres",
+    labelName: farmProfileLabels.farmerName,
+    inputName: "name",
+    dataType: "text",
+  },
+  {
+    labelName: farmProfileLabels.landSize,
     inputName: "landSizeAcres",
     dataType: "number",
   },
-  { labelName: "Soil Type", inputName: "soilType", dataType: "string" },
   {
-    labelName: "Irrigation Type",
+    labelName: farmProfileLabels.soilType,
+    inputName: "soilType",
+    dataType: "string",
+  },
+  {
+    labelName: farmProfileLabels.irrigationType,
     inputName: "irrigationType",
     dataType: "text",
   },
   {
-    labelName: "Farming Type",
+    labelName: farmProfileLabels.farmingType,
     inputName: "farmingType",
     dataType: "farmingType",
   },
-  { labelName: "State", inputName: "state", dataType: "text" },
+  { labelName: farmProfileLabels.state, inputName: "state", dataType: "text" },
 
-  { labelName: "District", inputName: "district", dataType: "text" },
-  { labelName: "Village", inputName: "village", dataType: "text" },
-  { labelName: "Pincode", inputName: "pincode", dataType: "number" },
-  { labelName: "Latitude", inputName: "latitude", dataType: "number" },
-  { labelName: "Longitude", inputName: "longitude", dataType: "number" },
+  {
+    labelName: farmProfileLabels.district,
+    inputName: "district",
+    dataType: "text",
+  },
+  {
+    labelName: farmProfileLabels.village,
+    inputName: "village",
+    dataType: "text",
+  },
+  {
+    labelName: farmProfileLabels.pincode,
+    inputName: "pincode",
+    dataType: "number",
+  },
+  {
+    labelName: farmProfileLabels.latitude,
+    inputName: "latitude",
+    dataType: "number",
+  },
+  {
+    labelName: farmProfileLabels.longitude,
+    inputName: "longitude",
+    dataType: "number",
+  },
 ];
 
 const LevelOption: AutoCompleteOption[] = [
@@ -89,6 +163,7 @@ export const initialFarmerProfileValues = {
 const AddProfile = ({ setModalFlag, operations }: AddProfileProps) => {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
+  const lang = state.lang ?? "en";
 
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const [formData, setFormData] = useState(initialFarmerProfileValues);
@@ -243,7 +318,9 @@ const AddProfile = ({ setModalFlag, operations }: AddProfileProps) => {
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols">
                     {StoreFormJson.map((item, index) => (
                       <div key={index} className="sm:col-span-3 w-80">
-                        <Label>{item.labelName}</Label>
+                        <Label>
+                          {item.labelName[lang as keyof typeof item.labelName]}
+                        </Label>
                         <div className="mt-2">
                           {item.dataType === "textarea" ? (
                             <TextArea

@@ -2,15 +2,54 @@
 import { AppContext } from "@/context/context";
 import { useContext } from "react";
 import AnalyticsPage from "../analytics/page";
+import { Button } from "@/stories/Button/Button";
+// import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
+import { dashboardText } from "@/app/utils/DashbordText";
+
+function LanguageSwitcher() {
+  // const { i18n } = useTranslation();
+
+  const changeLang = (lang: string) => {
+    // i18n.changeLanguage(lang);
+    Cookies.set("lang", lang);
+  };
+
+  return (
+    <div className="space-y-2 mx-4 flex gap-3">
+      <Button mode="secondary" className="" onClick={() => changeLang("en")}>English </Button>
+      <Button mode="secondary" className="" onClick={() => changeLang("kn")}>ಕನ್ನಡ</Button>
+      {/* <Button onClick={() => changeLang("hi")}>हिन्दी</Button>
+      <Button onClick={() => changeLang("ta")}>தமிழ்</Button> */}
+    </div>
+  );
+}
 
 export default function FarmerDashboard() {
-  const {state} = useContext(AppContext)
+  const { state } = useContext(AppContext);
+  console.log(state.lang);
+  const lang = state.lang ?? "en";
   return (
     <div className="p-4 space-y-4">
       {/* Welcome */}
       <div className="bg-green-100 p-4 rounded-2xl shadow">
-        <h2 className="text-xl font-bold">Welcome {state.user && state.user.name} 👨‍🌾</h2>
-        <p className="text-sm text-gray-600">Here is today’s crop insight</p>
+        <h2 className="text-xl font-bold">
+          {
+            dashboardText.welcome[
+              lang as keyof typeof dashboardText.cropDashboard
+            ]
+          }{" "}
+          {state.user && state.user.name} 👨‍🌾
+        </h2>
+        <p className="text-sm text-gray-600">
+          {
+            dashboardText.todayInsight[
+              lang as keyof typeof dashboardText.cropDashboard
+            ]
+          }
+        </p>
+      <LanguageSwitcher />
+
       </div>
 
       <AnalyticsPage />

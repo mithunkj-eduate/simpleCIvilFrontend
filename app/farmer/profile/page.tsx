@@ -8,6 +8,7 @@ import { Operation } from "@/utils/enum.types";
 import AddProfile from "./AddProfile";
 import { AppContext } from "@/context/context";
 import FarmerProfileCard, { FarmerProfile } from "./FarmerProfileCard";
+import { dashboardText } from "@/app/utils/DashbordText";
 
 export const initialFarmerProfile = {
   name: "",
@@ -29,7 +30,7 @@ const StorePage = () => {
 
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
-
+  const lang = state.lang ?? "en";
   const [formData, setFormData] = useState<FarmerProfile>(initialFarmerProfile);
 
   useEffect(() => {
@@ -74,7 +75,11 @@ const StorePage = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-gray-800">
-            Farmer Profile
+            {
+              dashboardText.profile[
+                lang as keyof typeof dashboardText.cropDashboard
+              ]
+            }
           </h2>
           {formData.name === "" ? (
             <Button

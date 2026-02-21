@@ -5,6 +5,7 @@ import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { AutoCompleteOption } from "@/utils/commenTypes";
 import AutoStateAndDistrictSelect from "@/Autocomplents/AutoStateAndDistrictSelect";
+import { dashboardText } from "@/app/utils/DashbordText";
 
 interface Plan {
   _id: string;
@@ -15,7 +16,7 @@ interface Plan {
 export default function DistrictPlans() {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
-
+const lang= state.lang ?? "en"
   const [plans, setPlans] = useState<Plan[]>([]);
 const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
     {
@@ -57,7 +58,7 @@ const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
     <div className="bg-gray-50 min-h-screen p-1 lg:p-4 md:p-6 space-y-5">
       {/* Header */}
       <h1 className="text-2xl font-bold text-gray-800">
-        District Crop Planning
+           {dashboardText.districtPlanning[lang as keyof typeof dashboardText.cropDashboard]}
       </h1>
 
       {/* Filter */}

@@ -9,6 +9,9 @@ type reducerPayload = {
   [payloadTypes.SET_CART]: {
     cart: InitialStateType["cart"];
   };
+  [payloadTypes.SET_LANG]: {
+    lang: string;
+  };
 
   [payloadTypes.RESET]: {
     resetState: InitialStateType;

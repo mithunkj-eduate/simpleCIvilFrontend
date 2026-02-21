@@ -21,6 +21,7 @@ import React, {
 import { Formik, Form, ErrorMessage } from "formik";
 import { AddProductionReportValidation } from "@/validations/validationSchemas";
 import AutoStateAndDistrictSelect from "@/Autocomplents/AutoStateAndDistrictSelect";
+import { dashboardText } from "@/app/utils/DashbordText";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -30,39 +31,110 @@ interface AddProfileProps {
   };
 }
 
+export const cropProductionLabels = {
+  crop: {
+    en: "Crop",
+    kn: "ಬೆಳೆ",
+  },
+  season: {
+    en: "Season",
+    kn: "ಹಂಗಾಮು",
+  },
+  landUsed: {
+    en: "Land Used (Acres)",
+    kn: "ಬಳಸಿದ ಭೂಮಿ (ಎಕರೆ)",
+  },
+  investmentCost: {
+    en: "Investment Cost (₹)",
+    kn: "ಹೂಡಿಕೆ ವೆಚ್ಚ (₹)",
+  },
+  otherExpenses: {
+    en: "Other Expenses (₹)",
+    kn: "ಇತರೆ ವೆಚ್ಚಗಳು (₹)",
+  },
+  yield: {
+    en: "Harvest Quantity (Kg)",
+    kn: "ಕೊಯ್ಯಿದ ಪ್ರಮಾಣ (ಕೆಜಿ)",
+  },
+  sellingPrice: {
+    en: "Selling Price per Kg (₹)",
+    kn: "ಪ್ರತಿ ಕೆಜಿ ಮಾರಾಟ ಬೆಲೆ (₹)",
+  },
+  totalRevenue: {
+    en: "Total Income (₹)",
+    kn: "ಒಟ್ಟು ಆದಾಯ (₹)",
+  },
+  profit: {
+    en: "Profit (₹)",
+    kn: "ಲಾಭ (₹)",
+  },
+  state: {
+    en: "State",
+    kn: "ರಾಜ್ಯ",
+  },
+  district: {
+    en: "District",
+    kn: "ಜಿಲ್ಲೆ",
+  },
+};
+
 export const CropPlanFormJson = [
-  { labelName: "Crop Name", inputName: "cropName", dataType: "text" },
+  {
+    labelName: cropProductionLabels.crop,
+    inputName: "cropName",
+    dataType: "text",
+  },
 
   {
-    labelName: "Season",
+    labelName: cropProductionLabels.season,
     inputName: "season",
     dataType: "string",
   },
   {
-    labelName: "Land Used Acres",
+    labelName: cropProductionLabels.landUsed,
     inputName: "landUsedAcres",
     dataType: "string",
   },
   {
-    labelName: "Investment Cost",
+    labelName: cropProductionLabels.investmentCost,
     inputName: "investmentCost",
     dataType: "number",
   },
   {
-    labelName: "Other Expenses",
+    labelName: cropProductionLabels.otherExpenses,
     inputName: "otherExpenses",
     dataType: "number",
   },
-  { labelName: "Yield Kg", inputName: "yieldKg", dataType: "number" },
   {
-    labelName: "Selling Price Per Kg",
+    labelName: cropProductionLabels.yield,
+    inputName: "yieldKg",
+    dataType: "number",
+  },
+  {
+    labelName: cropProductionLabels.sellingPrice,
     inputName: "sellingPricePerKg",
     dataType: "number",
   },
-  { labelName: "Total Revenue", inputName: "totalRevenue", dataType: "number" },
-  { labelName: "Profit", inputName: "profit", dataType: "number" },
-  { labelName: "State", inputName: "state", dataType: "state" },
-  { labelName: "District", inputName: "district", dataType: "district" },
+  {
+    labelName: cropProductionLabels.totalRevenue,
+    inputName: "totalRevenue",
+    dataType: "number",
+  },
+  {
+    labelName: cropProductionLabels.profit,
+    inputName: "profit",
+    dataType: "number",
+  },
+  {
+    labelName: cropProductionLabels.state,
+    inputName: "state",
+    dataType: "state",
+  },
+  {
+    labelName: cropProductionLabels.district,
+    inputName: "district",
+    dataType: "district",
+  },
 ];
 
 export const initialCropPlanValues = {
@@ -82,6 +154,7 @@ export const initialCropPlanValues = {
 const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
+  const lang = state.lang ?? "en";
 
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const [formData, setFormData] = useState(initialCropPlanValues);
@@ -222,13 +295,15 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
                     {operations.operation === Operation.UPDATE
                       ? "Update"
                       : "Add"}{" "}
-                    Production Report
+                    {dashboardText.reports[lang as keyof typeof dashboardText.cropDashboard]}
                   </DialogTitle>
 
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols">
                     {CropPlanFormJson.map((item, index) => (
                       <div key={index} className="sm:col-span-3 w-80">
-                        <Label>{item.labelName}</Label>
+                        <Label>
+                          {item.labelName[lang as keyof typeof item.labelName]}
+                        </Label>
                         <div className="mt-2">
                           {item.dataType === "textarea" ? (
                             <TextArea

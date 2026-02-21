@@ -1,14 +1,18 @@
 "use client";
 import AddModal from "@/components/helpers/AddModal";
 import { Button } from "@/stories/Button/Button";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import ProductionReportList from "./ProductionReportList";
 import { Operation } from "@/utils/enum.types";
 import AddProductionReport from "./AddProductionReport";
+import { dashboardText } from "@/app/utils/DashbordText";
+import { AppContext } from "@/context/context";
 
 export default function ReportPage() {
+  const {state} = useContext(AppContext)
   const [modalFlag, setModalFlag] = useState(false);
   const [operation, setOperation] = useState(Operation.NONE);
+  const lang = state.lang ?? "en"
 
   // const [form, setForm] = useState({
   //   cropName: "",
@@ -29,7 +33,9 @@ export default function ReportPage() {
     <div className="p-4 max-w-5xl mx-auto pb-24">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-        <h1 className="text-2xl font-bold text-green-700">🌾 Production Reports</h1>
+        <h1 className="text-2xl font-bold text-green-700">🌾
+           {dashboardText.reports[lang as keyof typeof dashboardText.cropDashboard]}
+        </h1>
 
         <div className="flex flex-col sm:flex-row gap-2">
           <Button

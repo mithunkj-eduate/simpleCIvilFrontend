@@ -24,14 +24,32 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
+export const navLabels = {
+  dashboard: { en: "🏠 Dashboard", kn: "🏠 ಡ್ಯಾಶ್‌ಬೋರ್ಡ್" },
+  cropPlanning: { en: "🌱 Crop Planning", kn: "🌱 ಬೆಳೆ ಯೋಜನೆ" },
+  production: { en: "📊 Production & Profit", kn: "📊 ಉತ್ಪಾದನೆ ಮತ್ತು ಲಾಭ" },
+  trends: { en: "📍 District Trends", kn: "📍ಜಿಲ್ಲಾ ಮಾಹಿತಿ" },
+  recommendations: { en: "🤖 Recommendations", kn: "🤖 ಶಿಫಾರಸುಗಳು" },
+  myFarm: { en: "👨‍🌾 My Farm", kn: "👨‍🌾 ನನ್ನ ಕೃಷಿ" },
+  market: { en: "🛒 Market & Prices", kn: "🛒 ಮಾರುಕಟ್ಟೆ ಬೆಲೆಗಳು" },
+};
+
 export default function Navbar({ NavType, className, pageForNav }: NavProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [items, setItems] = useState<
-    { name: string; href: string; current: boolean }[]
+    {
+      name: {
+        en: string;
+        kn: string;
+      };
+      href: string;
+      current: boolean;
+    }[]
   >([]);
 
   const { state, dispatch } = useContext(AppContext);
   const [isScrolled, setIsScrolled] = useState(false);
+  const lang = state.lang ?? "en";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,49 +65,87 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
-    const LogoutFun = () => {
-      localStorage.setItem("token", "");
-      Cookies.remove("token");
-      dispatch({
-        type: payloadTypes.SET_USER,
-        payload: { user: null },
-      });
-    };
+  const LogoutFun = () => {
+    localStorage.setItem("token", "");
+    Cookies.remove("token");
+    dispatch({
+      type: payloadTypes.SET_USER,
+      payload: { user: null },
+    });
+  };
 
   const ConsoleDelveryBoyNavigation = useMemo(
     () => [
-      { name: "🏠 Dashboard", href: "/farmer/dashboard?v=2", current: true },
       {
-        name: "🌱 Crop Planning",
+        name: navLabels.dashboard,
+        href: "/farmer/dashboard?v=2",
+        current: true,
+      },
+
+      {
+        name: navLabels.cropPlanning,
         href: "/farmer/cropPlan?v=2",
         current: false,
       },
       {
-        name: "📊 Production & Profit",
+        name: navLabels.recommendations,
         href: "/farmer/addReport?v=2",
         current: false,
       },
       {
-        name: "📍 District Trends",
+        name: navLabels.trends,
         href: "/farmer/trends?v=2",
         current: false,
       },
       {
-        name: "🤖 Recommendations",
+        name: navLabels.recommendations,
         href: "/farmer/recommendations?v=2",
         current: false,
       },
-      { name: "👨‍🌾 My Farm", href: "/farmer/profile?v=2", current: false },
-
       {
-        name: "🛒 Market & Prices (future)",
+        name: navLabels.myFarm,
+        href: "/farmer/profile?v=2",
+        current: false,
+      },
+      {
+        name: navLabels.market,
         href: "/farmer/marketPrices?v=2",
         current: false,
       },
-
-      // { name: "Analytics", href: "/farmer/analytics?v=2", current: false },
     ],
+
+    //   { name: `🏠 ${t("Dashboard")}`, href: "/farmer/dashboard?v=2", current: true },
+    //   {
+    //     name: "🌱 Crop Planning",
+    //     href: "/farmer/cropPlan?v=2",
+    //     current: false,
+    //   },
+    //   {
+    //     name: `📊 ${t("Production & Profit")}`,
+    //     href: "/farmer/addReport?v=2",
+    //     current: false,
+    //   },
+    //   {
+    //     name: "📍 District Trends",
+    //     href: "/farmer/trends?v=2",
+    //     current: false,
+    //   },
+    //   {
+    //     name: "🤖 Recommendations",
+    //     href: "/farmer/recommendations?v=2",
+    //     current: false,
+    //   },
+    //   { name: "👨‍🌾 My Farm", href: "/farmer/profile?v=2", current: false },
+
+    //   {
+    //     name: "🛒 Market & Prices (future)",
+    //     href: "/farmer/marketPrices?v=2",
+    //     current: false,
+    //   },
+
+    //   // { name: "Analytics", href: "/farmer/analytics?v=2", current: false },
+    // ],
+
     [],
   );
 
@@ -153,7 +209,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               //   'block rounded-md px-3 py-2 text-base font-medium',
               // )}
             >
-              {item.name}
+              {item.name[lang as keyof typeof item.name]}
             </a>
           ))}
         </div>
@@ -183,7 +239,6 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               </svg>
             </Link>
           ) : null}
-
           {state.user ? (
             <a
               href="/?v=2"
@@ -256,7 +311,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                     href={item.href}
                     className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                   >
-                    {item.name}
+                    {item.name[lang as keyof typeof item.name]}
                   </a>
                 ))}
               </div>

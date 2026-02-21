@@ -1,4 +1,5 @@
 "use client";
+import { dashboardText } from "@/app/utils/DashbordText";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { toStandardDate } from "@/utils/utilFunctions";
@@ -12,7 +13,7 @@ interface formDataTypes {
 const SeasonList = () => {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
-
+const lang = state.lang ?? "en"
   const [formData, setFormData] = useState<formDataTypes[]>([]);
 
   useEffect(() => {
@@ -46,7 +47,8 @@ const SeasonList = () => {
   return (
   <div className="p-4 max-w-xl mx-auto">
     <h2 className="text-2xl font-bold text-green-700 mb-4">
-      🌾 Seasons
+      🌾 {dashboardText.seasons[lang as keyof typeof dashboardText.cropDashboard]}
+
     </h2>
 
     {formData.length === 0 ? (

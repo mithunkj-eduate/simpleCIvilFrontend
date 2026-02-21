@@ -20,6 +20,7 @@ import React, {
 } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import { AddFarmSeasonValidation } from "@/validations/validationSchemas";
+import { dashboardText } from "@/app/utils/DashbordText";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -53,7 +54,7 @@ export const initialCropPlanValues = {
 const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
-
+const lang = state.lang ?? "en"
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const [formData, setFormData] = useState(initialCropPlanValues);
 
@@ -179,7 +180,8 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
                     {operations.operation === Operation.UPDATE
                       ? "Update"
                       : "Add"}{" "}
-                    Session
+           {dashboardText.seasons[lang as keyof typeof dashboardText.cropDashboard]}
+                  
                   </DialogTitle>
 
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols">

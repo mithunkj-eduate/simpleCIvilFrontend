@@ -23,6 +23,7 @@ import { AddCropPlanValidation } from "@/validations/validationSchemas";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
 import AutoFarmSeasonSelect from "./AutoFarmSeasonSelect";
 import AutoStateAndDistrictSelect from "@/Autocomplents/AutoStateAndDistrictSelect";
+import { dashboardText } from "@/app/utils/DashbordText";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -32,27 +33,70 @@ interface AddProfileProps {
   };
 }
 
+// export const CropPlanFormJson = [
+//   { labelName: "Crop Name", inputName: "cropName", dataType: "text" },
+//   {
+//     labelName: "Land Allocation (Acres)",
+//     inputName: "plannedLandAcres",
+//     dataType: "number",
+//   },
+//   {
+//     labelName: "Planting Date",
+//     inputName: "expectedPlantingDate",
+//     dataType: "date",
+//   },
+//   {
+//     labelName: "Harvest Date",
+//     inputName: "expectedHarvestDate",
+//     dataType: "date",
+//   },
+//   { labelName: "Status", inputName: "status", dataType: "status" },
+
+//   { labelName: "State", inputName: "state", dataType: "state" },
+//   { labelName: "District", inputName: "district", dataType: "district" },
+// ];
+
 export const CropPlanFormJson = [
-  { labelName: "Crop Name", inputName: "cropName", dataType: "text" },
   {
-    labelName: "Land Allocation (Acres)",
+    labelName: {
+      en: "Crop Name",
+      kn: "ಬೆಳೆ ಹೆಸರು",
+    },
+    inputName: "cropName",
+    dataType: "text",
+  },
+  {
+    labelName: {
+      en: "Land Allocation (Acres)",
+      kn: "ಭೂಮಿ ಹಂಚಿಕೆ (ಎಕರೆ)",
+    },
     inputName: "plannedLandAcres",
     dataType: "number",
   },
   {
-    labelName: "Planting Date",
+    labelName: {
+      en: "Planting Date",
+      kn: "ಬಿತ್ತನೆ ದಿನಾಂಕ",
+    },
     inputName: "expectedPlantingDate",
     dataType: "date",
   },
   {
-    labelName: "Harvest Date",
+    labelName: {
+      en: "Harvest Date",
+      kn: "ಕೊಯ್ಲು ದಿನಾಂಕ",
+    },
     inputName: "expectedHarvestDate",
     dataType: "date",
   },
-  { labelName: "Status", inputName: "status", dataType: "status" },
-
-  { labelName: "State", inputName: "state", dataType: "state" },
-  { labelName: "District", inputName: "district", dataType: "district" },
+  {
+    labelName: {
+      en: "Status",
+      kn: "ಸ್ಥಿತಿ",
+    },
+    inputName: "status",
+    dataType: "status",
+  },
 ];
 
 const LevelOption: AutoCompleteOption[] = [
@@ -111,6 +155,7 @@ export const initialCropPlanValues = {
 const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
+  const lang = state.lang ?? "en";
 
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const [formData, setFormData] = useState(initialCropPlanValues);
@@ -266,7 +311,8 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
                     {operations.operation === Operation.UPDATE
                       ? "Update"
                       : "Add"}{" "}
-                    Crop Plan
+           {dashboardText.planning[lang as keyof typeof dashboardText.cropDashboard]}
+                    
                   </DialogTitle>
 
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols">
@@ -281,7 +327,9 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
                     </div>
                     {CropPlanFormJson.map((item, index) => (
                       <div key={index} className="sm:col-span-3 w-80">
-                        <Label>{item.labelName}</Label>
+                        <Label>
+                          {item.labelName[lang as keyof typeof item.labelName]}
+                        </Label>
                         <div className="mt-2">
                           {item.dataType === "textarea" ? (
                             <TextArea
