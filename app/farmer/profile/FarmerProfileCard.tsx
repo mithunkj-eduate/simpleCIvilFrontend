@@ -22,16 +22,13 @@ export default function FarmerProfileCard({
   return (
     <div className="bg-gray-50 min-h-screen p-4 md:p-8">
       <div className="max-w-3xl mx-auto bg-white shadow-md rounded-2xl p-6 space-y-6">
-        
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-800">
               🌾 {profile.name}
             </h2>
-            <p className="text-sm text-gray-500">
-              Farmer Profile
-            </p>
+            <p className="text-sm text-gray-500">Farmer Profile</p>
           </div>
 
           <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
@@ -41,9 +38,7 @@ export default function FarmerProfileCard({
 
         {/* Land Details */}
         <div>
-          <h3 className="font-semibold text-gray-700 mb-2">
-            Land Details
-          </h3>
+          <h3 className="font-semibold text-gray-700 mb-2">Land Details</h3>
 
           <div className="grid grid-cols-2 gap-4">
             <Info label="Land Size" value={`${profile.landSizeAcres} Acres`} />
@@ -54,9 +49,7 @@ export default function FarmerProfileCard({
 
         {/* Location */}
         <div>
-          <h3 className="font-semibold text-gray-700 mb-2">
-            Location
-          </h3>
+          <h3 className="font-semibold text-gray-700 mb-2">Location</h3>
 
           <div className="grid grid-cols-2 gap-4">
             <Info label="State" value={profile.state} />
@@ -68,14 +61,17 @@ export default function FarmerProfileCard({
 
         {/* GPS */}
         <div>
-          <h3 className="font-semibold text-gray-700 mb-2">
-            GPS Coordinates
-          </h3>
+          <h3 className="font-semibold text-gray-700 mb-2">GPS Coordinates</h3>
 
           <div className="bg-gray-100 rounded-lg p-3 text-sm text-gray-700">
             Latitude: {profile.latitude} <br />
             Longitude: {profile.longitude}
+             <iframe
+            src={`https://maps.google.com/maps?q=${profile.latitude},${profile.longitude}&z=15&output=embed`}
+            className="w-full h-48 rounded-lg border"
+          />
           </div>
+         
         </div>
       </div>
     </div>
