@@ -32,3 +32,18 @@ export default layout;
 // 6️⃣ See district trends
 // 7️⃣ Avoid oversupply
 // 8️⃣ Follow recommendations
+
+
+// Login
+//    ↓
+// Create Profile
+//    ↓
+// Add Crop Plan
+//    ↓
+// View District Trends
+//    ↓
+// See Recommendations
+//    ↓
+// Add Production Data
+//    ↓
+// Track Profit
