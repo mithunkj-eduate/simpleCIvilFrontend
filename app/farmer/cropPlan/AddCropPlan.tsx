@@ -310,7 +310,7 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
                             <AutoStateAndDistrictSelect
                               selectedItem={selectedState}
                               setSelectedItem={setSelectedState}
-                              path={"commen/states"}
+                              path={"states"}
                               label=""
                               disabled={operations.operation === Operation.VIEW}
                             />
@@ -320,7 +320,7 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
                               setSelectedItem={setSelectedDistrict}
                               path={
                                 selectedState
-                                  ? `commen/districts/${selectedState?.value}`
+                                  ? `districts/${selectedState?.value}`
                                   : ""
                               }
                               label=""

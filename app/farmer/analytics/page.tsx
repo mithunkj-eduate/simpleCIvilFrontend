@@ -91,13 +91,13 @@ export default function AnalyticsPage() {
         <AutoStateAndDistrictSelect
           selectedItem={selectedState}
           setSelectedItem={setSelectedState}
-          path={"commen/states"}
+          path={"states"}
           label="Select State"
         />
         <AutoStateAndDistrictSelect
           selectedItem={selectedDistrict}
           setSelectedItem={setSelectedDistrict}
-          path={selectedState ? `commen/districts/${selectedState?.value}` : ""}
+          path={selectedState ? `districts/${selectedState?.value}` : ""}
           label="Select District"
         />
       </div>
