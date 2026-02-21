@@ -5,8 +5,23 @@ import React, { useContext, useEffect, useState } from "react";
 
 import Api, { api } from "@/components/helpers/apiheader";
 import { Operation } from "@/utils/enum.types";
-import AddProfile, { initialFarmerProfileValues } from "./AddProfile";
+import AddProfile from "./AddProfile";
 import { AppContext } from "@/context/context";
+import FarmerProfileCard, { FarmerProfile } from "./FarmerProfileCard";
+
+export const initialFarmerProfile = {
+  name: "",
+  landSizeAcres: 0,
+  soilType: "",
+  irrigationType: "",
+  farmingType: "",
+  state: "",
+  district: "",
+  village: "",
+  latitude: 0,
+  longitude: 0,
+  pincode: "",
+};
 
 const StorePage = () => {
   const [modalFlag, setModalFlag] = useState(false);
@@ -15,7 +30,7 @@ const StorePage = () => {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
 
-  const [formData, setFormData] = useState(initialFarmerProfileValues);
+  const [formData, setFormData] = useState<FarmerProfile>(initialFarmerProfile);
 
   useEffect(() => {
     if (state.user) {
@@ -53,88 +68,43 @@ const StorePage = () => {
     }
   }, [TOKEN, state.user]);
 
-  function Info({ label, value }: { label: string; value: string }) {
-    return (
-      <div>
-        <p className="text-sm text-gray-500">{label}</p>
-        <p className="font-medium text-gray-800">{value || "-"}</p>
-      </div>
-    );
-  }
-
   return (
     <>
-      <div className="flex">
-        {formData.name === "" ? (
-          <Button
-            mode="primary"
-            className="ms-auto m-2"
-            onClick={() => {
-              setOperation(Operation.CREATE);
-              setModalFlag(true);
-            }}
-          >
-            Create Profile
-          </Button>
-        ) : (
-          <Button
-            mode="primary"
-            className="ms-auto m-2"
-            onClick={() => {
-              setOperation(Operation.UPDATE);
-              setModalFlag(true);
-            }}
-          >
-            Update Profile
-          </Button>
-        )}
-      </div>
-
       <div className="bg-white rounded-2xl p-5 space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-gray-800">
             Farmer Profile
           </h2>
+          {formData.name === "" ? (
+            <Button
+              mode="primary"
+              className="ms-auto m-2"
+              onClick={() => {
+                setOperation(Operation.CREATE);
+                setModalFlag(true);
+              }}
+            >
+              Create Profile
+            </Button>
+          ) : (
+            <Button
+              mode="primary"
+              className="ms-auto m-2"
+              onClick={() => {
+                setOperation(Operation.UPDATE);
+                setModalFlag(true);
+              }}
+            >
+              Update Profile
+            </Button>
+          )}
 
           <span className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full">
             Active
           </span>
         </div>
-
-        {/* Name */}
-        <div>
-          <p className="text-sm text-gray-500">Name</p>
-          <p className="font-medium text-gray-800">{formData.name}</p>
-        </div>
-
-        {/* Land Info */}
-        <div className="grid grid-cols-2 gap-4">
-          <Info label="Land Size" value={`${formData.landSizeAcres} Acres`} />
-          <Info label="Farming Type" value={formData.farmingType} />
-        </div>
-
-        {/* Soil & Irrigation */}
-        <div className="grid grid-cols-2 gap-4">
-          <Info label="Soil Type" value={formData.soilType} />
-          <Info label="Irrigation" value={formData.irrigationType} />
-        </div>
-
-        {/* Location */}
-        <div>
-          <p className="text-sm text-gray-500">Location</p>
-          <p className="font-medium text-gray-800">
-            {formData.village}, {formData.district}
-          </p>
-          <p className="text-sm text-gray-500">
-            {formData.state} - {formData.pincode}
-          </p>
-        </div>
-
-        {/* Coordinates */}
-        <div className="text-xs text-gray-400">
-          Lat: {formData.latitude} | Lng: {formData.longitude}
-        </div>
+        <FarmerProfileCard profile={formData} />
       </div>
 
       <AddModal
