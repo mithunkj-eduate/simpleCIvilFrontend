@@ -7,7 +7,7 @@ import { Button } from "@/stories/Button/Button";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
 import { TextArea } from "@/stories/TextArea/TextArea";
-import { msgType } from "@/utils/commenTypes";
+import { AutoCompleteOption, msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import { Operation } from "@/utils/enum.types";
 import { DialogTitle } from "@headlessui/react";
@@ -20,6 +20,7 @@ import React, {
 } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import { AddProductionReportValidation } from "@/validations/validationSchemas";
+import AutoStateAndDistrictSelect from "@/Autocomplents/AutoStateAndDistrictSelect";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -60,8 +61,8 @@ export const CropPlanFormJson = [
   },
   { labelName: "Total Revenue", inputName: "totalRevenue", dataType: "number" },
   { labelName: "Profit", inputName: "profit", dataType: "number" },
-  { labelName: "State", inputName: "state", dataType: "text" },
-  { labelName: "District", inputName: "district", dataType: "text" },
+  { labelName: "State", inputName: "state", dataType: "state" },
+  { labelName: "District", inputName: "district", dataType: "district" },
 ];
 
 export const initialCropPlanValues = {
@@ -84,6 +85,11 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
 
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const [formData, setFormData] = useState(initialCropPlanValues);
+  const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
+    null,
+  );
+  const [selectedDistrict, setSelectedDistrict] =
+    useState<AutoCompleteOption | null>(null);
 
   useEffect(() => {
     if (operations.operation === Operation.UPDATE) {
@@ -128,7 +134,10 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
 
       const body = {
         ...values,
+        state: selectedState?.value,
+        district: selectedDistrict?.value,
       };
+      
       console.log(body, "body");
 
       const path = "/farmer/production";
@@ -222,6 +231,26 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
                               value={
                                 values[item.inputName as keyof typeof values]
                               }
+                            />
+                          ) : item.dataType === "state" ? (
+                            <AutoStateAndDistrictSelect
+                              selectedItem={selectedState}
+                              setSelectedItem={setSelectedState}
+                              path={"commen/states"}
+                              label=""
+                              disabled={operations.operation === Operation.VIEW}
+                            />
+                          ) : item.dataType === "district" ? (
+                            <AutoStateAndDistrictSelect
+                              selectedItem={selectedDistrict}
+                              setSelectedItem={setSelectedDistrict}
+                              path={
+                                selectedState
+                                  ? `commen/districts/${selectedState?.value}`
+                                  : ""
+                              }
+                              label=""
+                              disabled={operations.operation === Operation.VIEW}
                             />
                           ) : (
                             <Input

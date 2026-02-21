@@ -9,7 +9,7 @@ import { Label } from "@/stories/Label/Label";
 import { TextArea } from "@/stories/TextArea/TextArea";
 import { AutoCompleteOption, msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
-import {  CropPlanStatusEnum, Operation } from "@/utils/enum.types";
+import { CropPlanStatusEnum, Operation } from "@/utils/enum.types";
 import { DialogTitle } from "@headlessui/react";
 import React, {
   Dispatch,
@@ -22,6 +22,7 @@ import { Formik, Form, ErrorMessage } from "formik";
 import { AddCropPlanValidation } from "@/validations/validationSchemas";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
 import AutoFarmSeasonSelect from "./AutoFarmSeasonSelect";
+import AutoStateAndDistrictSelect from "@/Autocomplents/AutoStateAndDistrictSelect";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -50,8 +51,8 @@ export const CropPlanFormJson = [
   },
   { labelName: "Status", inputName: "status", dataType: "status" },
 
-  { labelName: "State", inputName: "state", dataType: "text" },
-  { labelName: "District", inputName: "district", dataType: "text" },
+  { labelName: "State", inputName: "state", dataType: "state" },
+  { labelName: "District", inputName: "district", dataType: "district" },
 ];
 
 const LevelOption: AutoCompleteOption[] = [
@@ -68,7 +69,6 @@ const LevelOption: AutoCompleteOption[] = [
     value: CropPlanStatusEnum.HARVESTED,
   },
 ];
-
 
 // const CropOption: AutoCompleteOption[] = [
 //   {
@@ -118,6 +118,11 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
     useState<AutoCompleteOption | null>(null);
   const [selectedSeason, setSelectedSeason] =
     useState<AutoCompleteOption | null>(null);
+  const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
+    null,
+  );
+  const [selectedDistrict, setSelectedDistrict] =
+    useState<AutoCompleteOption | null>(null);
 
   useEffect(() => {
     if (operations.operation === Operation.UPDATE) {
@@ -143,6 +148,18 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
               state: res.data.state,
               district: res.data.district,
             });
+            setSelectedState({
+              label: res.data.state ?? "",
+              value: res.data.state ?? "",
+            });
+            setSelectedDistrict({
+              label: res.data.district ?? "",
+              value: res.data.district ?? "",
+            });
+            // setSelectedSeason({
+            //   label: res.data.seasonId ?? "",
+            //   value: res.data.seasonId ?? "",
+            // });
           }
         } catch (error) {
           console.log(error);
@@ -165,6 +182,8 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
 
       const body = {
         ...values,
+        state: selectedState?.value,
+        district: selectedDistrict?.value,
         seasonId: selectedSeason?.value,
       };
 
@@ -287,6 +306,26 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
                                 />
                               </div>
                             </div>
+                          ) : item.dataType === "state" ? (
+                            <AutoStateAndDistrictSelect
+                              selectedItem={selectedState}
+                              setSelectedItem={setSelectedState}
+                              path={"commen/states"}
+                              label=""
+                              disabled={operations.operation === Operation.VIEW}
+                            />
+                          ) : item.dataType === "district" ? (
+                            <AutoStateAndDistrictSelect
+                              selectedItem={selectedDistrict}
+                              setSelectedItem={setSelectedDistrict}
+                              path={
+                                selectedState
+                                  ? `commen/districts/${selectedState?.value}`
+                                  : ""
+                              }
+                              label=""
+                              disabled={operations.operation === Operation.VIEW}
+                            />
                           ) : (
                             <Input
                               type={item.dataType}

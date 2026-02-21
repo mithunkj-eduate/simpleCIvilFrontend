@@ -3,6 +3,8 @@
 import { ReactNode, useContext, useEffect, useState } from "react";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
+import AutoStateAndDistrictSelect from "@/Autocomplents/AutoStateAndDistrictSelect";
+import { AutoCompleteOption } from "@/utils/commenTypes";
 
 interface ProfitCrop {
   _id: string;
@@ -32,32 +34,39 @@ export default function AnalyticsPage() {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
 
-  const [district, setDistrict] = useState("Davangere");
   const [summary, setSummary] = useState<summaryTypes>(summaryData);
   const [profitCrops, setProfitCrops] = useState<ProfitCrop[]>([]);
   const [oversupply, setOversupply] = useState<OverSupply[]>([]);
 
+  const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
+    null,
+  );
+  const [selectedDistrict, setSelectedDistrict] =
+    useState<AutoCompleteOption | null>(null);
+
   useEffect(() => {
     loadData();
-  }, [district, TOKEN, state.user]);
+  }, [selectedDistrict?.value, TOKEN, state.user]);
 
   const loadData = async () => {
-    if (!TOKEN || !state.user) return;
+    console.log("clled analitys aoi");
 
+    if (!TOKEN || !state.user) return;
+    console.log("clled analitys  ....");
     const [sum, profit, over] = await Promise.all([
-      api.get(`/farmer/profitSummary?district=${district}`, {
+      api.get(`/farmer/profitSummary?district=${selectedDistrict?.value}`, {
         headers: {
           Authorization: `Bearer ${TOKEN}`,
           "Content-Type": "application/json",
         },
       }),
-      api.get(`/farmer/profitableCrops?district=${district}`, {
+      api.get(`/farmer/profitableCrops?district=${selectedDistrict?.value}`, {
         headers: {
           Authorization: `Bearer ${TOKEN}`,
           "Content-Type": "application/json",
         },
       }),
-      api.get(`/farmer/oversupply?district=${district}`, {
+      api.get(`/farmer/oversupply?district=${selectedDistrict?.value}`, {
         headers: {
           Authorization: `Bearer ${TOKEN}`,
           "Content-Type": "application/json",
@@ -79,16 +88,18 @@ export default function AnalyticsPage() {
 
       {/* FILTER */}
       <div className="flex gap-3 bg-white p-4 rounded-xl shadow-sm border">
-        <select
-          value={district}
-          onChange={(e) => setDistrict(e.target.value)}
-          className="border rounded-lg px-3 py-2"
-        >
-          <option>Bangalore</option>
-          <option>Mysore</option>
-          <option>Tumkur</option>
-          <option>Davangere</option>
-        </select>
+        <AutoStateAndDistrictSelect
+          selectedItem={selectedState}
+          setSelectedItem={setSelectedState}
+          path={"commen/states"}
+          label="Select State"
+        />
+        <AutoStateAndDistrictSelect
+          selectedItem={selectedDistrict}
+          setSelectedItem={setSelectedDistrict}
+          path={selectedState ? `commen/districts/${selectedState?.value}` : ""}
+          label="Select District"
+        />
       </div>
 
       {/* KPI SUMMARY */}

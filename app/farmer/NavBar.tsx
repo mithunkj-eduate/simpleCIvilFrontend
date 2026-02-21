@@ -57,7 +57,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       { name: "Crop Plan", href: "/farmer/cropPlan?v=2", current: false },
 
       { name: "Profile", href: "/farmer/profile?v=2", current: false },
-
+      { name: "Analytics", href: "/farmer/analytics?v=2", current: false },
     ],
     [],
   );
