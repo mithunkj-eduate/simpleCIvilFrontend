@@ -119,10 +119,16 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
   const [selectedSeason, setSelectedSeason] =
     useState<AutoCompleteOption | null>(null);
   const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
-    null,
+    {
+      label: "Karnataka",
+      value: "Karnataka",
+    },
   );
   const [selectedDistrict, setSelectedDistrict] =
-    useState<AutoCompleteOption | null>(null);
+    useState<AutoCompleteOption | null>({
+      label: "Davangere",
+      value: "Davangere",
+    });
 
   useEffect(() => {
     if (operations.operation === Operation.UPDATE) {

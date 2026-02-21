@@ -86,10 +86,16 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const [formData, setFormData] = useState(initialCropPlanValues);
   const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
-    null,
+    {
+      label: "Karnataka",
+      value: "Karnataka",
+    },
   );
   const [selectedDistrict, setSelectedDistrict] =
-    useState<AutoCompleteOption | null>(null);
+    useState<AutoCompleteOption | null>({
+      label: "Davangere",
+      value: "Davangere",
+    });
 
   useEffect(() => {
     if (operations.operation === Operation.UPDATE) {

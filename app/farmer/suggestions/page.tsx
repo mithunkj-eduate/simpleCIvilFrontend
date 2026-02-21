@@ -1,3 +1,5 @@
+import CropRecommendations from "./CropRecommendations";
+
 export default function Suggestions() {
   return (
     <div className="p-4 space-y-3">
@@ -14,6 +16,9 @@ export default function Suggestions() {
       <div className="bg-yellow-100 p-3 rounded-xl">
         ⚠ Tomato oversupply expected
       </div>
+
+    <CropRecommendations />
+
     </div>
   );
 }

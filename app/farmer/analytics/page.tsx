@@ -37,12 +37,17 @@ export default function AnalyticsPage() {
   const [summary, setSummary] = useState<summaryTypes>(summaryData);
   const [profitCrops, setProfitCrops] = useState<ProfitCrop[]>([]);
   const [oversupply, setOversupply] = useState<OverSupply[]>([]);
-
   const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
-    null,
+    {
+      label: "Karnataka",
+      value: "Karnataka",
+    },
   );
   const [selectedDistrict, setSelectedDistrict] =
-    useState<AutoCompleteOption | null>(null);
+    useState<AutoCompleteOption | null>({
+      label: "Davangere",
+      value: "Davangere",
+    });
 
   useEffect(() => {
     loadData();

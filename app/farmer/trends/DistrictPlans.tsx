@@ -17,15 +17,21 @@ export default function DistrictPlans() {
   const { state } = useContext(AppContext);
 
   const [plans, setPlans] = useState<Plan[]>([]);
-
-  const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
-    null,
+const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
+    {
+      label: "Karnataka",
+      value: "Karnataka",
+    },
   );
   const [selectedDistrict, setSelectedDistrict] =
-    useState<AutoCompleteOption | null>(null);
+    useState<AutoCompleteOption | null>({
+      label: "Davangere",
+      value: "Davangere",
+    });
 
   useEffect(() => {
     loadPlans();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDistrict?.value, TOKEN, state.user]);
 
   const loadPlans = async () => {
