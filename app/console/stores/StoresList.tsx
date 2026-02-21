@@ -59,10 +59,10 @@ export default function StoresList({ stores }: Props) {
           <h2 className="text-3xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-4xl">
             Top Stores
           </h2>
-          <p className="mt-6 text-lg/8 text-gray-600">
+          {/* <p className="mt-6 text-lg/8 text-gray-600">
             We’re a dynamic group of individuals who are passionate about what
             we do and dedicated to delivering the best results for our clients.
-          </p>
+          </p> */}
         </div>
         <ul
           role="list"
