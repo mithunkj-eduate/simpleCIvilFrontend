@@ -54,19 +54,20 @@ const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen p-4 md:p-6 space-y-5">
+    <div className="bg-gray-50 min-h-screen p-1 lg:p-4 md:p-6 space-y-5">
       {/* Header */}
       <h1 className="text-2xl font-bold text-gray-800">
         District Crop Planning
       </h1>
 
       {/* Filter */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border flex gap-3">
+      <div className="bg-white pt-4 pb-4 p-2 rounded-xl shadow-sm border md:flex gap-3">
         <AutoStateAndDistrictSelect
           selectedItem={selectedState}
           setSelectedItem={setSelectedState}
           path={"states"}
           label="Select State"
+          
         />
         <AutoStateAndDistrictSelect
           selectedItem={selectedDistrict}

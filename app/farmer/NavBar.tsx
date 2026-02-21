@@ -47,16 +47,15 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
 
   const ConsoleDelveryBoyNavigation = useMemo(
     () => [
-      { name: "Dashboard", href: "/farmer/dashboard?v=2", current: true },
-      { name: "Trends", href: "/farmer/trends?v=2", current: false },
-      { name: "Add Report", href: "/farmer/addReport?v=2", current: false },
+      { name: "🏠 Dashboard", href: "/farmer/dashboard?v=2", current: true },
+      { name: "🌱 Crop Planning", href: "/farmer/cropPlan?v=2", current: false },
+      { name: "📊 Production & Profit", href: "/farmer/addReport?v=2", current: false },
+      { name: "📍 District Trends", href: "/farmer/trends?v=2", current: false },
+      { name: "🤖 Recommendations", href: "/farmer/recommendations?v=2", current: false },
+      { name: "👨‍🌾 My Farm", href: "/farmer/profile?v=2", current: false },
 
-      { name: "My Reports", href: "/farmer/myReports?v=2", current: false },
+      { name: "🛒 Market & Prices (future)", href: "/farmer/marketPrices?v=2", current: false },
 
-      { name: "Suggestions", href: "/farmer/suggestions?v=2", current: false },
-      { name: "Crop Plan", href: "/farmer/cropPlan?v=2", current: false },
-
-      { name: "Profile", href: "/farmer/profile?v=2", current: false },
       { name: "Analytics", href: "/farmer/analytics?v=2", current: false },
     ],
     [],

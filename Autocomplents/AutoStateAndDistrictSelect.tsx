@@ -64,7 +64,7 @@ export default function AutoStateAndDistrictSelect({
   }, [TOKEN, selectedItem, path]);
 
   return (
-    <div style={{ padding: "2px" }}>
+    <div style={{ padding: "2px" }} className="max-md:m-2">
       <AutocompleteSelect
         label={label}
         options={options}

@@ -1,14 +1,16 @@
 "use client";
 import AddModal from "@/components/helpers/AddModal";
 import { Button } from "@/stories/Button/Button";
-import { Operation } from "@/utils/enum.types";
+import { Operation, UserType } from "@/utils/enum.types";
 import AddCropPlan from "./AddCropPlan";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import AddSession from "./AddSession";
 import SeasonList from "./SeasonList";
 import CropPlanList from "./CropPlanList";
+import { AppContext } from "@/context/context";
 
 const CropPlan = () => {
+  const { state } = useContext(AppContext);
   const [modalFlag, setModalFlag] = useState(false);
   const [operation, setOperation] = useState(Operation.NONE);
   const [sessionModal, setSeesionModal] = useState(false);
@@ -29,16 +31,19 @@ const CropPlan = () => {
           >
             + Crop Plan
           </Button>
-
-          <Button
-            mode="secondary"
-            onClick={() => {
-              setOperation(Operation.CREATE);
-              setSeesionModal(true);
-            }}
-          >
-            + Season
-          </Button>
+          {state.user &&
+            (state.user.role === UserType.ADMIN ||
+              state.user.role === UserType.SYSTEM_ADMIN) && (
+              <Button
+                mode="secondary"
+                onClick={() => {
+                  setOperation(Operation.CREATE);
+                  setSeesionModal(true);
+                }}
+              >
+                + Season
+              </Button>
+            )}
         </div>
       </div>
 

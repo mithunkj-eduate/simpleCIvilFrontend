@@ -68,7 +68,7 @@ export default function CropRecommendations() {
       </h1>
 
       {/* District Filter */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border flex">
+      <div className="bg-white pt-4 pb-4 p-2 rounded-xl shadow-sm border md:flex gap-3">
         <AutoStateAndDistrictSelect
           selectedItem={selectedState}
           setSelectedItem={setSelectedState}

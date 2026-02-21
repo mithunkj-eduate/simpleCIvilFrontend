@@ -1,9 +1,10 @@
 import React from 'react'
+import CropRecommendations from './CropRecommendations'
 
 const page = () => {
   return (
     <div>
-      My report
+      <CropRecommendations />
     </div>
   )
 }
