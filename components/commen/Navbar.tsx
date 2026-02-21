@@ -10,6 +10,8 @@ import icon from "@/assets/icon.png";
 import { LicenseTypes, PageForNav, UserType } from "@/utils/enum.types";
 import { AppContext } from "@/context/context";
 import Link from "next/link";
+import { payloadTypes } from "@/context/reducer";
+import Cookies from "js-cookie";
 
 interface NavProps {
   NavType: LicenseTypes;
@@ -28,7 +30,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     { name: string; href: string; current: boolean }[]
   >([]);
 
-  const { state } = useContext(AppContext);
+  const { state, dispatch } = useContext(AppContext);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -45,10 +47,18 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const LogoutFun = () => {
+    localStorage.setItem("token", "");
+    Cookies.remove("token");
+    dispatch({
+      type: payloadTypes.SET_USER,
+      payload: { user: null },
+    });
+  };
 
   const Navigation = useMemo(() => {
     const items = [
-        { name: "Home", href: "/?v=2", current: true },
+      { name: "Home", href: "/?v=2", current: true },
       { name: "Product", href: "/products?v=2", current: false },
       // { name: "Contact", href: "/contactus", current: false },
       // { name: "Marketplace", href: "#", current: false },
@@ -57,7 +67,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     ];
 
     if (state.user?.id) {
-      items.push({ name: "Orders", href: "/orders?v=2" ,current: false});
+      items.push({ name: "Orders", href: "/orders?v=2", current: false });
     }
 
     if (
@@ -70,18 +80,28 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         UserType.RESELLER,
         UserType.SELLER,
         UserType.SYSTEM_ADMIN,
+        UserType.FARMER,
       ].includes(state.user.role as UserType)
     ) {
-      items.push({ name: "Console", href: "/console?v=2",current: false });
+      items.push({ name: "Console", href: "/console?v=2", current: false });
     }
 
     if (state.user && state.user?.role === UserType.RAIDER) {
-      items.push({ name: "Console", href: "/dashboard?v=2" ,current: false});
+      items.push({ name: "Console", href: "/dashboard?v=2", current: false });
+    }
+
+    if (
+      state.user &&
+      state.user.role &&
+      [UserType.ADMIN, UserType.SYSTEM_ADMIN, UserType.FARMER].includes(
+        state.user.role as UserType,
+      )
+    ) {
+      items.push({ name: "Farmer", href: "/farmer?v=2", current: false });
     }
 
     return items;
   }, [state.user]);
-
 
   const ConsoleNavigation = useMemo(() => {
     const items = [
@@ -225,15 +245,28 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
             </Link>
           ) : null}
 
-          <a
-            href="/login?v=2"
-            className={classNames(
-              className ? className : "",
-              "text-sm/6 font-semibold text-gray-900",
-            )}
-          >
-            Log in <span aria-hidden="true">&rarr;</span>
-          </a>
+          {state.user ? (
+            <a
+              href="/?v=2"
+              className={classNames(
+                className ? className : "",
+                "text-sm/6 font-semibold text-gray-900",
+              )}
+              onClick={LogoutFun}
+            >
+              Log out <span aria-hidden="true">&rarr;</span>
+            </a>
+          ) : (
+            <a
+              href="/login?v=2"
+              className={classNames(
+                className ? className : "",
+                "text-sm/6 font-semibold text-gray-900",
+              )}
+            >
+              Log in <span aria-hidden="true">&rarr;</span>
+            </a>
+          )}
         </div>
         {/* <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <a href="/signup" className="text-sm/6 font-semibold text-gray-900">
@@ -310,12 +343,22 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                 </a>
               </div>
               <div className="py-6">
-                <a
-                  href="/login?v=2"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Log in
-                </a>
+                {state.user ? (
+                  <a
+                    href="/?v=2"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                    onClick={LogoutFun}
+                  >
+                    Log out
+                  </a>
+                ) : (
+                  <a
+                    href="/login?v=2"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                  >
+                    Log in
+                  </a>
+                )}
               </div>
               <div className="py-6">
                 <a

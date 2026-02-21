@@ -10,6 +10,8 @@ import icon from "@/assets/icon.png";
 import { LicenseTypes, PageForNav } from "@/utils/enum.types";
 import { AppContext } from "@/context/context";
 import Link from "next/link";
+import { payloadTypes } from "@/context/reducer";
+import Cookies from "js-cookie";
 
 interface NavProps {
   NavType: LicenseTypes;
@@ -28,7 +30,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     { name: string; href: string; current: boolean }[]
   >([]);
 
-  const { state } = useContext(AppContext);
+  const { state, dispatch } = useContext(AppContext);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -45,16 +47,46 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+
+    const LogoutFun = () => {
+      localStorage.setItem("token", "");
+      Cookies.remove("token");
+      dispatch({
+        type: payloadTypes.SET_USER,
+        payload: { user: null },
+      });
+    };
+
   const ConsoleDelveryBoyNavigation = useMemo(
     () => [
       { name: "🏠 Dashboard", href: "/farmer/dashboard?v=2", current: true },
-      { name: "🌱 Crop Planning", href: "/farmer/cropPlan?v=2", current: false },
-      { name: "📊 Production & Profit", href: "/farmer/addReport?v=2", current: false },
-      { name: "📍 District Trends", href: "/farmer/trends?v=2", current: false },
-      { name: "🤖 Recommendations", href: "/farmer/recommendations?v=2", current: false },
+      {
+        name: "🌱 Crop Planning",
+        href: "/farmer/cropPlan?v=2",
+        current: false,
+      },
+      {
+        name: "📊 Production & Profit",
+        href: "/farmer/addReport?v=2",
+        current: false,
+      },
+      {
+        name: "📍 District Trends",
+        href: "/farmer/trends?v=2",
+        current: false,
+      },
+      {
+        name: "🤖 Recommendations",
+        href: "/farmer/recommendations?v=2",
+        current: false,
+      },
       { name: "👨‍🌾 My Farm", href: "/farmer/profile?v=2", current: false },
 
-      { name: "🛒 Market & Prices (future)", href: "/farmer/marketPrices?v=2", current: false },
+      {
+        name: "🛒 Market & Prices (future)",
+        href: "/farmer/marketPrices?v=2",
+        current: false,
+      },
 
       { name: "Analytics", href: "/farmer/analytics?v=2", current: false },
     ],
@@ -152,15 +184,28 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
             </Link>
           ) : null}
 
-          <a
-            href="/login?v=2"
-            className={classNames(
-              className ? className : "",
-              "text-sm/6 font-semibold text-gray-900",
-            )}
-          >
-            Log in <span aria-hidden="true">&rarr;</span>
-          </a>
+          {state.user ? (
+            <a
+              href="/?v=2"
+              className={classNames(
+                className ? className : "",
+                "text-sm/6 font-semibold text-gray-900",
+              )}
+              onClick={LogoutFun}
+            >
+              Log out <span aria-hidden="true">&rarr;</span>
+            </a>
+          ) : (
+            <a
+              href="/login?v=2"
+              className={classNames(
+                className ? className : "",
+                "text-sm/6 font-semibold text-gray-900",
+              )}
+            >
+              Log in <span aria-hidden="true">&rarr;</span>
+            </a>
+          )}
         </div>
         {/* <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <a href="/signup" className="text-sm/6 font-semibold text-gray-900">
@@ -237,12 +282,22 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                 </a>
               </div>
               <div className="py-6">
-                <a
-                  href="/login?v=2"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Log in
-                </a>
+                {state.user ? (
+                  <a
+                    href="/?v=2"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                    onClick={LogoutFun}
+                  >
+                    Log out
+                  </a>
+                ) : (
+                  <a
+                    href="/login?v=2"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                  >
+                    Log in
+                  </a>
+                )}
               </div>
               <div className="py-6">
                 <a
