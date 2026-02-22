@@ -41,11 +41,12 @@ export default Api;
 export const BASE_URL =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_PRODUCTION_BASE_URL
-    : process.env.NODE_LOCATION === "office"
-    ? process.env.NEXT_PUBLIC_DEVELOPMENT_BASE_URL_OFFICE
-    : process.env.NODE_LOCATION === "home"
-    ? process.env.NEXT_PUBLIC_DEVELOPMENT_BASE_URL_HOME
     : process.env.NEXT_PUBLIC_DEVELOPMENT_BASE_URL;
+
+export const BASE_URL_SNAP =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_PRODUCTION_SNAP_BASE_URL
+    : process.env.NEXT_PUBLIC_DEVELOPMENT_SPAN_BASE_URL;
 
 console.log(BASE_URL, "BASE_URL");
 

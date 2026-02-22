@@ -1,7 +1,12 @@
+"use client";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/commen/Navbar";
 import { LicenseTypes } from "@/utils/enum.types";
 import { SafeImage } from "../utils/SafeImage";
+import Link from "next/link";
+import { BASE_URL_SNAP } from "@/components/helpers/apiheader";
+import { useContext } from "react";
+import { AppContext } from "@/context/context";
 
 const posts = [
   {
@@ -92,6 +97,7 @@ const posts = [
 ];
 
 export default function Example() {
+  const { state } = useContext(AppContext);
   return (
     <>
       <Navbar NavType={LicenseTypes.USER} />
@@ -99,13 +105,32 @@ export default function Example() {
       <div className="bg-white  sm:py-8">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl lg:mx-0">
-            <h2 className="text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
-              From the blog
-            </h2>
+            <div className="flex items-center justify-start gap-4">
+              <h2 className="text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
+                From the blog
+              </h2>
+
+              {state.user && (
+                <Link
+                  href={`${BASE_URL_SNAP}/login/${state.user?.id}`}
+                  className={`
+        rounded-full px-4 py-2 text-sm font-medium
+        bg-blue-600 text-white 
+        hover:bg-blue-700 
+        active:bg-blue-800
+        transition-colors
+      `}
+                >
+                  All Snap
+                </Link>
+              )}
+            </div>
+
             <p className="mt-2 text-lg/8 text-gray-600">
               Learn how to grow your business with our expert advice.
             </p>
           </div>
+          <div></div>
           <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             {posts.map((post) => (
               <article
