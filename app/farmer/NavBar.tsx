@@ -98,7 +98,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         current: false,
       },
       {
-        name: navLabels.recommendations,
+        name: navLabels.production,
         href: "/farmer/addReport?v=2",
         current: false,
       },
