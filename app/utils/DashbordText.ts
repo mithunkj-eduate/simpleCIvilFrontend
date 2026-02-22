@@ -34,3 +34,10 @@ export const settingsLabels = {
   help: { en: "Help", kn: "ಸಹಾಯ" },
   support: { en: "Support", kn: "ಬೆಂಬಲ" },
 };
+
+export const statusOptions = [
+  { value: "PLANNED", label: { en: "Planned", kn: "ಯೋಜಿಸಲಾಗಿದೆ" } },
+  { value: "PLANTED", label: { en: "Planted", kn: "ನೆಡಲಾಗಿದೆ" } },
+  { value: "HARVESTED", label: { en: "Harvested", kn: "ಕೊಯ್ಯಲಾಗಿದೆ" } },
+];
+
