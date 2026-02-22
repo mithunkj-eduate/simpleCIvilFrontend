@@ -23,6 +23,7 @@ import { AddProductionReportValidation } from "@/validations/validationSchemas";
 import AutoStateAndDistrictSelect from "@/Autocomplents/AutoStateAndDistrictSelect";
 import { dashboardText } from "@/app/utils/DashbordText";
 import AutoCropSelect from "@/Autocomplents/AutoCropSelect";
+import { getTextLang } from "@/app/utils/getTextLang";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -297,10 +298,10 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
                     as="h3"
                     className="text-base font-semibold text-gray-900"
                   >
-                    {operations.operation === Operation.UPDATE
-                      ? "Update"
-                      : "Add"}{" "}
-                    {
+                  {operations.operation === Operation.UPDATE
+                                        ? getTextLang("update", lang)
+                                        : getTextLang("add", lang)}
+                                       {
                       dashboardText.reports[
                         lang as keyof typeof dashboardText.cropDashboard
                       ]

@@ -24,6 +24,7 @@ import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
 import AutoStateAndDistrictSelect from "@/Autocomplents/AutoStateAndDistrictSelect";
 import AutoSoilSelect from "@/Autocomplents/AutoSoilSelect";
 import AutoIrrigationSelect from "@/Autocomplents/AutoIrrigationSelect";
+import { getTextLang } from "@/app/utils/getTextLang";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -350,8 +351,8 @@ const AddProfile = ({ setModalFlag, operations }: AddProfileProps) => {
                     className="text-base font-semibold text-gray-900"
                   >
                     {operations.operation === Operation.UPDATE
-                      ? "Update"
-                      : "Add"}{" "}
+                      ? getTextLang("update", lang)
+                      : getTextLang("add", lang)}
                     Profile
                   </DialogTitle>
 
