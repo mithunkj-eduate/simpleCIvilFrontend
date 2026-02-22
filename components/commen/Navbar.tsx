@@ -12,6 +12,8 @@ import { AppContext } from "@/context/context";
 import Link from "next/link";
 import { payloadTypes } from "@/context/reducer";
 import Cookies from "js-cookie";
+import { usePathname, useRouter } from "next/navigation";
+
 
 interface NavProps {
   NavType: LicenseTypes;
@@ -25,6 +27,8 @@ function classNames(...classes: string[]) {
 }
 
 export default function Navbar({ NavType, className, pageForNav }: NavProps) {
+  const pathname = usePathname();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [items, setItems] = useState<
     { name: string; href: string; current: boolean }[]
@@ -54,6 +58,12 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       type: payloadTypes.SET_USER,
       payload: { user: null },
     });
+  };
+
+  // remove ?v=2 before compare
+  const isActive = (href: string) => {
+    const cleanHref = href.split("?")[0];
+    return pathname === cleanHref;
   };
 
   const Navigation = useMemo(() => {
@@ -97,7 +107,11 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         state.user.role as UserType,
       )
     ) {
-      items.push({ name: "Farmer", href: "/farmer/dashboard?v=2", current: false });
+      items.push({
+        name: "Farmer",
+        href: "/farmer/dashboard?v=2",
+        current: false,
+      });
     }
 
     return items;
@@ -208,6 +222,9 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               className={classNames(
                 className ? className : "",
                 `text-sm/6 font-semibold text-gray-900`,
+                isActive(item.href)
+                  ? "text-gray-600 border-b-2 border-gray-600"
+                  : "text-gray-900 hover:text-gray-600",
               )}
               // className={classNames(
               //   item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white',
@@ -297,6 +314,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                 className="h-8 w-auto"
                 width={200} // Adjust width as needed
                 height={200} // Adjust height as needed
+                onClick={() => router.push("/?v=2")}
               />
             </a>
             <button
@@ -315,7 +333,14 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                   <a
                     key={index}
                     href={item.href}
-                    className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                    // className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                    className={classNames(
+                      className ? className : "",
+                      "block rounded-lg px-3 py-2 font-semibold",
+                      isActive(item.href)
+                        ? "bg-gray-100 text-gray-700"
+                        : "hover:bg-gray-50",
+                    )}
                   >
                     {item.name}
                   </a>

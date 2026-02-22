@@ -12,6 +12,8 @@ import { AppContext } from "@/context/context";
 import Link from "next/link";
 import { payloadTypes } from "@/context/reducer";
 import Cookies from "js-cookie";
+import { usePathname, useRouter } from "next/navigation";
+
 
 interface NavProps {
   NavType: LicenseTypes;
@@ -35,6 +37,8 @@ export const navLabels = {
 };
 
 export default function Navbar({ NavType, className, pageForNav }: NavProps) {
+  const pathname = usePathname();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [items, setItems] = useState<
     {
@@ -72,6 +76,12 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       type: payloadTypes.SET_USER,
       payload: { user: null },
     });
+  };
+
+  // remove ?v=2 before compare
+  const isActive = (href: string) => {
+    const cleanHref = href.split("?")[0];
+    return pathname === cleanHref;
   };
 
   const ConsoleDelveryBoyNavigation = useMemo(
@@ -203,6 +213,9 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               className={classNames(
                 className ? className : "",
                 `text-sm/6 font-semibold text-gray-900`,
+                isActive(item.href)
+                  ? "text-green-600 border-b-2 border-green-600"
+                  : "text-gray-900 hover:text-green-600",
               )}
               // className={classNames(
               //   item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white',
@@ -291,6 +304,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                 className="h-8 w-auto"
                 width={200} // Adjust width as needed
                 height={200} // Adjust height as needed
+                onClick={() => router.push("/?v=2")}
               />
             </a>
             <button
@@ -309,7 +323,13 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                   <a
                     key={index}
                     href={item.href}
-                    className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                    // className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                    className={classNames(
+                      "block rounded-lg px-3 py-2 font-semibold",
+                      isActive(item.href)
+                        ? "bg-green-100 text-green-700"
+                        : "hover:bg-gray-50",
+                    )}
                   >
                     {item.name[lang as keyof typeof item.name]}
                   </a>
