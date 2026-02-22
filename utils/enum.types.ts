@@ -1,3 +1,5 @@
+
+
 export enum LicenseTypes {
   NONE = "NONE",
   USER = "USER",
@@ -76,11 +78,6 @@ export enum CropPlanStatusEnum {
   HARVESTED = "HARVESTED",
 }
 
-export enum CropPlanNameEnum {
-  Rice = "Rice",
-  Ragi = "Ragi",
-  Tomato = "Tomato",
-  Onion = "Onion",
-  Cotton = "Cotton",
-  Chili = "Chili",
-}
+
+
+

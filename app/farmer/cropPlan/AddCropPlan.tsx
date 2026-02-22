@@ -24,6 +24,7 @@ import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
 import AutoFarmSeasonSelect from "./AutoFarmSeasonSelect";
 import AutoStateAndDistrictSelect from "@/Autocomplents/AutoStateAndDistrictSelect";
 import { dashboardText } from "@/app/utils/DashbordText";
+import AutoCropSelect from "@/Autocomplents/AutoCropSelect";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -63,7 +64,7 @@ export const CropPlanFormJson = [
       kn: "ಬೆಳೆ ಹೆಸರು",
     },
     inputName: "cropName",
-    dataType: "text",
+    dataType: "cropName",
   },
   {
     labelName: {
@@ -169,6 +170,10 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
       value: "Karnataka",
     },
   );
+  const [selectedCrop, setSelectedCrop] = useState<AutoCompleteOption | null>(
+    null,
+  );
+
   const [selectedDistrict, setSelectedDistrict] =
     useState<AutoCompleteOption | null>({
       label: "Davangere",
@@ -207,6 +212,10 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
               label: res.data.district ?? "",
               value: res.data.district ?? "",
             });
+            setSelectedCrop({
+              label: res.data.cropName ?? "",
+              value: res.data.cropName ?? "",
+            });
             // setSelectedSeason({
             //   label: res.data.seasonId ?? "",
             //   value: res.data.seasonId ?? "",
@@ -236,6 +245,7 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
         state: selectedState?.value,
         district: selectedDistrict?.value,
         seasonId: selectedSeason?.value,
+        cropName: selectedCrop?.value,
       };
 
       const res = await api({
@@ -311,8 +321,11 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
                     {operations.operation === Operation.UPDATE
                       ? "Update"
                       : "Add"}{" "}
-           {dashboardText.planning[lang as keyof typeof dashboardText.cropDashboard]}
-                    
+                    {
+                      dashboardText.planning[
+                        lang as keyof typeof dashboardText.cropDashboard
+                      ]
+                    }
                   </DialogTitle>
 
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols">
@@ -360,6 +373,13 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
                                 />
                               </div>
                             </div>
+                          ) : item.dataType === "cropName" ? (
+                            <AutoCropSelect
+                              selectedItem={selectedCrop}
+                              setSelectedItem={setSelectedCrop}
+                              label=""
+                              disabled={operations.operation === Operation.VIEW}
+                            />
                           ) : item.dataType === "state" ? (
                             <AutoStateAndDistrictSelect
                               selectedItem={selectedState}

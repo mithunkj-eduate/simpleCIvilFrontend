@@ -22,6 +22,7 @@ import { Formik, Form, ErrorMessage } from "formik";
 import { AddProductionReportValidation } from "@/validations/validationSchemas";
 import AutoStateAndDistrictSelect from "@/Autocomplents/AutoStateAndDistrictSelect";
 import { dashboardText } from "@/app/utils/DashbordText";
+import AutoCropSelect from "@/Autocomplents/AutoCropSelect";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -82,7 +83,7 @@ export const CropPlanFormJson = [
   {
     labelName: cropProductionLabels.crop,
     inputName: "cropName",
-    dataType: "text",
+    dataType: "cropName",
   },
 
   {
@@ -164,6 +165,9 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
       value: "Karnataka",
     },
   );
+  const [selectedCrop, setSelectedCrop] = useState<AutoCompleteOption | null>(
+    null,
+  );
   const [selectedDistrict, setSelectedDistrict] =
     useState<AutoCompleteOption | null>({
       label: "Davangere",
@@ -215,6 +219,7 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
         ...values,
         state: selectedState?.value,
         district: selectedDistrict?.value,
+        cropName: selectedCrop?.value
       };
 
       console.log(body, "body");
@@ -295,7 +300,11 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
                     {operations.operation === Operation.UPDATE
                       ? "Update"
                       : "Add"}{" "}
-                    {dashboardText.reports[lang as keyof typeof dashboardText.cropDashboard]}
+                    {
+                      dashboardText.reports[
+                        lang as keyof typeof dashboardText.cropDashboard
+                      ]
+                    }
                   </DialogTitle>
 
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols">
@@ -312,6 +321,13 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
                               value={
                                 values[item.inputName as keyof typeof values]
                               }
+                            />
+                          ) : item.dataType === "cropName" ? (
+                            <AutoCropSelect
+                              selectedItem={selectedCrop}
+                              setSelectedItem={setSelectedCrop}
+                              label=""
+                              disabled={operations.operation === Operation.VIEW}
                             />
                           ) : item.dataType === "state" ? (
                             <AutoStateAndDistrictSelect

@@ -21,6 +21,9 @@ import React, {
 import { Formik, Form, ErrorMessage } from "formik";
 import { AddFarmerProfileValidation } from "@/validations/validationSchemas";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
+import AutoStateAndDistrictSelect from "@/Autocomplents/AutoStateAndDistrictSelect";
+import AutoSoilSelect from "@/Autocomplents/AutoSoilSelect";
+import AutoIrrigationSelect from "@/Autocomplents/AutoIrrigationSelect";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -90,24 +93,24 @@ export const StoreFormJson = [
   {
     labelName: farmProfileLabels.soilType,
     inputName: "soilType",
-    dataType: "string",
+    dataType: "soilType",
   },
   {
     labelName: farmProfileLabels.irrigationType,
     inputName: "irrigationType",
-    dataType: "text",
+    dataType: "irrigationType",
   },
   {
     labelName: farmProfileLabels.farmingType,
     inputName: "farmingType",
     dataType: "farmingType",
   },
-  { labelName: farmProfileLabels.state, inputName: "state", dataType: "text" },
+  { labelName: farmProfileLabels.state, inputName: "state", dataType: "state" },
 
   {
     labelName: farmProfileLabels.district,
     inputName: "district",
-    dataType: "text",
+    dataType: "district",
   },
   {
     labelName: farmProfileLabels.village,
@@ -169,6 +172,23 @@ const AddProfile = ({ setModalFlag, operations }: AddProfileProps) => {
   const [formData, setFormData] = useState(initialFarmerProfileValues);
   const [selectedFarmingType, setFarmingType] =
     useState<AutoCompleteOption | null>(null);
+  const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
+    {
+      label: "Karnataka",
+      value: "Karnataka",
+    },
+  );
+
+  const [selectedDistrict, setSelectedDistrict] =
+    useState<AutoCompleteOption | null>({
+      label: "Davangere",
+      value: "Davangere",
+    });
+
+  const [selectedSoilType, setSelectedSoilType] =
+    useState<AutoCompleteOption | null>(null);
+  const [selectedIrrigationType, setSelectedIrrigationType] =
+    useState<AutoCompleteOption | null>(null);
 
   useEffect(() => {
     if (operations.operation === Operation.UPDATE) {
@@ -196,6 +216,22 @@ const AddProfile = ({ setModalFlag, operations }: AddProfileProps) => {
               latitude: res.data.location.coordinates[0] ?? 0,
               longitude: res.data.location.coordinates[1] ?? 0,
               pincode: res.data.pincode,
+            });
+            setSelectedState({
+              label: res.data.state ?? "",
+              value: res.data.state ?? "",
+            });
+            setSelectedDistrict({
+              label: res.data.district ?? "",
+              value: res.data.district ?? "",
+            });
+            setSelectedSoilType({
+              label: res.data.soilType ?? "",
+              value: res.data.soilType ?? "",
+            });
+            setSelectedIrrigationType({
+              label: res.data.irrigationType ?? "",
+              value: res.data.irrigationType ?? "",
             });
           }
         } catch (error) {
@@ -237,6 +273,10 @@ const AddProfile = ({ setModalFlag, operations }: AddProfileProps) => {
       const body = {
         ...values,
         farmName: values.name,
+        district: selectedDistrict?.value,
+        state: selectedState?.value,
+        irrigationType: selectedIrrigationType?.value,
+        soilType: selectedSoilType?.value,
       };
 
       const res = await api({
@@ -329,6 +369,40 @@ const AddProfile = ({ setModalFlag, operations }: AddProfileProps) => {
                               value={
                                 values[item.inputName as keyof typeof values]
                               }
+                            />
+                          ) : item.dataType === "soilType" ? (
+                            <AutoSoilSelect
+                              selectedItem={selectedSoilType}
+                              setSelectedItem={setSelectedSoilType}
+                              label=""
+                              disabled={operations.operation === Operation.VIEW}
+                            />
+                          ) : item.dataType === "irrigationType" ? (
+                            <AutoIrrigationSelect
+                              selectedItem={selectedIrrigationType}
+                              setSelectedItem={setSelectedIrrigationType}
+                              label=""
+                              disabled={operations.operation === Operation.VIEW}
+                            />
+                          ) : item.dataType === "state" ? (
+                            <AutoStateAndDistrictSelect
+                              selectedItem={selectedState}
+                              setSelectedItem={setSelectedState}
+                              path={"states"}
+                              label=""
+                              disabled={operations.operation === Operation.VIEW}
+                            />
+                          ) : item.dataType === "district" ? (
+                            <AutoStateAndDistrictSelect
+                              selectedItem={selectedDistrict}
+                              setSelectedItem={setSelectedDistrict}
+                              path={
+                                selectedState
+                                  ? `districts/${selectedState?.value}`
+                                  : ""
+                              }
+                              label=""
+                              disabled={operations.operation === Operation.VIEW}
                             />
                           ) : item.dataType === "farmingType" ? (
                             <div key={index} className="sm:col-span-2">
