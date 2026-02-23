@@ -103,8 +103,6 @@ export const CropPlanFormJson = [
   },
 ];
 
-
-
 // const CropOption: AutoCompleteOption[] = [
 //   {
 //     label: CropPlanNameEnum.Chili,
@@ -154,7 +152,7 @@ const AddCropPlan = ({
 
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const [formData, setFormData] = useState(initialCropPlanValues);
-  
+
   const [selectedSeason, setSelectedSeason] =
     useState<AutoCompleteOption | null>(null);
   const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
@@ -252,15 +250,13 @@ const AddCropPlan = ({
       console.log("submited", formData);
       if (!TOKEN || !state.user) return;
 
-
-
       const body = {
         ...values,
         state: selectedState?.value,
         district: selectedDistrict?.value,
         seasonId: selectedSeason?.value,
         cropName: selectedCrop?.value,
-        status: selectedCropPlanStatus?.value
+        status: selectedCropPlanStatus?.value,
       };
 
       const method = operations.operation === Operation.UPDATE ? "put" : "post";
@@ -316,7 +312,7 @@ const AddCropPlan = ({
           <Form>
             <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
               {/* <div className="sm:flex sm:items-start"> */}
-                <div className="flex flex-col items-center sm:items-start">
+              <div className="flex flex-col items-center sm:items-start">
                 <div className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-gray-100 sm:mx-0 sm:size-10">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -333,8 +329,8 @@ const AddCropPlan = ({
                     />
                   </svg>
                 </div>
-<div className="mt-3 w-full max-w-xl mx-auto text-center sm:mt-0 sm:ml-4 sm:text-left">
-                {/* <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left"> */}
+                <div className="mt-3 w-full max-w-xl mx-auto text-center sm:mt-0 sm:ml-4 sm:text-left">
+                  {/* <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left"> */}
                   <DialogTitle
                     as="h3"
                     className="text-base font-semibold text-gray-900"
@@ -350,7 +346,7 @@ const AddCropPlan = ({
                   </DialogTitle>
 
                   {/* <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols"> */}
-                    <div className="mt-8 grid grid-cols-1 gap-6">
+                  <div className="mt-8 grid grid-cols-1 gap-6">
                     <div>
                       <AutoFarmSeasonSelect
                         selectedItem={selectedSeason}
@@ -362,7 +358,7 @@ const AddCropPlan = ({
                     </div>
                     {CropPlanFormJson.map((item, index) => (
                       // <div key={index} className="sm:col-span-3 w-80">
-                        <div key={index} className="w-full">
+                      <div key={index} className="w-full">
                         <Label>
                           {item.labelName[lang as keyof typeof item.labelName]}
                         </Label>
@@ -434,7 +430,7 @@ const AddCropPlan = ({
             </div>
 
             {/* <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6"> */}
-              <div className="bg-gray-50 px-4 py-3 flex flex-col gap-2 sm:flex-row sm:justify-end sm:px-6">
+            <div className="bg-gray-50 px-4 py-3 flex flex-col gap-2 sm:flex-row sm:justify-end sm:px-6">
               <Button type="submit" mode="primary">
                 Save
               </Button>

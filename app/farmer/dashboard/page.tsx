@@ -38,7 +38,7 @@ export default function FarmerDashboard() {
             dashboardText.welcome[
               lang as keyof typeof dashboardText.cropDashboard
             ]
-          }{" "}
+          }{"  "} 
           {state.user && state.user.name} 👨‍🌾
         </h2>
         <p className="text-sm text-gray-600">

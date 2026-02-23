@@ -157,7 +157,8 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
       >
         {({ handleChange, values }) => (
           <Form>
-            <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+
               <div className="sm:flex sm:items-start">
                 <div className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-gray-100 sm:mx-0 sm:size-10">
                   <svg
@@ -176,7 +177,7 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
                   </svg>
                 </div>
 
-                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+<div className="mt-3 w-full max-w-xl mx-auto text-center sm:mt-0 sm:ml-4 sm:text-left">
                   <DialogTitle
                     as="h3"
                     className="text-base font-semibold text-gray-900"
@@ -191,10 +192,9 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
                     }
                   </DialogTitle>
 
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols">
+ <div className="mt-8 grid grid-cols-1 gap-6">
                     {CropPlanFormJson.map((item, index) => (
-                      <div key={index} className="sm:col-span-3 w-80">
-                        <Label>{item.labelName}</Label>
+                        <div key={index} className="w-full">                        <Label>{item.labelName}</Label>
                         <div className="mt-2">
                           {item.dataType === "textarea" ? (
                             <TextArea
@@ -228,7 +228,7 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
               </div>
             </div>
 
-            <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+              <div className="bg-gray-50 px-4 py-3 flex flex-col gap-2 sm:flex-row sm:justify-end sm:px-6">
               <Button type="submit" mode="primary">
                 Save
               </Button>
