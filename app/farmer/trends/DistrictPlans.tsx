@@ -55,7 +55,7 @@ const [selectedState, setSelectedState] = useState<AutoCompleteOption | null>(
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen p-1 lg:p-4 md:p-6 space-y-5">
+    <div className="bg-gray-50 min-h-screen p-2 lg:p-4 md:p-6 space-y-5">
       {/* Header */}
       <h1 className="text-2xl font-bold text-gray-800">
            {dashboardText.districtPlanning[lang as keyof typeof dashboardText.cropDashboard]}

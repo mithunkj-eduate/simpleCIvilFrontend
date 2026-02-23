@@ -30,7 +30,7 @@ export default function FarmerDashboard() {
   console.log(state.lang);
   const lang = state.lang ?? "en";
   return (
-    <div className="p-4 space-y-4">
+    <div>
       {/* Welcome */}
       <div className="bg-green-100 p-4 rounded-2xl shadow">
         <h2 className="text-xl font-bold">
