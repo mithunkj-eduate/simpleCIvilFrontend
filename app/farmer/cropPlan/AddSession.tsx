@@ -21,6 +21,8 @@ import React, {
 import { Formik, Form, ErrorMessage } from "formik";
 import { AddFarmSeasonValidation } from "@/validations/validationSchemas";
 import { dashboardText } from "@/app/utils/DashbordText";
+import { toStandardDateDisplay } from "@/utils/utilFunctions";
+import { formatSeasonInput, isValidSeasonName } from "@/app/utils/seasonUtils";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -28,6 +30,7 @@ interface AddProfileProps {
     operation: Operation;
     setOperation: Dispatch<SetStateAction<Operation>>;
   };
+  selectedId: string;
 }
 
 export const CropPlanFormJson = [
@@ -51,7 +54,11 @@ export const initialCropPlanValues = {
   endDate: "",
 };
 
-const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
+const AddSession = ({
+  setModalFlag,
+  operations,
+  selectedId,
+}: AddProfileProps) => {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
   const lang = state.lang ?? "en";
@@ -64,7 +71,7 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
 
       const getStore = async () => {
         try {
-          const res = await api.get(`/farmer/season`, {
+          const res = await api.get(`/farmer/season/${selectedId}`, {
             headers: {
               Authorization: `Bearer ${TOKEN}`,
               "Content-Type": "application/json",
@@ -72,10 +79,11 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
           });
 
           if (res.data) {
+            console.log(res.data);
             setFormData({
               seasonName: res.data.seasonName,
-              startDate: res.data.startDate,
-              endDate: res.data.endDate,
+              startDate: toStandardDateDisplay(res.data.startDate),
+              endDate: toStandardDateDisplay(res.data.endDate),
             });
           }
         } catch (error) {
@@ -101,6 +109,15 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
         return;
       }
 
+      if (!isValidSeasonName(values.seasonName)) {
+        setMessage({
+          flag: true,
+          message: "Season must be like: Kharif 2026",
+          operation: Operation.NONE,
+        });
+        return;
+      }
+
       const body = {
         seasonName: values.seasonName,
         startDate: values.startDate,
@@ -108,10 +125,14 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
       };
       console.log(body, "body");
 
-      const path = "/farmer/season";
+      const path =
+        operations.operation === Operation.UPDATE
+          ? `/farmer/season/${selectedId}`
+          : "/farmer/season";
+      const method = operations.operation === Operation.UPDATE ? "put" : "post";
 
       const res = await api({
-        method: "post",
+        method: method,
         url: path,
         data: body,
         headers: {
@@ -157,8 +178,7 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
       >
         {({ handleChange, values }) => (
           <Form>
-                        <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-
+            <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
               <div className="sm:flex sm:items-start">
                 <div className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-gray-100 sm:mx-0 sm:size-10">
                   <svg
@@ -177,7 +197,7 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
                   </svg>
                 </div>
 
-<div className="mt-3 w-full max-w-xl mx-auto text-center sm:mt-0 sm:ml-4 sm:text-left">
+                <div className="mt-3 w-full max-w-xl mx-auto text-center sm:mt-0 sm:ml-4 sm:text-left">
                   <DialogTitle
                     as="h3"
                     className="text-base font-semibold text-gray-900"
@@ -192,9 +212,11 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
                     }
                   </DialogTitle>
 
- <div className="mt-8 grid grid-cols-1 gap-6">
+                  <div className="mt-8 grid grid-cols-1 gap-6">
                     {CropPlanFormJson.map((item, index) => (
-                        <div key={index} className="w-full">                        <Label>{item.labelName}</Label>
+                      <div key={index} className="w-full">
+                        {" "}
+                        <Label>{item.labelName}</Label>
                         <div className="mt-2">
                           {item.dataType === "textarea" ? (
                             <TextArea
@@ -204,6 +226,40 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
                                 values[item.inputName as keyof typeof values]
                               }
                             />
+                          ) : item.inputName === "seasonName" ? (
+                            <>
+                              <Input
+                                type={item.dataType}
+                                name={item.inputName}
+                                value={
+                                  values[item.inputName as keyof typeof values]
+                                }
+                                onChange={(
+                                  e: React.ChangeEvent<HTMLInputElement>,
+                                ) => {
+                                  if (item.inputName === "seasonName") {
+                                    handleChange(e);
+                                  } else {
+                                    handleChange(e);
+                                  }
+                                }}
+                                onBlur={(
+                                  e: React.FocusEvent<HTMLInputElement>,
+                                ) => {
+                                  if (item.inputName === "seasonName") {
+                                    const formatted = formatSeasonInput(
+                                      e.target.value,
+                                    );
+                                    e.target.value = formatted;
+                                    handleChange(e);
+                                  }
+                                }}
+                              />
+                              <p className="text-xs text-gray-500 mt-1">
+                                Example: Kharif 2026 • Rabi 2025-26 • Summer
+                                2026
+                              </p>
+                            </>
                           ) : (
                             <Input
                               type={item.dataType}
@@ -215,7 +271,6 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
                             />
                           )}
                         </div>
-
                         <ErrorMessage
                           name={item.inputName}
                           component="p"
@@ -228,7 +283,7 @@ const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
               </div>
             </div>
 
-              <div className="bg-gray-50 px-4 py-3 flex flex-col gap-2 sm:flex-row sm:justify-end sm:px-6">
+            <div className="bg-gray-50 px-4 py-3 flex flex-col gap-2 sm:flex-row sm:justify-end sm:px-6">
               <Button type="submit" mode="primary">
                 Save
               </Button>

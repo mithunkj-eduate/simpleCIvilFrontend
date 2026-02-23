@@ -26,7 +26,7 @@ const CropPlanList = () => {
   const [plans, setPlans] = useState<CropPlanType[]>([]);
   const [modalFlag, setModalFlag] = useState(false);
   const [operation, setOperation] = useState(Operation.NONE);
-  const [selectedId,setSelectedId] = useState("")
+  const [selectedId, setSelectedId] = useState("");
 
   useEffect(() => {
     if (!TOKEN || !state.user) return;
@@ -77,27 +77,29 @@ const CropPlanList = () => {
                   {plan.cropName}
                 </h3>
 
-                <span className="text-xs font-semibold px-3 py-1 rounded-full">
-                  <SafeImage
-                    alt="edit"
-                    className=""
-                    height={30}
-                    src="/EditProfile.svg"
-                    width={30}
-                    onClick={() => {
-                      setOperation(Operation.UPDATE);
-                      setModalFlag(true);
-                      setSelectedId(plan._id)
-                    }}
-                  />
-                </span>
-                <span
-                  className={`${statusColor(
-                    plan.status,
-                  )} text-xs font-semibold px-3 py-1 rounded-full`}
-                >
-                  {plan.status}
-                </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button className="p-2 rounded-full hover:bg-green-50 transition cursor-pointer">
+                    <SafeImage
+                      alt="edit"
+                      className="w-5 h-5 md:w-6 md:h-6 opacity-70 hover:opacity-100 transition"
+                      height={24}
+                      src="/EditProfile.svg"
+                      width={24}
+                      onClick={() => {
+                        setOperation(Operation.UPDATE);
+                        setModalFlag(true);
+                        setSelectedId(plan._id);
+                      }}
+                    />
+                  </button>
+                  <span
+                    className={`${statusColor(
+                      plan.status,
+                    )} text-xs font-semibold px-3 py-1 rounded-full`}
+                  >
+                    {plan.status}
+                  </span>
+                </div>
               </div>
 
               {/* Acres */}

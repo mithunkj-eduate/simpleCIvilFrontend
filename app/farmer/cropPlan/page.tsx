@@ -79,6 +79,7 @@ const CropPlan = () => {
         <AddSession
           setModalFlag={setSeesionModal}
           operations={{ operation, setOperation }}
+          selectedId=""
         />
       </AddModal>
     </div>
