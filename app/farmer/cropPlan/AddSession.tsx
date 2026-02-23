@@ -22,7 +22,7 @@ import { Formik, Form, ErrorMessage } from "formik";
 import { AddFarmSeasonValidation } from "@/validations/validationSchemas";
 import { dashboardText } from "@/app/utils/DashbordText";
 import { toStandardDateDisplay } from "@/utils/utilFunctions";
-import { formatSeasonInput, isValidSeasonName } from "@/app/utils/seasonUtils";
+import { isValidSeasonName } from "@/app/utils/seasonUtils";
 
 interface AddProfileProps {
   setModalFlag: (flag: boolean) => void;
@@ -240,17 +240,6 @@ const AddSession = ({
                                   if (item.inputName === "seasonName") {
                                     handleChange(e);
                                   } else {
-                                    handleChange(e);
-                                  }
-                                }}
-                                onBlur={(
-                                  e: React.FocusEvent<HTMLInputElement>,
-                                ) => {
-                                  if (item.inputName === "seasonName") {
-                                    const formatted = formatSeasonInput(
-                                      e.target.value,
-                                    );
-                                    e.target.value = formatted;
                                     handleChange(e);
                                   }
                                 }}
