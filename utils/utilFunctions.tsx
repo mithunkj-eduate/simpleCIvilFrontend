@@ -32,5 +32,13 @@ export const toStandardDate = (date: string) => {
   return parsedDate.format("DD-MM-YYYY");
 };
 
+export const toStandardDateDisplay = (date: string) => {
+  const parsedDate = dayjs(date);
+
+  if (!parsedDate.isValid()) {
+    return "Invalid Date";
+  }
+  return parsedDate.format("YYYY-MM-DD");
+};
 
 

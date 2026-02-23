@@ -1,4 +1,5 @@
 
+export type Language = "en" | "kn" | "te" | "ta" | "hi";
 
 export enum LicenseTypes {
   NONE = "NONE",

@@ -32,7 +32,7 @@ export default function FarmerDashboard() {
   return (
     <div>
       {/* Welcome */}
-      <div className="bg-green-100 p-4 rounded-2xl shadow">
+      <div className="bg-green-100 p-4 rounded-2xl shadow m-2">
         <h2 className="text-xl font-bold">
           {
             dashboardText.welcome[

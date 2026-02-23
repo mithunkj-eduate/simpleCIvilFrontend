@@ -4,6 +4,7 @@ import React, { useContext } from "react";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
 import { AutoCompleteOption } from "@/utils/commenTypes";
 import { AppContext } from "@/context/context";
+import { Language } from "@/utils/enum.types";
 
 interface Props {
   selectedItem: AutoCompleteOption | null;
@@ -77,7 +78,7 @@ export const CropKannadaMap: Record<CropPlanNameEnum, string> = {
   Mango: "ಮಾವು",
   Pomegranate: "ದಾಳಿಂಬೆ",
 };
-export type Language = "en" | "kn" | "te" | "ta" | "hi";
+
 export const CropLangMap: Record<CropPlanNameEnum, Record<Language, string>> = {
   Rice: { en: "Rice", kn: "ಅಕ್ಕಿ", te: "బియ్యం", ta: "அரிசி", hi: "चावल" },
   Ragi: { en: "Ragi", kn: "ರಾಗಿ", te: "రాగి", ta: "ராகி", hi: "रागी" },
@@ -216,7 +217,9 @@ export default function AutoCropSelect({
     }),
   );
   return (
-    <div style={{ padding: "2px" }} className="max-md:m-2">
+   
+    <div style={{ padding: "2px" }} className="w-full min-w-0" >
+
       <AutocompleteSelect
         label={label}
         options={CropOptions}

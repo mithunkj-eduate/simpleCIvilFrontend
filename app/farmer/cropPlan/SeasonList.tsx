@@ -26,7 +26,7 @@ const lang = state.lang ?? "en"
             Authorization: `Bearer ${TOKEN}`,
             "Content-Type": "application/json",
           },
-        });
+        }); 
         console.log(res.data);
         if (res.data) {
           setFormData(

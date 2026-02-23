@@ -4,6 +4,7 @@ import React, { useContext } from "react";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
 import { AutoCompleteOption } from "@/utils/commenTypes";
 import { AppContext } from "@/context/context";
+import { Language } from "@/utils/enum.types";
 
 interface Props {
   selectedItem: AutoCompleteOption | null;
@@ -53,7 +54,6 @@ export const SoilLangMap: Record<
     hi: "रेतीली मिट्टी",
   },
 };
-export type Language = "en" | "kn" | "te" | "ta" | "hi";
 
 export default function AutoSoilSelect({
   selectedItem,
@@ -71,7 +71,9 @@ export default function AutoSoilSelect({
     }),
   );
   return (
-    <div style={{ padding: "2px" }} className="max-md:m-2">
+    
+    <div style={{ padding: "2px" }} className="w-full min-w-0" >
+
       <AutocompleteSelect
         label={label}
         options={CropOptions}

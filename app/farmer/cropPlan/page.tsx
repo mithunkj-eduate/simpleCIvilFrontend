@@ -70,6 +70,7 @@ const CropPlan = () => {
         <AddCropPlan
           setModalFlag={setModalFlag}
           operations={{ operation, setOperation }}
+          selectedId=""
         />
       </AddModal>
 

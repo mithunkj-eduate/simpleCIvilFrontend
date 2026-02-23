@@ -1,10 +1,14 @@
 "use client";
 
 import { dashboardText } from "@/app/utils/DashbordText";
+import { SafeImage } from "@/app/utils/SafeImage";
+import AddModal from "@/components/helpers/AddModal";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { toStandardDate } from "@/utils/utilFunctions";
 import React, { useContext, useEffect, useState } from "react";
+import { Operation } from "@/utils/enum.types";
+import AddCropPlan from "./AddCropPlan";
 
 interface CropPlanType {
   _id: string;
@@ -18,8 +22,11 @@ interface CropPlanType {
 const CropPlanList = () => {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
-const lang = state.lang ?? "en"
+  const lang = state.lang ?? "en";
   const [plans, setPlans] = useState<CropPlanType[]>([]);
+  const [modalFlag, setModalFlag] = useState(false);
+  const [operation, setOperation] = useState(Operation.NONE);
+  const [selectedId,setSelectedId] = useState("")
 
   useEffect(() => {
     if (!TOKEN || !state.user) return;
@@ -45,8 +52,12 @@ const lang = state.lang ?? "en"
   return (
     <div className="p-4 max-w-xl mx-auto pb-24">
       <h2 className="text-2xl font-bold text-green-700 mb-4">
-        🌱 {dashboardText.myPlans[lang as keyof typeof dashboardText.cropDashboard]}
-
+        🌱{" "}
+        {
+          dashboardText.myPlans[
+            lang as keyof typeof dashboardText.cropDashboard
+          ]
+        }
       </h2>
 
       {plans.length === 0 ? (
@@ -66,6 +77,20 @@ const lang = state.lang ?? "en"
                   {plan.cropName}
                 </h3>
 
+                <span className="text-xs font-semibold px-3 py-1 rounded-full">
+                  <SafeImage
+                    alt="edit"
+                    className=""
+                    height={30}
+                    src="/EditProfile.svg"
+                    width={30}
+                    onClick={() => {
+                      setOperation(Operation.UPDATE);
+                      setModalFlag(true);
+                      setSelectedId(plan._id)
+                    }}
+                  />
+                </span>
                 <span
                   className={`${statusColor(
                     plan.status,
@@ -101,6 +126,15 @@ const lang = state.lang ?? "en"
           ))}
         </div>
       )}
+
+      <AddModal modalFlag={modalFlag} setModalFlag={setModalFlag}>
+        {" "}
+        <AddCropPlan
+          setModalFlag={setModalFlag}
+          operations={{ operation, setOperation }}
+          selectedId={selectedId}
+        />
+      </AddModal>
     </div>
   );
 };
