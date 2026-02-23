@@ -54,7 +54,7 @@ export const initialCropPlanValues = {
 const AddSession = ({ setModalFlag, operations }: AddProfileProps) => {
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
-const lang = state.lang ?? "en"
+  const lang = state.lang ?? "en";
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const [formData, setFormData] = useState(initialCropPlanValues);
 
@@ -91,12 +91,16 @@ const lang = state.lang ?? "en"
       if (!TOKEN || !state.user) return;
       console.log("submited", values);
 
-      if (!values.seasonName || !values.startDate || !values.endDate)
+      if (!values.seasonName || !values.startDate || !values.endDate) {
         setMessage({
           flag: true,
-          message: "Required all field",
+          message: "All fields are required",
           operation: Operation.NONE,
         });
+
+        return;
+      }
+
       const body = {
         seasonName: values.seasonName,
         startDate: values.startDate,
@@ -180,8 +184,11 @@ const lang = state.lang ?? "en"
                     {operations.operation === Operation.UPDATE
                       ? "Update"
                       : "Add"}{" "}
-           {dashboardText.seasons[lang as keyof typeof dashboardText.cropDashboard]}
-                  
+                    {
+                      dashboardText.seasons[
+                        lang as keyof typeof dashboardText.cropDashboard
+                      ]
+                    }
                   </DialogTitle>
 
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols">

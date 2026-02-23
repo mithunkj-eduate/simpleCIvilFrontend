@@ -231,12 +231,20 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
   }, [operations.operation, TOKEN, state.user]);
 
   const submitForm = async (values: typeof initialCropPlanValues) => {
-    if (!selectedSeason)
+    if (
+      !selectedSeason ||
+      !selectedDistrict ||
+      !selectedState ||
+      !selectedCrop
+    ) {
       setMessage({
-        message: "Select Season",
+        message: "All fields are required",
         flag: true,
         operation: Operation.NONE,
       });
+      return;
+    }
+
     try {
       console.log("submited", formData);
       if (!TOKEN || !state.user) return;
@@ -319,10 +327,10 @@ const AddCropPlan = ({ setModalFlag, operations }: AddProfileProps) => {
                     as="h3"
                     className="text-base font-semibold text-gray-900"
                   >
-                  {operations.operation === Operation.UPDATE
-                                        ? getTextLang("update", lang)
-                                        : getTextLang("add", lang)}
-                                       {
+                    {operations.operation === Operation.UPDATE
+                      ? getTextLang("update", lang)
+                      : getTextLang("add", lang)}
+                    {
                       dashboardText.planning[
                         lang as keyof typeof dashboardText.cropDashboard
                       ]

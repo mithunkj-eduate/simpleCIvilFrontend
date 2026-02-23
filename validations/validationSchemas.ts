@@ -56,7 +56,7 @@ export const AddStoreValidation = Yup.object().shape({
 
 //  VALIDATION SCHEMA ADD STORE
 export const AddFarmerProfileValidation = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
+  // name: Yup.string().required("Name is required"),
   landSizeAcres: Yup.string().required("LandSizeAcres is required"),
   latitude: Yup.number()
     .typeError("Latitude must be a number")
@@ -71,7 +71,7 @@ export const AddFarmerProfileValidation = Yup.object().shape({
 
 //  VALIDATION SCHEMA ADD STORE
 export const AddCropPlanValidation = Yup.object().shape({
-  cropName: Yup.string().required("Name is required"),
+  // cropName: Yup.string().required("Name is required"),
   plannedLandAcres: Yup.string().required("PlannedLandAcres is required"),
 });
 
@@ -84,7 +84,7 @@ export const AddFarmSeasonValidation = Yup.object().shape({
 
 //  VALIDATION SCHEMA ADD STORE
 export const AddProductionReportValidation = Yup.object().shape({
-  cropName: Yup.string().required("Name is required"),
+  // cropName: Yup.string().required("Name is required"),
   season: Yup.string().required("season is required"),
   landUsedAcres: Yup.string().required("landUsedAcres is required"),
 });

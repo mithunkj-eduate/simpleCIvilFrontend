@@ -34,9 +34,9 @@ interface AddProfileProps {
   };
 }
 export const farmProfileLabels = {
-  farmerName: {
-    en: "Farmer Name",
-    kn: "ರೈತನ ಹೆಸರು",
+  farmingName: {
+    en: "Farming Name",
+    kn: "ಬೇಸಾಯ ಹೆಸರು",
   },
   landSize: {
     en: "Total Land Size (Acres)",
@@ -82,7 +82,7 @@ export const farmProfileLabels = {
 
 export const StoreFormJson = [
   {
-    labelName: farmProfileLabels.farmerName,
+    labelName: farmProfileLabels.farmingName,
     inputName: "name",
     dataType: "text",
   },
@@ -268,6 +268,22 @@ const AddProfile = ({ setModalFlag, operations }: AddProfileProps) => {
           message: "Invalid Longitude! Must be between -180 and 180",
           operation: Operation.NONE,
         });
+        return;
+      }
+
+      if (
+        !selectedState ||
+        !selectedDistrict ||
+        !selectedIrrigationType ||
+        !selectedSoilType ||
+        !values.name
+      ) {
+        setMessage({
+          flag: true,
+          message: "All fields are required",
+          operation: Operation.NONE,
+        });
+
         return;
       }
 

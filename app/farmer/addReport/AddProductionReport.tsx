@@ -216,11 +216,21 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
       if (!TOKEN || !state.user) return;
       console.log("submited", values);
 
+      if (!selectedState || !selectedDistrict || !selectedCrop) {
+        setMessage({
+          flag: true,
+          message: "All fields are required",
+          operation: Operation.NONE,
+        });
+
+        return;
+      }
+
       const body = {
         ...values,
         state: selectedState?.value,
         district: selectedDistrict?.value,
-        cropName: selectedCrop?.value
+        cropName: selectedCrop?.value,
       };
 
       console.log(body, "body");
@@ -298,10 +308,10 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
                     as="h3"
                     className="text-base font-semibold text-gray-900"
                   >
-                  {operations.operation === Operation.UPDATE
-                                        ? getTextLang("update", lang)
-                                        : getTextLang("add", lang)}
-                                       {
+                    {operations.operation === Operation.UPDATE
+                      ? getTextLang("update", lang)
+                      : getTextLang("add", lang)}
+                    {
                       dashboardText.reports[
                         lang as keyof typeof dashboardText.cropDashboard
                       ]
