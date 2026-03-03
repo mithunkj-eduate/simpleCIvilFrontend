@@ -262,16 +262,29 @@ const AddProduct = ({
 
         if (data.variants && data.variants.length) {
           setVariants(
-            data.variants.map((v) => ({
-              sku: v.sku,
-              price: v.price,
-              stock: v.stock ?? 0, // optional fallback
-              color: v.attributes.color ?? "",
-              size: v.attributes.size ?? "",
-              weight: v.attributes.weight ?? "",
-              material: v.attributes.material ?? "",
-              images: v.images ?? [],
-            })),
+            data.variants.map(
+              (v: {
+                sku: string;
+                price: number;
+                stock: number;
+                attributes: {
+                  color: string;
+                  size: string;
+                  weight: string;
+                  material: string;
+                };
+                images: string[];
+              }) => ({
+                sku: v.sku,
+                price: v.price,
+                stock: v.stock ?? 0, // optional fallback
+                color: v.attributes.color ?? "",
+                size: v.attributes.size ?? "",
+                weight: v.attributes.weight ?? "",
+                material: v.attributes.material ?? "",
+                images: v.images ?? [],
+              }),
+            ),
           );
         }
       }
@@ -400,7 +413,7 @@ const AddProduct = ({
               weight: v.weight ?? "",
               material: v.material ?? "",
             },
-            images:imagePaths && imagePaths.length ? [imagePaths[0]] :  [],
+            images: imagePaths && imagePaths.length ? [imagePaths[0]] : [],
           })),
 
           tags: formData.tags
@@ -490,8 +503,8 @@ const AddProduct = ({
 
         onProductAdded?.();
       }
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Operation failed");
+    } catch (err) {
+      setError("Operation failed");
       console.error(err);
     } finally {
       setLoading(false);
@@ -639,7 +652,7 @@ const AddProduct = ({
                         setFormData({ ...formData, [key]: val });
                       }}
                       required={item.required}
-                      min={item.minNum}
+                      min={1}
                       disabled={operations.operation === Operation.VIEW}
                     />
                   </div>
