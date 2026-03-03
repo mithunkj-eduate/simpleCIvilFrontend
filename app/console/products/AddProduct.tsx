@@ -396,11 +396,7 @@ const AddProduct = ({
               weight: v.weight ?? "",
               material: v.material ?? "",
             },
-            images: v.images
-              ? v.images
-              : imagePaths && imagePaths.length
-                ? [imagePaths[0]]
-                : [],
+            images: v.images ? v.images : [],
           })),
 
           tags: formData.tags

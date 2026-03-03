@@ -18,7 +18,6 @@ import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
 import { useRouter } from "next/navigation";
 
-
 export interface SignupFormValues {
   name: string;
   password: string;
@@ -54,10 +53,11 @@ export const UserTypeData: UserType[] = [
   UserType.SYSTEM_ADMIN,
   UserType.USER,
   UserType.RAIDER,
+  UserType.FARMER,
 ];
 
 const Signup: React.FC = () => {
-  const router = useRouter()
+  const router = useRouter();
   const initialValues: SignupFormValues = {
     name: "",
     password: "",
@@ -81,16 +81,15 @@ const Signup: React.FC = () => {
           headers: { "Content-Type": "application/json" },
         });
 
-        if (res){
+        if (res) {
           setMessage({
             flag: true,
             message: "Signup successful!",
             operation: Operation.CREATE,
           });
-        
+
           router.push("/login?v=2");
         }
-          
       } catch (error) {
         console.error("Signup error:", error);
       }

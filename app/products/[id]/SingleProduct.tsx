@@ -188,7 +188,7 @@ export default function ProductDetails() {
 
   // ADD TO CART
   const addToCart = async () => {
-    if (!TOKEN && !state.user) {
+    if (!TOKEN || !state.user) {
       setMessage({
         flag: true,
         message: "Please login to add items.",

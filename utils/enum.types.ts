@@ -1,3 +1,6 @@
+
+export type Language = "en" | "kn" | "te" | "ta" | "hi";
+
 export enum LicenseTypes {
   NONE = "NONE",
   USER = "USER",
@@ -7,7 +10,8 @@ export enum LicenseTypes {
   PROJECT_MANAGER = "PROJECT_MANAGER",
   SYSTEM_ADMIN = "SYSTEM_ADMIN",
   PICE_WORKER = "PICE_WORKER",
-  RAIDER = "raider"
+  RAIDER = "raider",
+  FARMER = "farmer",
 }
 
 export enum AuthMethod {
@@ -25,7 +29,8 @@ export enum UserType {
   PROJECT_MANAGER = "project_manager",
   SYSTEM_ADMIN = "system_admin",
   PICE_WORKER = "pice_worker",
-  RAIDER = "raider"
+  RAIDER = "raider",
+  FARMER = "farmer",
 }
 
 export enum CategoryLevelType {
@@ -58,6 +63,22 @@ export enum Operation {
   CLOSE = "CLOSE",
 }
 
-export enum PageForNav{
-  aboutus= "aboutus"
+export enum PageForNav {
+  aboutus = "aboutus",
 }
+
+export enum FarmingTypeEnum {
+  ORGANIC = "ORGANIC",
+  CONVENTIONAL = "CONVENTIONAL",
+  MIXED = "MIXED",
+}
+
+export enum CropPlanStatusEnum {
+  PLANNED = "PLANNED",
+  PLANTED = "PLANTED",
+  HARVESTED = "HARVESTED",
+}
+
+
+
+

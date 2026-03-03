@@ -5,6 +5,14 @@ export interface AutoCompleteOption {
   value: string;
 }
 
+export interface AutoCompleteOptionLang {
+  label: {
+    en: string;
+    kn: string;
+  };
+  value: string;
+}
+
 export interface CategoryTypes {
   _id?: string;
   name: string;
