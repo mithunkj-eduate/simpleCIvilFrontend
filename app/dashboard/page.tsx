@@ -1,7 +1,5 @@
 "use client";
-import Navbar from "@/components/commen/Navbar";
 import { AppContext } from "@/context/context";
-import { LicenseTypes } from "@/utils/enum.types";
 import React, { useContext } from "react";
 import GetOrderPage from "./getOrders";
 
@@ -17,7 +15,6 @@ const DashBord = () => {
   }
   return (
     <>
-      <Navbar NavType={LicenseTypes.RAIDER} />
       <GetOrderPage />
     </>
   );

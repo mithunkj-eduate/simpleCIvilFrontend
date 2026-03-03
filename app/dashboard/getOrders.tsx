@@ -9,6 +9,7 @@ import { OrderAcceptStatus } from "@/types/order";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import { LicenseTypes, Operation } from "@/utils/enum.types";
+import { getDistance } from "@/utils/utilFunctions";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -23,8 +24,9 @@ interface Orders {
   storeName: string;
   storeAddress: string;
   createdAt: string;
-  location: number[];
+  storeLocation: number[];
   deliveryLocation: number[];
+  items: { productName: string; quantity: number }[];
 }
 
 const GetOrderPage = () => {
@@ -34,43 +36,83 @@ const GetOrderPage = () => {
   const { state } = useContext(AppContext);
   const router = useRouter();
   const [message, setMessage] = useState<msgType>(emptyMessage);
-
+  const [currentLocation, setCurrentLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const location = {
     lat: 13.028473178767564,
     lng: 77.63284503525036,
   };
 
+  // GET USER'S CURRENT LOCATION
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setCurrentLocation({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          });
+        },
+        (err) => {
+          console.error("Error getting location:", err);
+          alert("Unable to get your location");
+        }
+      );
+    }
+  }, []);
+  console.log(currentLocation, "currentLocation");
   const GetUsers = async () => {
     setLoading(true);
     try {
       if (state.user && state.user.id) {
-        const res = await api.get(
-          `/raider/orders?lat=${location.lat}&&lng=${location.lng}`,
-          {
-            headers: {
-              Authorization: `Bearer ${TOKEN}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const path: string = currentLocation
+          ? `/raider/orders?lat=${currentLocation.lat}&&lng=${currentLocation.lng}`
+          : `/raider/orders?lat=${location.lat}&&lng=${location.lng}`;
+
+        const res = await api.get(path, {
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        });
         if (res) {
           setOrders(
-            res.data.data.map((product: any) => ({
-              id: product._id,
-              productName: product?.productId.name || "N/A",
-              quantity: product.quantity || "N/A",
-              totalPrice: product.totalPrice || "N/A",
-              orderStatus: product.orderStatus || "N/A",
-              paymentMethod: product.paymentMethod || "N/A",
-              deliveryAddress: product.deliveryAddress || "N/A",
-              storeName: product?.storeId?.name || "N/A",
-              storeAddress: product?.storeId?.address || "N/A",
-              createdAt: product.createdAt
-                ? new Date(product.createdAt).toLocaleDateString()
-                : "N/A",
-              location: product?.storeId?.location?.coordinates || [],
-              deliveryLocation: product?.location?.coordinates || [],
-            }))
+            res.data.data.map((order: any) => {
+              const firstItem = order.items?.[0]; // first product in the order
+
+              return {
+                id: order._id,
+                productName: firstItem?.productId?.name || "N/A",
+                items: order.items.map((it: any) => ({
+                  productName: it.productId?.name,
+                  quantity: it.quantity,
+                  priceSnapshot: it.priceSnapshot,
+                })),
+
+                quantity: firstItem?.quantity || "N/A",
+                totalPrice: order.receipt?.total || "N/A",
+                orderStatus: order.orderStatus || "N/A",
+                paymentMethod: order.paymentMethod || "N/A",
+                deliveryAddress: order.deliveryAddress || "N/A",
+
+                storeName: order.storeId?.name || "N/A",
+                storeAddress: order.storeId?.address || "N/A",
+
+                createdAt: order.createdAt
+                  ? new Date(order.createdAt).toLocaleDateString()
+                  : "N/A",
+
+                storeLocation: order.storeId?.location?.coordinates || [],
+                deliveryLocation: order.location?.coordinates || [],
+
+                // extra item details (optional)
+                variant: firstItem?.variantId || null,
+                attributes: firstItem?.attributesSnapshot || {},
+                priceSnapshot: firstItem?.priceSnapshot || 0,
+              };
+            })
           );
         } else {
           console.error("Failed to fetch users:", res);
@@ -129,6 +171,11 @@ const GetOrderPage = () => {
     }
   };
   console.log(Orders);
+
+  const handleClose = () => {
+    if (message.operation === Operation.CREATE) router.push("/dashboard/orders?v=2");
+    setMessage(emptyMessage);
+  };
   return (
     <div className="bg-white ">
       <Navbar NavType={LicenseTypes.RAIDER} />
@@ -146,9 +193,14 @@ const GetOrderPage = () => {
                   <li key={index} className="flex justify-between gap-x-6 py-5">
                     <div className="flex min-w-0 gap-x-4">
                       <div className="min-w-0 flex-auto">
-                        <p className="text-sm/6 font-semibold text-gray-900">
-                          {person.productName}
-                        </p>
+                        <div>
+                          {person.items.map((item, i) => (
+                            <p key={i} className="text-xs text-gray-700">
+                              {item.productName} (x{item.quantity})
+                            </p>
+                          ))}
+                        </div>
+
                         <p className="mt-1 truncate text-xs/5 text-gray-500">
                           Qty: {person.quantity} Price: {person.totalPrice}
                         </p>
@@ -161,6 +213,37 @@ const GetOrderPage = () => {
                         <p className="mt-1 truncate text-xs/5 text-gray-500">
                           Delivery Address: {person.deliveryAddress}
                         </p>
+                        <div className="mt-1 truncate text-xs/5 text-gray-900">
+                          Pickup{" "}
+                          <span className="text-md text-gray-900">
+                            {(currentLocation || location) &&
+                            person.deliveryLocation
+                              ? getDistance(
+                                  currentLocation
+                                    ? currentLocation.lat
+                                    : location.lat,
+                                  currentLocation
+                                    ? currentLocation.lng
+                                    : location.lng,
+                                  person.deliveryLocation[0],
+                                  person.deliveryLocation[1]
+                                )?.toFixed(2)
+                              : null}{" "}
+                            km
+                          </span>{" "}
+                          Drop{" "}
+                          <span className="text-md text-gray-900">
+                            {person.storeLocation && person.deliveryLocation
+                              ? getDistance(
+                                  person.storeLocation[0],
+                                  person.storeLocation[1],
+                                  person.deliveryLocation[0],
+                                  person.deliveryLocation[1]
+                                )?.toFixed(2)
+                              : null}{" "}
+                            km
+                          </span>
+                        </div>
                         <div>
                           <Button
                             mode="accept"
@@ -200,18 +283,18 @@ const GetOrderPage = () => {
                           {person.createdAt}
                         </time>
                       </p>
-                      <Button
+                      {/* <Button
                         className=""
                         onClick={() => {
-                          console.log(person.location, "location");
-                          if (person.location.length)
+                          console.log(person.storeLocation, "location");
+                          if (person.storeLocation.length)
                             router.push(
-                              `/dashboard/orders/map?lat=${person.location[0]}&lng=${person.location[1]}`
+                              `/dashboard/orders/map?lat=${person.storeLocation[0]}&lng=${person.storeLocation[1]}`
                             );
                         }}
                       >
                         Map
-                      </Button>
+                      </Button> */}
                     </div>
                   </li>
                 ))}
@@ -230,9 +313,7 @@ const GetOrderPage = () => {
         </>
       )}
       <MessageModal
-        handleClose={() => {
-          setMessage(emptyMessage);
-        }}
+        handleClose={handleClose}
         modalFlag={message.flag}
         operation={message.operation}
         value={message.message}

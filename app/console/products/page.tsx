@@ -10,7 +10,7 @@ import { LicenseTypes, Operation } from "@/utils/enum.types";
 import React, { useContext, useEffect, useState } from "react";
 import AddProduct from "./AddProduct";
 import { AppContext } from "@/context/context";
-import Image from "next/image";
+import { SafeImage } from "@/app/utils/SafeImage";
 
 const ProductsPage = () => {
   const { TOKEN } = Api();
@@ -27,60 +27,61 @@ const ProductsPage = () => {
       className: "md:px-6 pl-4 py-3 flex items-center space-x-3 truncate",
     },
     { name: "Description", className: "hidden sm:table-cell" },
-    { name: "Mrp Price", className: "hidden sm:table-cell" },
-    { name: "Sale Price", className: "hidden sm:table-cell" },
+    // { name: "Mrp Price", className: "hidden sm:table-cell" },
+    // { name: "Sale Price", className: "hidden sm:table-cell" },
     { name: "Group", className: "px-6 py-3" },
-    { name: "Category", className: "px-6 py-3" },
-    { name: "Subcategory", className: "px-6 py-3" },
-    { name: "Stock", className: "hidden sm:table-cell" },
+    { name: "Category", className: "px-6 py-3 hidden sm:table-cell" },
+    { name: "Subcategory", className: "px-6 py-3 hidden sm:table-cell" },
+    // { name: "Stock", className: "hidden sm:table-cell" },
     { name: "Created At", className: "hidden sm:table-cell" },
     { name: "Action", className: "px-6 py-3" },
   ];
 
-  const GetUsers = async () => {
-    setLoading(true);
-    try {
-      if (state.user && state.user.id) {
-        const res = await api.get(`/products?ownerId=${state.user.id}`, {
-          headers: {
-            Authorization: `Bearer ${TOKEN}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (res) {
-          setProducts(
-            res.data.data.map((product: GetProductData) => ({
-              id: product._id,
-              name: product.name || "N/A",
-              description: product.description || "N/A",
-              mrpPrice: product.saleTerms?.mrpPrice || 0,
-              salePrice: product.saleTerms?.salePrice || 0,
-              group: product.groupId?.name || "N/A",
-              category: product.categoryId?.name || "N/A",
-              subsidiary: product.subsidiaryId?.name || "N/A",
-              stock: product.saleTerms?.stock || 0,
-              createdAt: product.createdAt
-                ? new Date(product.createdAt).toLocaleDateString()
-                : "N/A",
-            }))
-          );
-        } else {
-          console.error("Failed to fetch users:", res);
-        }
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     if (TOKEN) {
+      const GetUsers = async () => {
+        setLoading(true);
+        try {
+          if (state.user && state.user.id) {
+            const res = await api.get(`/products?ownerId=${state.user.id}`, {
+              headers: {
+                Authorization: `Bearer ${TOKEN}`,
+                "Content-Type": "application/json",
+              },
+            });
+    
+            if (res) {
+              setProducts(
+                res.data.data.map((product: GetProductData) => ({
+                  id: product._id,
+                  name: product.name || "N/A",
+                  description: product.description || "N/A",
+                  mrpPrice: product.saleTerms?.mrpPrice || 0,
+                  salePrice: product.saleTerms?.salePrice || 0,
+                  group: product.groupId?.name || "N/A",
+                  category: product.categoryId?.name || "N/A",
+                  subsidiary: product.subsidiaryId?.name || "N/A",
+                  stock: product.saleTerms?.stock || 0,
+                  createdAt: product.createdAt
+                    ? new Date(product.createdAt).toLocaleDateString()
+                    : "N/A",
+                }))
+              );
+            } else {
+              console.error("Failed to fetch users:", res);
+            }
+          }
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+          setLoading(false);
+        }
+      };
+    
       GetUsers();
     }
-  }, [TOKEN, state.user?.id]);
+  }, [TOKEN, state.user]);
 
   return (
     <>
@@ -138,29 +139,41 @@ const ProductsPage = () => {
                         <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {product.description}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
+                        {/* <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           ₹{product.mrpPrice.toFixed(2)}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           ₹{product.salePrice.toFixed(2)}
-                        </td>
+                        </td> */}
                         <td className="px-6 py-4 text-sm text-gray-500">
                           {product.group}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
+                        <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {product.category}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
+                        <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {product.subsidiary}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
+                        {/* <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {product.stock}
-                        </td>
+                        </td> */}
                         <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {product.createdAt}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
-                          <Image
+                        <td className="px-6 py-4 text-sm text-gray-500 flex">
+                          <SafeImage
+                            width={50}
+                            height={50}
+                            src={"/EyeIcon.svg"}
+                            alt="productEdit"
+                            className="size-5"
+                            onClick={() => {
+                              setSelectedId(product.id);
+                              setOperation(Operation.VIEW);
+                              setModalFlag(true);
+                            }}
+                          />
+                          <SafeImage
                             width={50}
                             height={50}
                             src={"/Edit.svg"}

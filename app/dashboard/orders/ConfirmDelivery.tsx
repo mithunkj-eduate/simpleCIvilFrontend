@@ -1,24 +1,17 @@
 "use client";
 
-import {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { Button } from "@/stories/Button/Button";
 import { Input } from "@/stories/Input/Input";
-import { DeliveryStatus } from "@/types/order";
+import { DeliveryStatus, OrderAcceptStatus } from "@/types/order";
 import MessageModal from "@/customComponents/MessageModal";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
@@ -30,6 +23,11 @@ interface Props {
   orderId: string;
   buyerId: string;
   deliveryStatus: DeliveryStatus;
+  refetchQuery: () => void;
+  UpdateRaiderStatus: (
+    orderId: string,
+    acceptStatus: OrderAcceptStatus
+  ) => void;
 }
 
 export default function ConfirmDelivery({
@@ -38,6 +36,8 @@ export default function ConfirmDelivery({
   orderId,
   buyerId,
   deliveryStatus,
+  refetchQuery,
+  UpdateRaiderStatus,
 }: Props) {
   const { state } = useContext(AppContext);
   const { TOKEN } = Api();
@@ -86,32 +86,36 @@ export default function ConfirmDelivery({
     }
   };
 
-  const handleUpdateStatus = async () => {
-    try {
-      if (!TOKEN || !state.user?.id || !orderId) return;
+  // const handleUpdateStatus = async () => {
+  //   try {
+  //     if (!TOKEN || !state.user?.id || !orderId) return;
 
-      const endpoint = `/orders/${orderId}/deliveryStatus`;
-      const response = await api.put(
-        endpoint,
-        { deliveryStatus: DeliveryStatus.SHIPPED },
-        {
-          headers: { Authorization: `Bearer ${TOKEN}` },
-        }
-      );
-      if (response.data.data) {
-        setMessage({
-          flag: true,
-          message: "Order Picked Successfully",
-          operation: Operation.CREATE,
-        });
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  //     const endpoint = `/orders/${orderId}/deliveryStatus`;
+  //     const response = await api.put(
+  //       endpoint,
+  //       { deliveryStatus: DeliveryStatus.SHIPPED },
+  //       {
+  //         headers: { Authorization: `Bearer ${TOKEN}` },
+  //       }
+  //     );
+  //     if (response.data.data) {
+  //       refetchQuery();
+  //       setMessage({
+  //         flag: true,
+  //         message: "Order Picked Successfully",
+  //         operation: Operation.CREATE,
+  //       });
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   const handleClose = () => {
-    setOpen(false);
+    if (message.operation === Operation.CREATE) {
+      setOpen(false);
+      refetchQuery();
+    }
     setMessage(emptyMessage);
   };
 
@@ -135,7 +139,8 @@ export default function ConfirmDelivery({
               transition
               className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95"
             >
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+
                 <div className="sm:flex sm:items-start">
                   {/* <div className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
                     <ExclamationTriangleIcon
@@ -143,7 +148,7 @@ export default function ConfirmDelivery({
                       className="size-6 text-red-600"
                     />
                   </div> */}
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+  <div className="mt-3 w-full max-w-xl mx-auto text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <DialogTitle
                       as="h3"
                       className="text-base font-semibold text-gray-900"
@@ -168,12 +173,14 @@ export default function ConfirmDelivery({
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <div className="bg-gray-50 px-4 py-3 flex flex-col gap-2 sm:flex-row sm:justify-end sm:px-6">
                 {deliveryStatus === DeliveryStatus.PENDING ? (
                   <Button
                     type="button"
                     data-autofocus
-                    onClick={() => handleUpdateStatus()}
+                    onClick={() =>
+                      UpdateRaiderStatus(orderId, OrderAcceptStatus.PICKED)
+                    }
                     mode="dark"
                   >
                     OK

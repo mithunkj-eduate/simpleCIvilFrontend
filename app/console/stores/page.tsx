@@ -17,41 +17,40 @@ const StorePage = () => {
   const [stores, setStores] = React.useState<Stores[]>([]);
   const [operation, setOperation] = useState(Operation.NONE);
 
-  const GetStores = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get(`/stores`, {
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (res.status === 200) {
-        setStores(
-          res.data.data.map((store: GetStores) => ({
-            id: store._id,
-            name: store.name || "N/A",
-            ownerId: store.ownerId || "N/A",
-            address: store.address || "N/A",
-            location: store.location || "N/A",
-            pincode: store.pincode || "N/A",
-            createdAt: store.createdAt || "N/A",
-            updatedAt: store.updatedAt || "N/A",
-          }))
-        );
-      } else {
-        console.error("Failed to fetch users:", res.data);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (TOKEN) {
+      const GetStores = async () => {
+        setLoading(true);
+        try {
+          const res = await api.get(`/stores`, {
+            headers: {
+              Authorization: `Bearer ${TOKEN}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (res.status === 200) {
+            setStores(
+              res.data.data.map((store: GetStores) => ({
+                id: store._id,
+                name: store.name || "N/A",
+                ownerId: store.ownerId || "N/A",
+                address: store.address || "N/A",
+                location: store.location || "N/A",
+                pincode: store.pincode || "N/A",
+                createdAt: store.createdAt || "N/A",
+                updatedAt: store.updatedAt || "N/A",
+              }))
+            );
+          } else {
+            console.error("Failed to fetch users:", res.data);
+          }
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+          setLoading(false);
+        }
+      };
       GetStores();
     }
   }, [TOKEN]);

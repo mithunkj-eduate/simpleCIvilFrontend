@@ -10,6 +10,10 @@ import icon from "@/assets/icon.png";
 import { LicenseTypes, PageForNav, UserType } from "@/utils/enum.types";
 import { AppContext } from "@/context/context";
 import Link from "next/link";
+import { payloadTypes } from "@/context/reducer";
+import Cookies from "js-cookie";
+import { usePathname, useRouter } from "next/navigation";
+
 
 interface NavProps {
   NavType: LicenseTypes;
@@ -23,12 +27,14 @@ function classNames(...classes: string[]) {
 }
 
 export default function Navbar({ NavType, className, pageForNav }: NavProps) {
+  const pathname = usePathname();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [items, setItems] = useState<
     { name: string; href: string; current: boolean }[]
   >([]);
 
-  const { state } = useContext(AppContext);
+  const { state, dispatch } = useContext(AppContext);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -45,70 +51,111 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const Navigation = useMemo(
-    () => [
-      { name: "Home", href: "/", current: true },
-      { name: "Product", href: "/products", current: false },
+  const LogoutFun = () => {
+    localStorage.setItem("token", "");
+    Cookies.remove("token");
+    dispatch({
+      type: payloadTypes.SET_USER,
+      payload: { user: null },
+    });
+  };
+
+  // remove ?v=2 before compare
+  const isActive = (href: string) => {
+    const cleanHref = href.split("?")[0];
+    return pathname === cleanHref;
+  };
+
+  const Navigation = useMemo(() => {
+    const items = [
+      { name: "Home", href: "/?v=2", current: true },
+      { name: "Product", href: "/products?v=2", current: false },
       // { name: "Contact", href: "/contactus", current: false },
       // { name: "Marketplace", href: "#", current: false },
-      { name: "Company", href: "/aboutus", current: false },
-      { name: "Blog", href: "/blog", current: false },
+      { name: "Company", href: "/aboutus?v=2", current: false },
+      { name: "Blog", href: "/blog?v=2", current: false },
+    ];
 
-      state.user && state.user.id
-        ? { name: "Orders", href: "/orders", current: false }
-        : { name: "", href: "", current: false },
+    if (state.user?.id) {
+      items.push({ name: "Orders", href: "/orders?v=2", current: false });
+    }
+
+    if (
       state.user &&
-      (state.user.role === UserType.ADMIN ||
-        state.user.role === UserType.PICE_WORKER ||
-        state.user.role === UserType.PROJECT_MANAGER ||
-        state.user.role === UserType.RESELLER ||
-        state.user.role === UserType.SELLER ||
-        state.user.role === UserType.SYSTEM_ADMIN)
-        ? { name: "Console", href: "/console", current: false }
-        : state.user && state.user.role === UserType.RAIDER
-        ? { name: "Console", href: "/dashboard", current: false }
-        : { name: "", href: "", current: false },
-    ],
-    [state.user]
-  );
+      state.user.role &&
+      [
+        UserType.ADMIN,
+        UserType.PICE_WORKER,
+        UserType.PROJECT_MANAGER,
+        UserType.RESELLER,
+        UserType.SELLER,
+        UserType.SYSTEM_ADMIN,
+        UserType.FARMER,
+      ].includes(state.user.role as UserType)
+    ) {
+      items.push({ name: "Console", href: "/console?v=2", current: false });
+    }
 
-  const ConsoleNavigation = useMemo(
-    () => [
-      { name: "Dashboard", href: "/console", current: true },
-      { name: "Stores", href: "/console/stores", current: false },
+    if (state.user && state.user?.role === UserType.RAIDER) {
+      items.push({ name: "Console", href: "/dashboard?v=2", current: false });
+    }
+
+    if (
+      state.user &&
+      state.user.role &&
+      [UserType.ADMIN, UserType.SYSTEM_ADMIN, UserType.FARMER].includes(
+        state.user.role as UserType,
+      )
+    ) {
+      items.push({
+        name: "Farmer",
+        href: "/farmer/dashboard?v=2",
+        current: false,
+      });
+    }
+
+    return items;
+  }, [state.user]);
+
+  const ConsoleNavigation = useMemo(() => {
+    const items = [
+      { name: "Dashboard", href: "/console?v=2", current: true },
+      { name: "Stores", href: "/console/stores?v=2", current: false },
       // { name: "Categories", href: "/console/categories", current: false },
 
-      { name: "Products", href: "/console/products", current: false },
-      { name: "Orders", href: "/console/orders", current: false },
-      { name: "Payments", href: "/console/payments", current: false },
-      state.user &&
-      state.user.id &&
-      (state.user.role === UserType.ADMIN ||
-        state.user.role === UserType.SYSTEM_ADMIN)
-        ? { name: "Users", href: "/console/users", current: false }
-        : { name: "", href: "", current: false },
+      { name: "Products", href: "/console/products?v=2", current: false },
+      { name: "Orders", href: "/console/orders?v=2", current: false },
+      { name: "Payments", href: "/console/payments?v=2", current: false },
+    ];
 
+    if (
       state.user &&
-      state.user.id &&
-      (state.user.role === UserType.ADMIN ||
-        state.user.role === UserType.SYSTEM_ADMIN)
-        ? {
-            name: "Categories",
-            href: "/console/categories",
-            current: false,
-          }
-        : { name: "", href: "", current: false },
-    ],
-    []
-  );
+      state.user.role &&
+      [UserType.ADMIN, UserType.SYSTEM_ADMIN].includes(
+        state.user.role as UserType,
+      )
+    ) {
+      items.push(
+        { name: "Users", href: "/console/users?v=2", current: false },
+
+        {
+          name: "Categories",
+          href: "/console/categories?v=2",
+          current: false,
+        },
+      );
+    }
+
+    return items;
+  }, [state.user]);
 
   const ConsoleDelveryBoyNavigation = useMemo(
     () => [
-      { name: "Dashboard", href: "/dashboard", current: true },
-      { name: "Orders", href: "/dashboard/orders", current: false },
-      { name: "Map", href: "/dashboard/routemap", current: false },
+      { name: "Dashboard", href: "/dashboard?v=2", current: true },
+      { name: "Orders", href: "/dashboard/orders?v=2", current: false },
+      // { name: "Map", href: "/dashboard/routemap", current: false },
     ],
-    []
+    [],
   );
 
   useEffect(() => {
@@ -121,7 +168,13 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     } else if (NavType === LicenseTypes.NONE) {
       setItems([]);
     }
-  }, [NavType, Navigation, ConsoleNavigation]);
+  }, [
+    NavType,
+    Navigation,
+    ConsoleNavigation,
+    state.user,
+    ConsoleDelveryBoyNavigation,
+  ]);
 
   return (
     <header
@@ -139,14 +192,14 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         className="flex items-center justify-between p-6 lg:px-8"
       >
         <div className="flex lg:flex-1">
-          <a href="/" className="-m-1.5 p-1.5">
+          <a href="/?v=2" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <Image
               alt=""
               src={icon ? icon : ""} // Adjust the path to your logo
               className="h-8 w-auto"
-              width={32} // Adjust width as needed
-              height={32} // Adjust height as needed
+              width={200} // Adjust width as needed
+              height={200} // Adjust height as needed
             />
           </a>
         </div>
@@ -168,7 +221,10 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               // className={`text-sm/6 font-semibold text-gray-900 text-white`}
               className={classNames(
                 className ? className : "",
-                `text-sm/6 font-semibold text-gray-900`
+                `text-sm/6 font-semibold text-gray-900`,
+                isActive(item.href)
+                  ? "text-gray-600 border-b-2 border-gray-600"
+                  : "text-gray-900 hover:text-gray-600",
               )}
               // className={classNames(
               //   item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white',
@@ -183,10 +239,10 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           {state.user && state.user.id ? (
             <Link
-              href="/cart"
+              href="/cart?v=2"
               className={classNames(
                 className ? className : "",
-                "text-sm/6 font-semibold text-gray-900 me-2"
+                "text-sm/6 font-semibold text-gray-900 me-2",
               )}
             >
               <svg
@@ -206,15 +262,28 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
             </Link>
           ) : null}
 
-          <a
-            href="/login"
-            className={classNames(
-              className ? className : "",
-              "text-sm/6 font-semibold text-gray-900"
-            )}
-          >
-            Log in <span aria-hidden="true">&rarr;</span>
-          </a>
+          {state.user ? (
+            <a
+              href="/?v=2"
+              className={classNames(
+                className ? className : "",
+                "text-sm/6 font-semibold text-gray-900",
+              )}
+              onClick={LogoutFun}
+            >
+              Log out <span aria-hidden="true">&rarr;</span>
+            </a>
+          ) : (
+            <a
+              href="/login?v=2"
+              className={classNames(
+                className ? className : "",
+                "text-sm/6 font-semibold text-gray-900",
+              )}
+            >
+              Log in <span aria-hidden="true">&rarr;</span>
+            </a>
+          )}
         </div>
         {/* <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <a href="/signup" className="text-sm/6 font-semibold text-gray-900">
@@ -243,8 +312,9 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                 alt=""
                 src={icon ? icon : ""} // Adjust the path to your logo
                 className="h-8 w-auto"
-                width={32} // Adjust width as needed
-                height={32} // Adjust height as needed
+                width={200} // Adjust width as needed
+                height={200} // Adjust height as needed
+                onClick={() => router.push("/?v=2")}
               />
             </a>
             <button
@@ -263,7 +333,14 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                   <a
                     key={index}
                     href={item.href}
-                    className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                    // className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                    className={classNames(
+                      className ? className : "",
+                      "block rounded-lg px-3 py-2 font-semibold",
+                      isActive(item.href)
+                        ? "bg-gray-100 text-gray-700"
+                        : "hover:bg-gray-50",
+                    )}
                   >
                     {item.name}
                   </a>
@@ -271,7 +348,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               </div>
               <div className="py-6">
                 <a
-                  href="/cart"
+                  href="/cart?v=2"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                 >
                   <svg
@@ -291,16 +368,26 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                 </a>
               </div>
               <div className="py-6">
-                <a
-                  href="/login"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Log in
-                </a>
+                {state.user ? (
+                  <a
+                    href="/?v=2"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                    onClick={LogoutFun}
+                  >
+                    Log out
+                  </a>
+                ) : (
+                  <a
+                    href="/login?v=2"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                  >
+                    Log in
+                  </a>
+                )}
               </div>
               <div className="py-6">
                 <a
-                  href="/signup"
+                  href="/signup?v=2"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                 >
                   SignUp

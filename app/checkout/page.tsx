@@ -4,46 +4,46 @@ import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
-import { PaymentMethod } from "@/types/order";
+import {
+  DeliveryStatus,
+  IOrder,
+  IOrderItem,
+  OrderStatus,
+  PaymentMethod,
+} from "@/types/order";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
 import { Button } from "@/stories/Button/Button";
-
 import { msgType } from "@/utils/commenTypes";
-import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
-import { CartItem } from "@/types/cart";
 import { Operation } from "@/utils/enum.types";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
 
 import { Formik, Form, ErrorMessage } from "formik";
 import { checkoutValidation } from "@/validations/validationSchemas";
+import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
+import { ICartItem } from "@/types/cart";
 
-const paymentMethodOptions = Object.values(PaymentMethod).map((method) => ({
-  value: method,
-  label: method.charAt(0).toUpperCase() + method.slice(1),
-}));
+// const calculateSubtotal = (cart: any) =>
+//   cart.reduce((sum, item) => {
+//     const price = item.isRental ? item.rentalPricePerUnit : item.salePrice;
+
+//     return sum + price * item.quantity;
+//   }, 0);
 
 export default function CheckoutPage() {
   const { state } = useContext(AppContext);
   const router = useRouter();
   const { TOKEN } = Api();
 
-  const cartItems: CartItem[] = state.cart || [];
+  const cartItems = state.cart || [];
   const [message, setMessage] = useState<msgType>(emptyMessage);
-
-  const totalPrice = cartItems.reduce((sum, item) => {
-    const price = item.saleTerms
-      ? item.saleTerms.salePrice * item.quantity
-      : item.rentalTerms?.[0]?.pricePerUnit || 0;
-    return sum + price;
-  }, 0);
 
   const [source, setSource] = useState<{ lat: number; lng: number } | null>(
     null
   );
 
-  // GET USER'S CURRENT LOCATION
+  // GET USER LOCATION
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((pos) => {
@@ -55,52 +55,77 @@ export default function CheckoutPage() {
     }
   }, []);
 
-  const initialValues = {
+  // CALCULATE TOTALS
+  const subtotal = cartItems.reduce((sum, item) => {
+    const price = item.salePrice ? item.salePrice * item.quantity : 0;
+    return sum + price;
+  }, 0);
+  console.log(cartItems, "cartItems");
+  interface initialValuesTypes {
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    deliveryAddress: string;
+    paymentMethod: string;
+  }
+
+  const initialValues: initialValuesTypes = {
     fullName: "",
     email: "",
     phoneNumber: "",
     deliveryAddress: "",
     paymentMethod: "",
   };
-
-  const handleSubmit = async (values: any) => {
+  console.log(state.cart, "cart");
+  /**
+   * ---------------------------------------------------------
+   * HANDLE ORDER CREATE - FOR NEW SCHEMA
+   * ---------------------------------------------------------
+   */
+  const handleSubmit = async (values: initialValuesTypes) => {
     try {
       if (!TOKEN) throw new Error("Authentication token missing");
+      if (state.cart) {
+        const body = createOrdersFromCart(
+          state.cart, // Using 'any' for the provided JSON structure
+          state.user ? state.user.id : "",
+          values.deliveryAddress,
+          source ? [source.lat, source.lng] : [0, 0]
+        );
+        console.log(body, "body1");
 
-      for (const item of cartItems) {
-        const body = {
-          venderId: item.ownerId._id,
-          productId: item._id,
-          storeId: item.storeId._id,
-          quantity: item.quantity,
-          totalPrice: item.saleTerms
-            ? item.saleTerms.salePrice * item.quantity
-            : item.rentalTerms?.[0].pricePerUnit || 0,
-          paymentMethod: values.paymentMethod,
-          deliveryAddress: values.deliveryAddress,
-          location: source ? [source.lat, source.lng] : [],
-        };
+        for (let i = 0; i < body.length; i++) {
+          await api.post("/orders", body[i], {
+            headers: { Authorization: `Bearer ${TOKEN}` },
+          });
+        }
 
-        await api.post("/orders", body, {
-          headers: { Authorization: `Bearer ${TOKEN}` },
+        setMessage({
+          flag: true,
+          message: "Order placed successfully",
+          operation: Operation.CREATE,
         });
       }
-
+    } catch (err) {
       setMessage({
         flag: true,
-        message: "Order placed successfully",
-        operation: Operation.CREATE,
+        message: "error",
+        operation: Operation.NONE,
       });
-    } catch (err: any) {
-      alert(err.message);
+      console.error(err);
     }
   };
 
   const handleClose = () => {
     setMessage(emptyMessage);
     state.cart = [];
-    router.push("/orders");
+    router.push("/orders?v=2");
   };
+
+  const paymentMethodOptions = Object.values(PaymentMethod).map((method) => ({
+    value: method,
+    label: method.charAt(0).toUpperCase() + method.slice(1),
+  }));
 
   return (
     <div className="bg-white">
@@ -111,6 +136,9 @@ export default function CheckoutPage() {
           <p className="text-center text-gray-500 py-10">Your cart is empty.</p>
         ) : (
           <div className="mt-8 grid lg:grid-cols-12 gap-x-12">
+            {/* ---------------------------------------------
+             SHIPPING FORM
+            ---------------------------------------------- */}
             <div className="lg:col-span-8">
               <Formik
                 initialValues={initialValues}
@@ -235,6 +263,9 @@ export default function CheckoutPage() {
               </Formik>
             </div>
 
+            {/* ---------------------------------------------
+             SUMMARY
+            ---------------------------------------------- */}
             <div className="lg:col-span-4">
               <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
                 <h2 className="text-lg font-medium text-gray-900">
@@ -245,7 +276,7 @@ export default function CheckoutPage() {
                   <div className="flex justify-between">
                     <p className="text-sm text-gray-600">Subtotal</p>
                     <p className="text-sm font-medium text-gray-900">
-                      ₹{totalPrice.toFixed(2)}
+                      ₹{subtotal.toFixed(2)}
                     </p>
                   </div>
 
@@ -257,7 +288,7 @@ export default function CheckoutPage() {
                   <div className="flex justify-between border-t pt-4">
                     <p className="text-base font-medium text-gray-900">Total</p>
                     <p className="text-base font-medium text-gray-900">
-                      ₹{totalPrice.toFixed(2)}
+                      ₹{subtotal.toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -275,4 +306,104 @@ export default function CheckoutPage() {
       />
     </div>
   );
+}
+
+function createOrdersFromCart(
+  cartItems: ICartItem[], // Using 'any' for the provided JSON structure
+  buyerId: string,
+  deliveryAddress: string,
+  coordinates: [number, number]
+): IOrder[] {
+  // Use a Map to group items by storeId
+  const ordersByStore = new Map<
+    string,
+    { items: IOrderItem[]; vendorId: string; storeDetails:  unknown }
+  >();
+
+  // let tempSubtotal = 0; // Temp variable to calculate subtotal during grouping
+
+  // 1. Group items by store and calculate subtotals
+  for (const item of cartItems) {
+    const storeId = item.storeId._id;
+    const vendorId = item.vendorId._id;
+    const storeDetails = item.storeId;
+
+    // Calculate the total price for this item
+    // const itemTotal = (item.salePrice || 0) * item.quantity;
+    // tempSubtotal += itemTotal;
+
+    if (!ordersByStore.has(storeId)) {
+      ordersByStore.set(storeId, {
+        items: [],
+        vendorId: vendorId,
+        storeDetails: storeDetails,
+      });
+    }
+
+    // Add the cart item to the correct store group, mapping to the OrderItem structure
+    const storeOrder = ordersByStore.get(storeId)!;
+
+    storeOrder.items.push({
+      productId: item.productId._id,
+      _id: item._id,
+      // Variants
+      selectedColor: item.selectedColor,
+      selectedSize: item.selectedSize,
+      selectedWeight: item.selectedWeight,
+      customVariant: item.customVariant,
+
+      quantity: item.quantity,
+
+      // priceSnapshot must be the price of the item at the time of purchase
+      priceSnapshot: item.salePrice || 0,
+
+      // Attributes snapshot mapping
+      attributesSnapshot: {
+        color: item.selectedColor || item.customVariant?.color,
+        size: item.selectedSize || item.customVariant?.size,
+        weight: item.selectedWeight || item.customVariant?.weight,
+        material: item.customVariant?.material,
+      },
+    } as IOrderItem);
+  }
+
+  // 2. Map the grouped items into the final IOrder array
+  const finalOrders: IOrder[] = [];
+
+  for (const [storeId, data] of ordersByStore.entries()) {
+    // Calculate the subtotal for this specific store's order
+    const storeSubtotal = data.items.reduce(
+      (sum, orderItem) => sum + orderItem.priceSnapshot * orderItem.quantity,
+      0
+    );
+    const shippingCost = 0; // Assuming free shipping for simplicity
+
+    finalOrders.push({
+      buyerId: buyerId,
+      venderId: data.vendorId,
+      storeId: storeId,
+
+      items: data.items,
+
+      deliveryAddress: deliveryAddress,
+      location: coordinates,
+
+      receipt: {
+        subtotal: storeSubtotal,
+        shipping: shippingCost,
+        discount: 0,
+        tax: 0,
+        total: storeSubtotal + shippingCost,
+      },
+
+      paymentMethod: PaymentMethod.CASH, // Default to CASH
+      orderStatus: OrderStatus.PENDING,
+      deliveryStatus: DeliveryStatus.PENDING,
+
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+  }
+
+  return finalOrders;
 }

@@ -4,18 +4,20 @@ import React, { useState } from "react";
 import { Label } from "@/stories/Label/Label";
 import { Input } from "@/stories/Input/Input";
 import NavBar from "@/components/commen/Navbar";
-import { AuthMethod, LicenseTypes, Operation, UserType } from "@/utils/enum.types";
+import {
+  AuthMethod,
+  LicenseTypes,
+  Operation,
+  UserType,
+} from "@/utils/enum.types";
 import { api } from "@/components/helpers/apiheader";
-import { useFormik, FormikHelpers } from "formik";
-import * as Yup from "yup";
+import { useFormik } from "formik";
 import { SignupSchema } from "@/validations/validationSchemas";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
+import { useRouter } from "next/navigation";
 
-// -----------------------
-// 🔹 Strictly Typed Form
-// -----------------------
 export interface SignupFormValues {
   name: string;
   password: string;
@@ -51,24 +53,11 @@ export const UserTypeData: UserType[] = [
   UserType.SYSTEM_ADMIN,
   UserType.USER,
   UserType.RAIDER,
+  UserType.FARMER,
 ];
 
-// ----------------------------
-// 🔹 Yup Schema With Type Help
-// ----------------------------
-// const SignupSchema = Yup.object({
-//   name: Yup.string().required("Name is required"),
-//   password: Yup.string().min(6, "Min 6 chars").required("Password is required"),
-//   email: Yup.string().email("Invalid email").required("Email is required"),
-//   phoneNumber: Yup.string()
-//     .matches(/^[0-9]{10}$/, "Must be 10 digits")
-//     .required("Phone number required"),
-//   role: Yup.mixed<UserType>()
-//     .oneOf(UserTypeData, "Invalid role")
-//     .required("Role required"),
-// });
-
 const Signup: React.FC = () => {
+  const router = useRouter();
   const initialValues: SignupFormValues = {
     name: "",
     password: "",
@@ -78,14 +67,10 @@ const Signup: React.FC = () => {
   };
   const [message, setMessage] = useState<msgType>(emptyMessage);
 
-
   const formik = useFormik<SignupFormValues>({
     initialValues,
     validationSchema: SignupSchema,
-    onSubmit: async (
-      values: SignupFormValues,
-      _: FormikHelpers<SignupFormValues>
-    ) => {
+    onSubmit: async (values: SignupFormValues) => {
       try {
         const body = {
           ...values,
@@ -96,12 +81,15 @@ const Signup: React.FC = () => {
           headers: { "Content-Type": "application/json" },
         });
 
-        setMessage({
-          flag: true,
-          message: "Signup successful!",
-          operation: Operation.NONE,
-        });
+        if (res) {
+          setMessage({
+            flag: true,
+            message: "Signup successful!",
+            operation: Operation.CREATE,
+          });
 
+          router.push("/login?v=2");
+        }
       } catch (error) {
         console.error("Signup error:", error);
       }
@@ -209,7 +197,7 @@ const Signup: React.FC = () => {
 
           <p className="mt-4 text-center text-sm">
             Already a member?{" "}
-            <a href="/login" className="text-indigo-600">
+            <a href="/login?v=2" className="text-indigo-600">
               Login
             </a>
           </p>

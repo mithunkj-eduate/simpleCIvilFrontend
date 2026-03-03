@@ -10,7 +10,6 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import { LoginSchema } from "@/validations/validationSchemas";
 
 // JSON Config
@@ -36,7 +35,7 @@ interface LoginFormValues {
 }
 
 const Login: React.FC = () => {
-  const nav = useRouter();
+  const router = useRouter();
 
   const formik = useFormik<LoginFormValues>({
     initialValues: {
@@ -54,7 +53,7 @@ const Login: React.FC = () => {
           localStorage.setItem("token", res.data.token);
           Cookies.set("token", res.data.token, { expires: 7 });
 
-          nav.push("/");
+          router.push("/?v=2");
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -132,7 +131,7 @@ const Login: React.FC = () => {
           </div>
 
           <p className="mt-4">
-            Not a member? <a href="/signup">Signup</a>
+            Not a member? <a href="/signup?v=2">Signup</a>
           </p>
         </form>
       </div>

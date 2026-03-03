@@ -28,41 +28,42 @@ const CategoriesPage = () => {
     { name: "Action", className: "" },
   ];
 
-  const GetUsers = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get(`/categories`, {
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (res.status === 200) {
-        setProducts(
-          res.data.data.map((product: CategoryTypes) => ({
-            id: product._id,
-            name: product.name || "N/A",
-            description: product.description || "N/A",
-            parentCatId: product.parentCatId || "N/A",
-            level: product.level,
-            status: product.status,
-            createdAt: product.createdAt || "N/A",
-            updatedAt: product.updatedAt || "N/A",
-          }))
-        );
-      } else {
-        console.error("Failed to fetch users:", res.data);
-      }
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    if (TOKEN) GetUsers();
+    if (TOKEN) {
+      const GetUsers = async () => {
+        setLoading(true);
+        try {
+          const res = await api.get(`/categories`, {
+            headers: {
+              Authorization: `Bearer ${TOKEN}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (res.status === 200) {
+            setProducts(
+              res.data.data.map((product: CategoryTypes) => ({
+                id: product._id,
+                name: product.name || "N/A",
+                description: product.description || "N/A",
+                parentCatId: product.parentCatId || "N/A",
+                level: product.level,
+                status: product.status,
+                createdAt: product.createdAt || "N/A",
+                updatedAt: product.updatedAt || "N/A",
+              }))
+            );
+          } else {
+            console.error("Failed to fetch users:", res.data);
+          }
+        } catch (error) {
+          console.error("Error fetching users:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      GetUsers();
+    }
   }, [TOKEN]);
 
   return (

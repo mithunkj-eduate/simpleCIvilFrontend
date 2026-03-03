@@ -13,7 +13,6 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { Button } from "@/stories/Button/Button";
@@ -73,15 +72,11 @@ export default function GenerateCode({ open, setOpen }: Props) {
               transition
               className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95"
             >
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+
                 <div className="sm:flex sm:items-start">
-                  {/* <div className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
-                    <ExclamationTriangleIcon
-                      aria-hidden="true"
-                      className="size-6 text-red-600"
-                    />
-                  </div> */}
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                 
+  <div className="mt-3 w-full max-w-xl mx-auto text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <DialogTitle
                       as="h3"
                       className="text-base font-semibold text-gray-900"
@@ -103,7 +98,7 @@ export default function GenerateCode({ open, setOpen }: Props) {
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <div className="bg-gray-50 px-4 py-3 flex flex-col gap-2 sm:flex-row sm:justify-end sm:px-6">
                 <Button
                   type="button"
                   data-autofocus

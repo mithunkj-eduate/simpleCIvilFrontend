@@ -1,0 +1,24 @@
+      
+      production:
+       NODE_ENV=production
+       NEXT_PUBLIC_DEVELOPMENT_BASE_URL=https://apisr.shareurinterest.com
+       
+
+
+development:
+         NODE_ENV=development
+        # # NODE_LOCATION=office
+        # # NODE_LOCATION=home
+        # NODE_LOCATION=local
+        
+       
+
+        # GOOGLE_API_KEY=AIzaSyADsDeet4Re2Yt-lGU83dyLeMmXeaXrPfg
+
+      
+        
+        # # NEXT_PUBLIC_PRODUCTION_BASE_URL=http://192.168.1.4:9000
+        # # NEXT_PUBLIC_DEVELOPMENT_BASE_URL=http://192.168.1.4:9000
+        # NEXT_PUBLIC_DEVELOPMENT_BASE_URL_OFFICE=http://192.168.0.117:9000
+        # NEXT_PUBLIC_DEVELOPMENT_BASE_URL_HOME=http://192.168.1.4:9000
+        # NEXT_PUBLIC_DEVELOPMENT_BASE_URL=http://localhost:9000

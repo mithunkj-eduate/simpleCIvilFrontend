@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
@@ -23,8 +22,10 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import { productSortQuery } from "@/types/productSchemaTypes";
-import { api } from "@/components/helpers/apiheader";
+import { api, BASE_URL } from "@/components/helpers/apiheader";
 import Link from "next/link";
+import { CartVariantType } from "@/types/cart";
+import { SafeImage } from "../utils/SafeImage";
 
 // Sample ProductCard component
 interface Product {
@@ -50,78 +51,31 @@ interface Product {
   color?: string;
   size?: string;
   image: string[];
+  variants: CartVariantType[];
 }
 
-// function ProductCard({ product }: { product: Product }) {
-//   const price = product.saleTerms
-//     ? product.saleTerms.salePrice || product.saleTerms.price
-//     : product.rentalTerms && product.rentalTerms.length > 0
-//     ? product.rentalTerms[0].pricePerUnit
-//     : 0;
-
-//   return (
-//     <div className="border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow bg-white">
-//       <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
-//       <p className="text-sm text-gray-600 mt-1">{product.description}</p>
-//       <p className="text-sm text-gray-500 mt-2">
-//         Store: {product.storeId.name}
-//       </p>
-//       <p className="text-sm text-gray-500">
-//         Category: {product.categoryId.name}
-//       </p>
-//       <p className="text-sm text-gray-500">Type: {product.type}</p>
-//       <p className="text-sm text-gray-500">
-//         Price: ₹{price ? price.toFixed(2) : price}{" "}
-//         {product.type === "rental" ? "/ unit" : ""}
-//       </p>
-//       <p className="text-sm text-gray-500">
-//         Availability: {product.avilablity ? "In Stock" : "Out of Stock"}
-//       </p>
-//       <p className="text-sm text-gray-500">Rating: {product.rating} / 5</p>
-//       {product.color && (
-//         <p className="text-sm text-gray-500">Color: {product.color}</p>
-//       )}
-//       {product.size && (
-//         <p className="text-sm text-gray-500">Size: {product.size}</p>
-//       )}
-//       {product.tags.length > 0 && (
-//         <div className="flex flex-wrap gap-2 mt-2">
-//           {product.tags.map((tag) => (
-//             <span
-//               key={tag}
-//               className="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded"
-//             >
-//               {tag}
-//             </span>
-//           ))}
-//         </div>
-//       )}
-//       <Link
-//         href={`/products/${product._id}`}
-//         className="text-indigo-600 hover:text-indigo-800"
-//       >
-//         {product.name}
-//       </Link>
-//     </div>
-//   );
-// }
-
 function ProductCard({ product }: { product: Product }) {
-  const price = product.saleTerms
-    ? product.saleTerms.salePrice || product.saleTerms.price
-    : product.rentalTerms?.[0]?.pricePerUnit || 0;
+  const price = product.variants[0]?.price || 0;
+
+  // const image = product.image.length
+  //   ? `${BASE_URL_IMAGE}${product.image[0]}`
+  //   : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
 
   const image = product.image.length
-    ? product.image[0]
+    ? `${BASE_URL}${product.image[0]}`
     : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
 
+
+    console.log(image,"image")
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-300 group cursor-pointer overflow-hidden">
       {/* Product Image */}
       <div className="w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
-        <img
+        <SafeImage
           src={image}
           alt={product.name}
+          width={200}
+          height={100}
           className="h-full w-full object-cover group-hover:scale-105 transition-transform"
         />
       </div>
@@ -145,8 +99,8 @@ function ProductCard({ product }: { product: Product }) {
 
         {/* Category & Store */}
         <div className="text-xs text-gray-500 mt-2 flex flex-col gap-1">
-          <p>Store: {product.storeId.name}</p>
-          <p>Category: {product.categoryId.name}</p>
+          <p>Store: {product.storeId?.name}</p>
+          <p>Category: {product.categoryId?.name}</p>
           <p>Type: {product.type}</p>
         </div>
 
@@ -159,13 +113,17 @@ function ProductCard({ product }: { product: Product }) {
         </p>
 
         {/* Availability */}
-        <p
-          className={`text-sm mt-1 ${
-            product.avilablity ? "text-green-600" : "text-red-500"
-          }`}
-        >
-          {product.avilablity ? "In Stock" : "Out of Stock"}
-        </p>
+        {product.variants && product.variants.length ? (
+          <p
+            className={`text-sm mt-1 ${
+              product.avilablity ? "text-green-600" : "text-red-500"
+            }`}
+          >
+            {product.variants.some((i) => i.stock)
+              ? "In Stock"
+              : "Out of Stock"}
+          </p>
+        ) : null}
 
         {/* Tags */}
         {product.tags.length > 0 && (
@@ -183,7 +141,7 @@ function ProductCard({ product }: { product: Product }) {
 
         {/* Button / Link */}
         <Link
-          href={`/products/${product._id}`}
+          href={`/products/${product._id}?v=2`}
           className="block mt-4 text-center bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-all"
         >
           View Product
@@ -290,7 +248,7 @@ const extractSubsidiary = (products: Product[]) => {
   const subs = products
     .map(
       (p) =>
-        p.subsidiaryId && { id: p.subsidiaryId._id, name: p.subsidiaryId.name }
+        p.subsidiaryId && { id: p.subsidiaryId._id, name: p.subsidiaryId.name },
     )
     .filter(Boolean);
 
@@ -311,7 +269,7 @@ const extractStores = (products: Product[]) => {
       value: store.id,
       label: store.name,
       checked: false,
-    })
+    }),
   );
 };
 
@@ -421,7 +379,7 @@ export default function ProductsPage() {
       availability: filters.availability,
       location: filters.location,
     }),
-    [filterVersion]
+    [filterVersion],
   );
 
   // Fetch products from API
@@ -462,7 +420,7 @@ export default function ProductsPage() {
     }
 
     const selectedPriceRange = filters.priceRange.find(
-      (range) => range.checked
+      (range) => range.checked,
     );
     if (selectedPriceRange) {
       queryParams.append("minPrice", selectedPriceRange.min.toString());
@@ -507,13 +465,14 @@ export default function ProductsPage() {
     console.log("Fetching products with query params:", queryParams.toString());
     try {
       const response = await api.get(
-        `/commen/products?${queryParams.toString()}`
+        `/commen/products?${queryParams.toString()}`,
       );
 
       if (response.status !== 200) {
         throw new Error("Failed to fetch products");
       }
       const data = await response.data;
+      console.log(data, "data");
       setProductsData(data);
       setFilteredProducts(data.data);
 
@@ -555,22 +514,6 @@ export default function ProductsPage() {
     }
   }, [selectedSubCategory, selectedSort, memoizedFilters]);
 
-  // const getUserLocation = () => {
-  //   navigator.geolocation.getCurrentPosition(
-  //     (position) => {
-  //       updateLocationFilter(
-  //         position.coords.latitude.toString(),
-  //         position.coords.longitude.toString()
-  //       );
-  //     },
-  //     (err) => console.error("Geolocation error:", err)
-  //   );
-  // };
-
-  // useEffect(() => {
-  //   getUserLocation();
-  // }, []);
-
   // Initial fetch and refetch on filter/sort changes
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -583,12 +526,12 @@ export default function ProductsPage() {
   const updateFilter = (
     filterType: string,
     value: string,
-    checked: boolean
+    checked: boolean,
   ) => {
     setFilters((prev) => ({
       ...prev,
       [filterType]: prev[filterType].map((option) =>
-        option.value === value ? { ...option, checked } : option
+        option.value === value ? { ...option, checked } : option,
       ),
     }));
     setFilterVersion((prev) => prev + 1); // Trigger fetch
@@ -685,7 +628,7 @@ export default function ProductsPage() {
                   {subCategories.map((category) => (
                     <li key={category.name}>
                       <button
-                       type="button"
+                        type="button"
                         onClick={() => {
                           setSelectedSubCategory(category.name.toLowerCase());
                           setFilterVersion((prev) => prev + 1);
@@ -694,7 +637,7 @@ export default function ProductsPage() {
                           selectedSubCategory === category.name.toLowerCase()
                             ? "bg-indigo-600 text-white"
                             : "text-gray-900 hover:bg-gray-50",
-                          "block w-full px-2 py-3 rounded-md text-left"
+                          "block w-full px-2 py-3 rounded-md text-left",
                         )}
                       >
                         {category.name}
@@ -759,7 +702,7 @@ export default function ProductsPage() {
                                   updateFilter(
                                     section,
                                     option.value,
-                                    !option.checked
+                                    !option.checked,
                                   );
                                 }
                               }}
@@ -855,7 +798,7 @@ export default function ProductsPage() {
                           onChange={(e) =>
                             updateLocationFilter(
                               e.target.value,
-                              filters.location.lng
+                              filters.location.lng,
                             )
                           }
                           className="border rounded-md p-2 text-sm"
@@ -873,7 +816,7 @@ export default function ProductsPage() {
                           onChange={(e) =>
                             updateLocationFilter(
                               filters.location.lat,
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className="border rounded-md p-2 text-sm"
@@ -954,7 +897,7 @@ export default function ProductsPage() {
                             selectedSort.value === option.value
                               ? "font-medium text-gray-900 bg-gray-100"
                               : "text-gray-500 hover:bg-gray-50",
-                            "block w-full px-4 py-2 text-left text-sm"
+                            "block w-full px-4 py-2 text-left text-sm",
                           )}
                         >
                           {option.name}
@@ -1006,7 +949,7 @@ export default function ProductsPage() {
                           selectedSubCategory === category.name.toLowerCase()
                             ? "text-indigo-600 font-semibold"
                             : "text-gray-900 hover:text-indigo-500",
-                          "flex items-center"
+                          "flex items-center",
                         )}
                       >
                         {category.name}
@@ -1076,7 +1019,7 @@ export default function ProductsPage() {
                                   updateFilter(
                                     section,
                                     option.value,
-                                    !option.checked
+                                    !option.checked,
                                   );
                                 }
                               }}
@@ -1167,7 +1110,7 @@ export default function ProductsPage() {
                           onChange={(e) =>
                             updateLocationFilter(
                               e.target.value,
-                              filters.location.lng
+                              filters.location.lng,
                             )
                           }
                           className="border rounded-md p-2 text-sm"
@@ -1188,7 +1131,7 @@ export default function ProductsPage() {
                           onChange={(e) =>
                             updateLocationFilter(
                               filters.location.lat,
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className="border rounded-md p-2 text-sm"

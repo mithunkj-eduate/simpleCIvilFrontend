@@ -28,43 +28,42 @@ const UsersPage = () => {
     { name: "Action", className: "" },
   ];
 
-  const GetUsers = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get(`/users`, {
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (res.status === 200) {
-        setUsers(
-          res.data.data.map((user: User) => ({
-            id: user.id,
-            name: user.name || "N/A",
-            email: user.email || "N/A",
-            phoneNumber: user.phoneNumber || "N/A",
-            permission: user.permission || "N/A",
-            authMethod: user.authMethod || "N/A",
-            status: user.status || "N/A",
-            role: user.role || "N/A",
-            createdAt: user.createdAt || "N/A",
-            lastLoggedIn: user.lastLoggedIn || "N/A",
-          }))
-        );
-      } else {
-        console.error("Failed to fetch users:", res.data);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (TOKEN) {
+      const GetUsers = async () => {
+        setLoading(true);
+        try {
+          const res = await api.get(`/users`, {
+            headers: {
+              Authorization: `Bearer ${TOKEN}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (res.status === 200) {
+            setUsers(
+              res.data.data.map((user: User) => ({
+                id: user.id,
+                name: user.name || "N/A",
+                email: user.email || "N/A",
+                phoneNumber: user.phoneNumber || "N/A",
+                permission: user.permission || "N/A",
+                authMethod: user.authMethod || "N/A",
+                status: user.status || "N/A",
+                role: user.role || "N/A",
+                createdAt: user.createdAt || "N/A",
+                lastLoggedIn: user.lastLoggedIn || "N/A",
+              }))
+            );
+          } else {
+            console.error("Failed to fetch users:", res.data);
+          }
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+          setLoading(false);
+        }
+      };
       GetUsers();
     }
   }, [TOKEN]);

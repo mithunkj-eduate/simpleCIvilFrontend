@@ -7,15 +7,17 @@ import AutoSelect from "./AutoSelect";
 import {
   AutoCompleteOption,
   ProductInputType,
+  // VariantType,
   msgType,
   productType,
 } from "@/utils/commenTypes";
 import { ApiPathType, Operation } from "@/utils/enum.types";
 import { AppContext } from "@/context/context";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
-import Api, { api } from "@/components/helpers/apiheader";
+import Api, { api, BASE_URL } from "@/components/helpers/apiheader";
 import MessageModal from "@/customComponents/MessageModal";
 import { emptyMessage } from "@/utils/constants";
+import { SafeImage } from "@/app/utils/SafeImage";
 
 export const StoreFormJson = [
   {
@@ -49,37 +51,43 @@ export const StoreFormJson = [
     dataType: "storeId",
     required: true,
   },
+  // {
+  //   labelName: "MRP Price",
+  //   inputName: "mrpPrice",
+  //   dataType: "number",
+  //   required: false,
+  //   minNum: 1,
+  // },
+  // {
+  //   labelName: "Sale Price",
+  //   inputName: "salePrice",
+  //   dataType: "number",
+  //   required: false,
+  //   minNum: 1,
+  // },
+  // {
+  //   labelName: "Stock",
+  //   inputName: "stock",
+  //   dataType: "number",
+  //   required: false,
+  //   minNum: 1,
+  // },
+  // {
+  //   labelName: "Color",
+  //   inputName: "text",
+  //   required: false,
+  // },
+  // {
+  //   labelName: "Size",
+  //   inputName: "size",
+  //   dataType: "text",
+  //   required: false,
+  // },
   {
-    labelName: "MRP Price",
-    inputName: "mrpPrice",
-    dataType: "number",
-    required: false,
-    minNum: 1,
-  },
-  {
-    labelName: "Sale Price",
-    inputName: "salePrice",
-    dataType: "number",
-    required: false,
-    minNum: 1,
-  },
-  {
-    labelName: "Stock",
-    inputName: "stock",
-    dataType: "number",
-    required: false,
-    minNum: 1,
-  },
-  {
-    labelName: "Color",
-    inputName: "text",
-    required: false,
-  },
-  {
-    labelName: "Size",
-    inputName: "size",
-    dataType: "text",
-    required: false,
+    labelName: "Product Type",
+    inputName: "type",
+    dataType: "type",
+    required: true,
   },
   {
     labelName: "Tags (comma-separated)",
@@ -87,30 +95,24 @@ export const StoreFormJson = [
     dataType: "text",
     required: false,
   },
-  {
-    labelName: "Rental Price Per Unit",
-    inputName: "rentalPricePerUnit",
-    dataType: "number",
-    required: false,
-  },
-  {
-    labelName: "Rental Unit (e.g., days)",
-    inputName: "rentalUnit",
-    dataType: "number",
-    required: false,
-  },
-  {
-    labelName: "Minimum Rental Duration",
-    inputName: "rentalMinDuration",
-    dataType: "number",
-    required: false,
-  },
-  {
-    labelName: "Product Type",
-    inputName: "type",
-    dataType: "type",
-    required: true,
-  },
+  // {
+  //   labelName: "Rental Price Per Unit",
+  //   inputName: "rentalPricePerUnit",
+  //   dataType: "number",
+  //   required: false,
+  // },
+  // {
+  //   labelName: "Rental Unit (e.g., days)",
+  //   inputName: "rentalUnit",
+  //   dataType: "number",
+  //   required: false,
+  // },
+  // {
+  //   labelName: "Minimum Rental Duration",
+  //   inputName: "rentalMinDuration",
+  //   dataType: "number",
+  //   required: false,
+  // },
 ];
 
 // Type-safe form data — only string | number | undefined allowed for inputs
@@ -167,27 +169,29 @@ const AddProduct = ({
   selectedId,
 }: AddProductProps) => {
   const [selectedStore, setSelectedStore] = useState<AutoCompleteOption | null>(
-    null
+    null,
   );
   const [selectedCategory, setSelectedCategory] =
     useState<AutoCompleteOption | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<AutoCompleteOption | null>(
-    null
+    null,
   );
   const [selectedSubsidiary, setSelectedSubsidiary] =
     useState<AutoCompleteOption | null>(null);
   const [selectedType, setSelectedType] = useState<AutoCompleteOption | null>(
-    null
+    null,
   );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [availability] = useState(true); // Fixed typo + moved out of formData
 
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
   const [message, setMessage] = useState<msgType>(emptyMessage);
 
   const [formData, setFormData] = useState<ProductFormData>(initialFormData);
+  const [variants, setVariants] = useState<any[]>([]);
+  const [productImages, setProductImages] = useState<File[]>([]);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
 
   const SaleTypeOption: AutoCompleteOption[] = [
     { label: productType.SALE, value: productType.SALE },
@@ -224,6 +228,10 @@ const AddProduct = ({
           rentalMinDuration: data.rentalMinDuration || 0,
         });
 
+        if (data.image && data.image.length) {
+          setPreviewImages([`${BASE_URL}${data.image[0]}`]);
+        }
+
         if (data.storeId?._id) {
           setSelectedStore({
             label: data.storeId.name,
@@ -251,6 +259,21 @@ const AddProduct = ({
             label: data.subsidiaryId.name,
             value: data.subsidiaryId._id,
           });
+
+        if (data.variants && data.variants.length) {
+          setVariants(
+            data.variants.map((v) => ({
+              sku: v.sku,
+              price: v.price,
+              stock: v.stock ?? 0, // optional fallback
+              color: v.attributes.color ?? "",
+              size: v.attributes.size ?? "",
+              weight: v.attributes.weight ?? "",
+              material: v.attributes.material ?? "",
+              images: v.images ?? [],
+            })),
+          );
+        }
       }
     } catch (error) {
       console.error("Failed to fetch product:", error);
@@ -259,7 +282,8 @@ const AddProduct = ({
 
   useEffect(() => {
     if (
-      operations.operation === Operation.UPDATE &&
+      (operations.operation === Operation.UPDATE ||
+        operations.operation === Operation.VIEW) &&
       selectedId &&
       TOKEN &&
       state.user
@@ -310,73 +334,158 @@ const AddProduct = ({
         });
         return;
       }
+      const checkVariants = variants.filter(
+        (i) => i.sku !== "" && i.price !== 0,
+      );
+      console.log(checkVariants, "checkVariants");
+      if (!checkVariants.length) {
+        setMessage({
+          flag: true,
+          message: "Please add variants price, stock, sku",
+          operation: Operation.NONE,
+        });
+        return;
+      }
 
-      const body: ProductInputType = {
-        name: formData.name.trim(),
-        description: formData.description.trim(),
-        storeId: selectedStore.value as string,
-        ownerId: state.user?.id as string,
-        groupId: selectedGroup?.value ?? "",
-        categoryId: selectedCategory?.value ?? "",
-        subsidiaryId: selectedSubsidiary?.value ?? "",
-        latitude: formData.latitude,
-        longitude: formData.longitude,
-        avilablity: true, // now safe and correct
-        type: selectedType.value as productType,
-        color: formData.color || undefined,
-        size: formData.size || undefined,
-        tags: formData.tags
-          ? formData.tags
-              .split(",")
-              .map((t) => t.trim())
-              .filter(Boolean)
-          : [],
-        saleTerms:
-          selectedType.value !== productType.RENTAL
-            ? {
-                mrpPrice: formData.mrpPrice || 0,
-                salePrice: formData.salePrice || 0,
-                stock: formData.stock || 0,
-              }
-            : undefined,
-        rentalTerms:
-          selectedType.value === productType.RENTAL &&
-          formData.rentalPricePerUnit > 0 &&
-          formData.rentalUnit > 0
-            ? [
-                {
-                  unit: formData.rentalUnit,
-                  pricePerUnit: formData.rentalPricePerUnit,
-                  minduration: formData.rentalMinDuration.toString(),
-                },
-              ]
-            : undefined,
-      };
+      const form = new FormData();
 
-      const path =
-        operations.operation === Operation.UPDATE
-          ? `/products/${selectedId}`
-          : "/products";
-
-      const res = await api({
-        method: operations.operation === Operation.UPDATE ? "put" : "post",
-        url: path,
-        data: body,
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-        },
+      productImages.forEach((file) => {
+        form.append("images", file);
       });
-      console.log(res, "res");
-      setMessage({
-        flag: true,
-        message:
+
+      const imagePaths: string[] = [];
+
+      if (operations.operation === Operation.CREATE) {
+        const res = await api({
+          method: "post",
+          url: "/images/upload",
+          data: form,
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        const images = res.data.images.map((i: any) => i.path);
+        imagePaths.push(images);
+      }
+      console.log(imagePaths, "imagespath");
+
+      if (productImages.length && imagePaths && imagePaths.length) {
+        const body: ProductInputType = {
+          name: formData.name.trim(),
+          description: formData.description.trim(),
+          storeId: selectedStore.value as string,
+          ownerId: state.user?.id as string,
+          groupId: selectedGroup?.value ?? "",
+          categoryId: selectedCategory?.value,
+          subsidiaryId: selectedSubsidiary?.value,
+          latitude: formData.latitude,
+          longitude: formData.longitude,
+          avilablity: true,
+          type: selectedType.value as productType,
+          image: imagePaths && imagePaths.length ? [imagePaths[0]] : [],
+
+          // NEW: attach variants
+          variants: checkVariants.map((v) => ({
+            sku: v.sku,
+            price: v.price,
+            stock: v.stock ?? 0, // optional fallback
+            attributes: {
+              color: v.color ?? "",
+              size: v.size ?? "",
+              weight: v.weight ?? "",
+              material: v.material ?? "",
+            },
+            images: v.images ? v.images : [],
+          })),
+
+          tags: formData.tags
+            ? formData.tags.split(",").map((t) => t.trim())
+            : [],
+        };
+
+        const path =
           operations.operation === Operation.UPDATE
-            ? "Product updated successfully!"
-            : "Product added successfully!",
-        operation: Operation.CREATE,
-      });
+            ? `/products/${selectedId}`
+            : "/products";
 
-      onProductAdded?.();
+        const res = await api({
+          method: operations.operation === Operation.UPDATE ? "put" : "post",
+          url: path,
+          data: body,
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        });
+        console.log(res, "res");
+        setMessage({
+          flag: true,
+          message:
+            operations.operation === Operation.UPDATE
+              ? "Product updated successfully!"
+              : "Product added successfully!",
+          operation: Operation.CREATE,
+        });
+
+        onProductAdded?.();
+      } else {
+        const body: ProductInputType = {
+          name: formData.name.trim(),
+          description: formData.description.trim(),
+          storeId: selectedStore.value as string,
+          ownerId: state.user?.id as string,
+          groupId: selectedGroup?.value ?? "",
+          categoryId: selectedCategory?.value,
+          subsidiaryId: selectedSubsidiary?.value,
+          latitude: formData.latitude,
+          longitude: formData.longitude,
+          avilablity: true,
+          type: selectedType.value as productType,
+
+          // NEW: attach variants
+          variants: checkVariants.map((v) => ({
+            sku: v.sku,
+            price: v.price,
+            stock: v.stock ?? 0, // optional fallback
+            attributes: {
+              color: v.color ?? "",
+              size: v.size ?? "",
+              weight: v.weight ?? "",
+              material: v.material ?? "",
+            },
+            images: v.images ?? [],
+          })),
+
+          tags: formData.tags
+            ? formData.tags.split(",").map((t) => t.trim())
+            : [],
+        };
+
+        const path =
+          operations.operation === Operation.UPDATE
+            ? `/products/${selectedId}`
+            : "/products";
+
+        const res = await api({
+          method: operations.operation === Operation.UPDATE ? "put" : "post",
+          url: path,
+          data: body,
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        });
+        console.log(res, "res");
+        setMessage({
+          flag: true,
+          message:
+            operations.operation === Operation.UPDATE
+              ? "Product updated successfully!"
+              : "Product added successfully!",
+          operation: Operation.CREATE,
+        });
+
+        onProductAdded?.();
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || "Operation failed");
       console.error(err);
@@ -394,6 +503,32 @@ const AddProduct = ({
       setFormData(initialFormData);
       setModalFlag(false);
     }
+  };
+
+  const updateVariant = (index: number, field: string, value: any) => {
+    const updated = [...variants];
+    updated[index][field] = value;
+    setVariants(updated);
+  };
+
+  const removeVariant = (index: number) => {
+    setVariants(variants.filter((_, i) => i !== index));
+  };
+
+  // upload
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+
+    setProductImages((prev) => [...prev, ...files]);
+
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setPreviewImages((prev) => [...prev, ...previews]);
+  };
+
+  // delete
+  const handleRemoveImage = (index: number) => {
+    setProductImages((prev) => prev.filter((_, i) => i !== index));
+    setPreviewImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -441,6 +576,7 @@ const AddProduct = ({
                           setFormData({ ...formData, [key]: e.target.value })
                         }
                         required={item.required}
+                        disabled={operations.operation === Operation.VIEW}
                       />
                     </div>
                   </div>
@@ -457,6 +593,7 @@ const AddProduct = ({
                         setSelectedItem={setSelectedStore}
                         path={ApiPathType.STROES}
                         label="Search Store"
+                        disabled={operations.operation === Operation.VIEW}
                       />
                     </div>
                   </div>
@@ -473,6 +610,7 @@ const AddProduct = ({
                         options={SaleTypeOption}
                         value={selectedType}
                         onChange={(_e, newValue) => setSelectedType(newValue)}
+                        disabled={operations.operation === Operation.VIEW}
                       />
                     </div>
                   </div>
@@ -498,6 +636,7 @@ const AddProduct = ({
                       }}
                       required={item.required}
                       min={item.minNum}
+                      disabled={operations.operation === Operation.VIEW}
                     />
                   </div>
                 </div>
@@ -511,6 +650,7 @@ const AddProduct = ({
                 setSelectedItem={setSelectedGroup}
                 path={ApiPathType.CATEGORIES_GROUP}
                 label="Search Group"
+                disabled={operations.operation === Operation.VIEW}
               />
             </div>
 
@@ -521,6 +661,7 @@ const AddProduct = ({
                   setSelectedItem={setSelectedCategory}
                   path={`${ApiPathType.CATEGORIES_CATEGORIES}&&parentCatId=${selectedGroup.value}`}
                   label="Search Category"
+                  disabled={operations.operation === Operation.VIEW}
                 />
               </div>
             )}
@@ -532,22 +673,156 @@ const AddProduct = ({
                   setSelectedItem={setSelectedSubsidiary}
                   path={`${ApiPathType.CATEGORIES_SUBSIDIARY}&&parentCatId=${selectedCategory.value}`}
                   label="Search Subsidiary Category"
+                  disabled={operations.operation === Operation.VIEW}
                 />
               </div>
+            )}
+          </div>
+          <div className="sm:col-span-2  mt-6">
+            <Label>Product Variants</Label>
+
+            {variants.map((v, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-1 lg:grid-cols-2  gap-3 p-3 border rounded-md mt-4 bg-gray-50"
+              >
+                <Input
+                  placeholder="Color"
+                  value={v.color}
+                  onChange={(e) =>
+                    updateVariant(index, "color", e.target.value)
+                  }
+                  disabled={operations.operation === Operation.VIEW}
+                />
+                <Input
+                  placeholder="Size"
+                  value={v.size}
+                  onChange={(e) => updateVariant(index, "size", e.target.value)}
+                  disabled={operations.operation === Operation.VIEW}
+                />
+                <Input
+                  placeholder="Weight"
+                  value={v.weight}
+                  onChange={(e) =>
+                    updateVariant(index, "weight", e.target.value)
+                  }
+                  disabled={operations.operation === Operation.VIEW}
+                />
+
+                <Input
+                  placeholder="SKU"
+                  value={v.sku}
+                  onChange={(e) => updateVariant(index, "sku", e.target.value)}
+                  required
+                  disabled={operations.operation === Operation.VIEW}
+                />
+
+                <Input
+                  label="Price"
+                  type="number"
+                  placeholder="Price"
+                  value={v.price}
+                  onChange={(e) =>
+                    updateVariant(index, "price", Number(e.target.value))
+                  }
+                  required
+                  disabled={operations.operation === Operation.VIEW}
+                />
+
+                <Input
+                  label="stock"
+                  type="number"
+                  placeholder="Stock"
+                  value={v.stock}
+                  onChange={(e) =>
+                    updateVariant(index, "stock", Number(e.target.value))
+                  }
+                  required
+                  disabled={operations.operation === Operation.VIEW}
+                />
+                {operations.operation === Operation.VIEW ? null : (
+                  <Button mode="cancel" onClick={() => removeVariant(index)}>
+                    Remove
+                  </Button>
+                )}
+              </div>
+            ))}
+            {operations.operation === Operation.VIEW ? null : (
+              <Button
+                className="mt-4"
+                onClick={() =>
+                  setVariants([
+                    ...variants,
+                    {
+                      color: "",
+                      size: "",
+                      weight: "",
+                      sku: "",
+                      price: 0,
+                      stock: 0,
+                    },
+                  ])
+                }
+              >
+                + Add Variant
+              </Button>
             )}
           </div>
         </div>
       </div>
 
+      {/* ================= IMAGES ================= */}
+      <div className="space-y-3">
+        <label className="block font-medium text-sm">Product Images</label>
+
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleImageChange}
+          className="block w-full text-sm border rounded-md p-2 cursor-pointer
+               file:mr-4 file:py-2 file:px-4 file:rounded-md
+               file:border-0 file:bg-blue-500 file:text-white hover:file:bg-blue-600"
+          max={1}
+        />
+
+        {/* preview grid */}
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-3 mt-3">
+          {previewImages.map((img, index) => (
+            <div key={index} className="relative group">
+              <SafeImage
+                width={50}
+                height={50}
+                src={img}
+                alt="preview"
+                className="w-full h-24 object-cover rounded-lg border"
+              />
+
+              {/* delete button */}
+              <button
+                onClick={() => handleRemoveImage(index)}
+                className="absolute top-1 right-1 bg-red-500 text-white text-xs
+                     rounded-full px-2 py-1 opacity-0 group-hover:opacity-100
+                     transition"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 mt-8">
-        <Button
-          type="button"
-          onClick={handleAddProduct}
-          mode="primary"
-          disabled={loading}
-        >
-          {loading ? "Saving..." : "Save Product"}
-        </Button>
+        {operations.operation === Operation.VIEW ? null : (
+          <Button
+            type="button"
+            onClick={handleAddProduct}
+            mode="primary"
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save Product"}
+          </Button>
+        )}
         <Button
           type="button"
           onClick={() => setModalFlag(false)}

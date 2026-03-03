@@ -4,16 +4,19 @@ import { Actions } from "./types";
 import { payloadTypes, reducer } from "./reducer";
 import { User } from "@/commenType/commenTypes";
 import Api, { api } from "@/components/helpers/apiheader";
-import { CartItem } from "@/types/cart";
+import { ICartItem } from "@/types/cart";
+import Cookies from "js-cookie";
 
 export type InitialStateType = {
   user: User | null;
-  cart: CartItem[];
+  cart: ICartItem[];
+  lang: string;
 };
 
 export const initialState: InitialStateType = {
   user: null,
   cart: [],
+  lang: "en",
 };
 
 const AppContext = createContext<{
@@ -30,8 +33,8 @@ interface Props {
 const AppProvider: React.FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { TOKEN: token } = Api();
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const lang = Cookies.get("lang") ?? "en";
+  console.log(lang);
   const getUser = async () => {
     try {
       const res = await api.get(`/user/verify`, {
@@ -83,6 +86,13 @@ const AppProvider: React.FC<Props> = ({ children }) => {
       });
     }
   };
+
+  useEffect(() => {
+    dispatch({
+      type: payloadTypes.SET_LANG,
+      payload: { lang: lang },
+    });
+  }, [lang]);
 
   useEffect(() => {
     if (token) {

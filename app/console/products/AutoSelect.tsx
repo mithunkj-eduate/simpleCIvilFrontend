@@ -12,6 +12,7 @@ interface Props {
   >;
   path: string;
   label?: string;
+  disabled?: boolean;
 }
 
 export default function AutoSelect({
@@ -19,32 +20,10 @@ export default function AutoSelect({
   setSelectedItem,
   path,
   label,
+  disabled,
 }: Props) {
   const [options, setOptions] = useState<AutoCompleteOption[]>([]);
   const { TOKEN } = Api();
-
-  const fetchUser = async () => {
-    try {
-      if (TOKEN && path) {
-        const res = await api.get(`/${path}`, {
-          headers: {
-            Authorization: `Bearer ${TOKEN}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (res.data.data)
-          setOptions(
-            res.data.data.map((item: GetStores) => ({
-              label: item.name,
-              value: item._id,
-            }))
-          );
-      }
-    } catch (err) {
-      console.error("API error:", err);
-    }
-  };
 
   // useEffect(() => {
   //   // if (!selectedItem) {
@@ -56,6 +35,28 @@ export default function AutoSelect({
   // }, [selectedItem]);
 
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        if (TOKEN && path) {
+          const res = await api.get(`/${path}`, {
+            headers: {
+              Authorization: `Bearer ${TOKEN}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (res.data.data)
+            setOptions(
+              res.data.data.map((item: GetStores) => ({
+                label: item.name,
+                value: item._id,
+              }))
+            );
+        }
+      } catch (err) {
+        console.error("API error:", err);
+      }
+    };
     fetchUser();
   }, [TOKEN, selectedItem, path]);
 
@@ -68,6 +69,7 @@ export default function AutoSelect({
         onChange={(e, newValue) => {
           setSelectedItem(newValue as AutoCompleteOption | null);
         }}
+        disabled={disabled}
       />
     </div>
   );
