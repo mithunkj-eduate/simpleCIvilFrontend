@@ -365,10 +365,14 @@ const AddProduct = ({
             "Content-Type": "multipart/form-data",
           },
         });
-        const images = res.data.images.map((i: any) => i.path);
-        imagePaths.push(images);
+        const images = res.data.images.map((i: { path: string }) => i.path);
+        imagePaths.push(...images);
       }
-      console.log(imagePaths, "imagespath");
+      console.log(
+        imagePaths[0],
+        "imagespath",
+        imagePaths && imagePaths.length && imagePaths,
+      );
 
       if (productImages.length && imagePaths && imagePaths.length) {
         const body: ProductInputType = {
@@ -396,7 +400,7 @@ const AddProduct = ({
               weight: v.weight ?? "",
               material: v.material ?? "",
             },
-            images: v.images ? v.images : [],
+            images:imagePaths && imagePaths.length ? [imagePaths[0]] :  [],
           })),
 
           tags: formData.tags
