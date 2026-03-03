@@ -396,11 +396,7 @@ const AddProduct = ({
               weight: v.weight ?? "",
               material: v.material ?? "",
             },
-            images: v.images
-              ? v.images
-              : imagePaths && imagePaths.length
-                ? [imagePaths[0]]
-                : [],
+            images: v.images ? v.images : [],
           })),
 
           tags: formData.tags
@@ -536,8 +532,7 @@ const AddProduct = ({
   };
 
   return (
-                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-
+    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
       <div className="sm:flex sm:items-start">
         <div className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-gray-100 sm:mx-0 sm:size-10">
           <svg
