@@ -4,9 +4,10 @@ import { useState } from "react";
 import SnakeGame from "@/components/Games/SnakeGame";
 import SodakuGame from "@/components/Games/Sodaku";
 import NameWheelGame from "@/components/Games/NameWheelGame";
+import BounceGame from "@/components/Games/BounceGame";
 
 export default function Page() {
-  const [game, setGame] = useState<"snake" | "sudoku" | "NameWheelGame" | null>(
+  const [game, setGame] = useState<"snake" | "sudoku" | "NameWheelGame" | "BounceGame" | null>(
     null,
   );
 
@@ -40,6 +41,13 @@ export default function Page() {
             >
               🎡 Play Lucky Wheel
             </button>
+
+             <button
+              onClick={() => setGame("BounceGame")}
+              className="px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-red-600 text-white font-bold shadow-[0_0_25px_pink] hover:scale-105 transition"
+            >
+              🎡 Play Bounce Game
+            </button>
           </div>
         </div>
       )}
@@ -72,6 +80,19 @@ export default function Page() {
       {game === "NameWheelGame" && (
         <div className="flex flex-col items-center gap-4">
           <NameWheelGame />
+
+          <button
+            onClick={() => setGame(null)}
+            className="px-6 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
+          >
+            ⬅ Back
+          </button>
+        </div>
+      )}
+
+        {game === "BounceGame" && (
+        <div className="flex flex-col items-center gap-4">
+          <BounceGame />
 
           <button
             onClick={() => setGame(null)}
