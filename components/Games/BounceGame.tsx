@@ -308,6 +308,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import confetti from "canvas-confetti";
 
 type Player = {
   x: number;
@@ -367,7 +368,6 @@ const LEVELS = Array.from({ length: 10 }, (_, i) => ({
     { x: 380 + i * 40, y: 270, w: 120, h: 10 },
     { x: 600 + i * 60, y: 230, w: 120, h: 10 },
     // { x: 810 + i * 80, y: 190, w: 120, h: 10 },
-
   ],
 
   rings: [
@@ -463,6 +463,10 @@ export default function BounceGame() {
           Math.abs(y - levelData.goal.y) < 20
         ) {
           setWin(true);
+          confetti({
+            particleCount: 200,
+            spread: 90,
+          });
         }
 
         if (y > 450) setGameOver(true);
