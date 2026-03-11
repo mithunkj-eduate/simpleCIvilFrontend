@@ -1,5 +1,3 @@
-// app/wallet/page.tsx
-
 "use client";
 
 import Api, { api } from "@/components/helpers/apiheader";
@@ -10,9 +8,6 @@ import { UserType } from "@/utils/enum.types";
 import RoleStats from "./RoleStats";
 import TransactionTable from "./TransactionTable";
 import WithdrawModal from "./WithdrawModal";
-// import TransactionTable from "./TransactionTable"
-// import WithdrawModal from "./WithdrawModal"
-// import RoleStats from "./RoleStats"
 
 export enum WalletType {
   SHOPPING = "SHOPPING",
@@ -57,16 +52,6 @@ export default function WalletPage() {
   );
   const [openWithdraw, setOpenWithdraw] = useState(false);
 
-  // useEffect(() => {
-  //   fetch("/api/wallet/me")
-  //     .then((res) => res.json())
-  //     .then((data) => setWallet(data));
-
-  //   fetch("/api/wallet/history")
-  //     .then((res) => res.json())
-  //     .then((data) => setTransactions(data));
-  // }, []);
-
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
 
@@ -109,13 +94,13 @@ export default function WalletPage() {
     }
   }, [TOKEN, state.user]);
 
-  if (!wallet) return <div>Loading...</div>;
+  // if (!wallet) return <div>Loading...</div>;
 
   return (
     <div className="p-6 space-y-6">
-      <WalletCard wallet={wallet} />
+      {wallet && <WalletCard wallet={wallet} />}
 
-      <RoleStats role={wallet.role} />
+      {wallet && <RoleStats role={wallet.role} />}
 
       <div className="flex gap-3">
         <button

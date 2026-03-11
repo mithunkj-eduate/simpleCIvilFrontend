@@ -1,5 +1,3 @@
-// RoleStats.tsx
-
 import { UserType } from "@/utils/enum.types";
 
 interface Props {
@@ -7,6 +5,7 @@ interface Props {
 }
 
 export default function RoleStats({ role }: Props) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const stats: any = {
     SELLER: [
       { label: "Total Sales", value: "₹25,000" },
@@ -29,13 +28,21 @@ export default function RoleStats({ role }: Props) {
 
   return (
     <div className="grid grid-cols-2 gap-4">
-      {roleStats.map((s: any, i: number) => (
-        <div key={i} className="bg-white p-4 rounded shadow">
-          <p className="text-gray-400 text-sm">{s.label}</p>
+      {roleStats.map(
+        (
+          s: {
+            label: string;
+            value: string;
+          },
+          i: number,
+        ) => (
+          <div key={i} className="bg-white p-4 rounded shadow">
+            <p className="text-gray-400 text-sm">{s.label}</p>
 
-          <p className="text-xl font-bold">{s.value}</p>
-        </div>
-      ))}
+            <p className="text-xl font-bold">{s.value}</p>
+          </div>
+        ),
+      )}
     </div>
   );
 }
