@@ -31,3 +31,30 @@ body {
     fill: white !important;
   }
 }
+
+
+.neon-btn {
+  background: linear-gradient(145deg, #001f2f, #000814);
+  color: #00fff7;
+  font-size: 22px;
+  font-weight: bold;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow:
+    0 0 10px #00fff7,
+    0 0 25px #00fff7,
+    inset 0 0 15px #00fff7;
+  transition: all 0.2s ease;
+}
+
+.neon-btn:hover {
+  box-shadow:
+    0 0 20px #ff2bd6,
+    0 0 40px #ff2bd6,
+    inset 0 0 20px #ff2bd6;
+  color: #ff2bd6;
+}
+
+.neon-btn:active {
+  transform: scale(0.9);
+}
