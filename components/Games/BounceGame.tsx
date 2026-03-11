@@ -356,7 +356,7 @@ const LEVELS = Array.from({ length: 10 }, (_, i) => ({
 
   platforms: [
     /* main ground */
-    { x: 0, y: 380, w: 2000, h: 20 },
+    { x: 0, y: 380, w: 900 + i * 200, h: 20 },
 
     // /* extra bottom bars */
     // { x: 250 + i * 50, y: 360, w: 150, h: 15 },
@@ -545,7 +545,7 @@ export default function BounceGame() {
 
     /* goal */
     ctx.fillStyle = "cyan";
-    ctx.fillRect(levelData.goal.x, levelData.goal.y, 20, 40);
+    ctx.fillRect(levelData.goal.x, levelData.goal.y, 20, 50);
 
     ctx.restore();
   }, [player, rings, cameraX, level]);
@@ -618,6 +618,39 @@ export default function BounceGame() {
     setCameraX(0);
   };
 
+  useEffect(() => {
+    const keyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft" || e.key === "a") {
+        keys.current.left = true;
+      }
+
+      if (e.key === "ArrowRight" || e.key === "d") {
+        keys.current.right = true;
+      }
+
+      if (e.key === "ArrowUp" || e.key === " " || e.key === "w") {
+        jump();
+      }
+    };
+
+    const keyUp = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft" || e.key === "a") {
+        keys.current.left = false;
+      }
+
+      if (e.key === "ArrowRight" || e.key === "d") {
+        keys.current.right = false;
+      }
+    };
+
+    window.addEventListener("keydown", keyDown);
+    window.addEventListener("keyup", keyUp);
+
+    return () => {
+      window.removeEventListener("keydown", keyDown);
+      window.removeEventListener("keyup", keyUp);
+    };
+  }, []);
   return (
     <div className="flex flex-col items-center gap-4 text-white">
       <h1 className="text-3xl font-bold">🔴 Bounce Game</h1>
