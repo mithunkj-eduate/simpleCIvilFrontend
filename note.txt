@@ -1,3 +1,4 @@
+==================================hosting steps=============================
 rm -rf node_modules
 rm -rf .next
 rm package-lock.json
@@ -15,6 +16,8 @@ importent evry time hosting bifore run in production host and local both:
  npm install tailwindcss @tailwindcss/postcss postcss autoprefixer --save
 
 npm run build
+
+============================================================================
 
 https://apisr.shareurinterest.com/?v=2
 
