@@ -10,6 +10,24 @@ export default function PointWheel() {
 
   const [winner, setWinner] = useState<number | null>(null);
 
+  // sound start
+  const winSound = useRef<HTMLAudioElement>(null);
+
+  const [muted, setMuted] = useState(false);
+
+  const playWinSound = () => {
+    if (!muted && winSound.current) {
+      winSound.current.currentTime = 0;
+      winSound.current.volume = 0.7;
+      winSound.current.play();
+    }
+  };
+
+  if (winner) {
+    playWinSound();
+  }
+  // sond closed
+
   const TOTAL = 100;
 
   const colors = ["#ff4d4d", "#4dd2ff", "#4dff88", "#ffe44d", "#ff4da6"];
@@ -37,9 +55,7 @@ export default function PointWheel() {
     const segment = 360 / TOTAL;
     const randomNumber = Math.floor(Math.random() * TOTAL) + 1;
 
-    const spin =
-      360 * 8 +
-      (360 - (randomNumber - 1) * segment - segment / 2);
+    const spin = 360 * 8 + (360 - (randomNumber - 1) * segment - segment / 2);
 
     rotation.current += spin;
 
@@ -63,6 +79,9 @@ export default function PointWheel() {
 
   return (
     <div className="flex flex-col items-center gap-6 text-white">
+      {/* sound */}
+      <audio ref={winSound} src="/sounds/win.mp3" />
+      {/* sound close */}
 
       <h1 className="text-3xl font-bold text-yellow-400">
         🎡 1 - 100 Lucky Wheel
@@ -70,10 +89,7 @@ export default function PointWheel() {
 
       {/* Wheel */}
       <div className="relative flex items-center justify-center">
-
-        <div className="absolute -top-6 text-red-500 text-4xl z-10">
-          ▼
-        </div>
+        <div className="absolute -top-6 text-red-500 text-4xl z-10">▼</div>
 
         <div
           ref={wheelRef}
@@ -82,19 +98,26 @@ export default function PointWheel() {
         />
       </div>
 
-      <button
-        onClick={spinWheel}
-        className="bg-green-500 px-10 py-3 rounded text-xl font-bold hover:bg-green-400"
-      >
-        SPIN
-      </button>
+      <div className="flex gap-3">
+        <button
+          onClick={() => setMuted(!muted)}
+          className="px-4 py-2 bg-gray-700 rounded"
+        >
+          {muted ? "🔇" : "🔊"}
+        </button>
+        <button
+          onClick={spinWheel}
+          className="bg-green-500 px-10 py-3 rounded text-xl font-bold hover:bg-green-400"
+        >
+          SPIN
+        </button>
+      </div>
 
       {winner && (
         <div className="text-2xl font-bold text-green-400">
           🎉 Winning Number: {winner}
         </div>
       )}
-
     </div>
   );
 }

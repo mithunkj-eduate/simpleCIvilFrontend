@@ -414,6 +414,33 @@ export default function BounceGame() {
 
   const levelData = LEVELS[level];
 
+  // sound start
+  const eatSound = useRef<HTMLAudioElement>(null);
+  const winSound = useRef<HTMLAudioElement>(null);
+
+  const [muted, setMuted] = useState(false);
+
+  const playEatSound = () => {
+    if (!muted && eatSound.current) {
+      eatSound.current.currentTime = 0;
+      eatSound.current.volume = 0.4;
+      eatSound.current.play();
+    }
+  };
+
+  const playWinSound = () => {
+    if (!muted && winSound.current) {
+      winSound.current.currentTime = 0;
+      winSound.current.volume = 0.7;
+      winSound.current.play();
+    }
+  };
+
+  if (win) {
+    playWinSound();
+  }
+  // sond closed
+
   /* GAME LOOP */
   useEffect(() => {
     const interval = setInterval(() => {
@@ -482,6 +509,7 @@ export default function BounceGame() {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < 18) {
+            playEatSound();
             setScore((s) => s + 1);
             return false;
           }
@@ -655,6 +683,11 @@ export default function BounceGame() {
     <div className="flex flex-col items-center gap-4 text-white">
       <h1 className="text-3xl font-bold">🔴 Bounce Game</h1>
 
+      {/* sound */}
+      <audio ref={eatSound} src="/sounds/clicksound.mp3" />
+      <audio ref={winSound} src="/sounds/win.mp3" />
+      {/* sound close */}
+
       <div className="flex gap-6">
         <div>Level: {level + 1}/10</div>
         <div className="text-yellow-400">Rings: {score}</div>
@@ -693,17 +726,29 @@ export default function BounceGame() {
         </button>
       </div>
 
-      {gameOver && (
-        <button onClick={restart} className="px-6 py-3 bg-red-500 rounded">
-          Restart
+      <div className="flex gap-3">
+        <button
+          onClick={() => setMuted(!muted)}
+          className="px-4 py-2 bg-gray-700 rounded"
+        >
+          {muted ? "🔇" : "🔊"}
         </button>
-      )}
 
-      {win && (
-        <button onClick={nextLevel} className="px-6 py-3 bg-green-500 rounded">
-          Next Level
-        </button>
-      )}
+        {gameOver && (
+          <button onClick={restart} className="px-6 py-3 bg-red-500 rounded">
+            Restart
+          </button>
+        )}
+
+        {win && (
+          <button
+            onClick={nextLevel}
+            className="px-6 py-3 bg-green-500 rounded"
+          >
+            Next Level
+          </button>
+        )}
+      </div>
 
       {gameOver && <div className="text-red-400">Game Over</div>}
       {win && <div className="text-green-400">Level Complete 🎉</div>}
