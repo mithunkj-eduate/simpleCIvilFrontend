@@ -65,84 +65,186 @@ function ProductCard({ product }: { product: Product }) {
     ? `${BASE_URL}${product.image[0]}`
     : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
 
+  console.log(image, "image");
+  // return (
+  //   <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-300 group cursor-pointer overflow-hidden">
+  //     {/* Product Image */}
+  //     {/* <div className="w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+  //       <SafeImage
+  //         src={image}
+  //         alt={product.name}
+  //         width={200}
+  //         height={100}
+  //         className="h-full w-full object-cover group-hover:scale-105 transition-transform"
+  //       />
+  //     </div> */}
 
-    console.log(image,"image")
+  //     <div className="w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden relative group">
+  //       {/* Rating badge */}
+  //       <div className="absolute top-3 left-3 z-5">
+  //         <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-md">
+  //           ⭐ {product.rating}
+  //         </span>
+  //       </div>
+
+  //       <SafeImage
+  //         src={image}
+  //         alt={product.name}
+  //         width={200}
+  //         height={100}
+  //         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+  //       />
+  //     </div>
+  //     {/* Content */}
+  //     <div className="p-4">
+  //       <h3 className="text-lg font-semibold text-gray-900 line-clamp-1">
+  //         {product.name}
+  //       </h3>
+
+  //       <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+  //         {product.description}
+  //       </p>
+
+  //       {/* Rating */}
+  //       {/* <div className="mt-2 flex items-center gap-2">
+  //         <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-md">
+  //           ⭐ {product.rating}
+  //         </span>
+  //       </div> */}
+
+  //       {/* Category & Store */}
+  //       <div className="text-xs text-gray-500 mt-2 flex flex-col gap-1">
+  //         <p>Store: {product.storeId?.name}</p>
+  //         <p>Category: {product.categoryId?.name}</p>
+  //         <p>Type: {product.type}</p>
+  //       </div>
+
+  //       {/* Price */}
+  //       <p className="text-xl font-bold text-indigo-600 mt-3">
+  //         ₹{price?.toFixed(2)}
+  //         {product.type === "rental" && (
+  //           <span className="text-sm text-gray-500"> / unit</span>
+  //         )}
+  //       </p>
+
+  //       {/* Availability */}
+  //       {product.variants && product.variants.length ? (
+  //         <p
+  //           className={`text-sm mt-1 ${
+  //             product.variants.some((i) => i.stock)
+  //               ? "text-green-600"
+  //               : "text-red-500"
+  //           }`}
+  //         >
+  //           {product.variants.some((i) => i.stock)
+  //             ? "In Stock"
+  //             : "Out of Stock"}
+  //         </p>
+  //       ) : null}
+
+  //       {/* Tags */}
+  //       {/* {product.tags.length > 0 && (
+  //         <div className="flex flex-wrap gap-2 mt-3">
+  //           {product.tags.map((tag) => (
+  //             <span
+  //               key={tag}
+  //               className="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-md"
+  //             >
+  //               {tag}
+  //             </span>
+  //           ))}
+  //         </div>
+  //       )} */}
+
+  //       {/* Button / Link */}
+  //       <Link
+  //         href={`/products/${product._id}?v=2`}
+  //         className="block mt-4 text-center bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-all"
+  //       >
+  //         View Product
+  //       </Link>
+  //     </div>
+  //   </div>
+  // );
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-300 group cursor-pointer overflow-hidden">
-      {/* Product Image */}
-      <div className="w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+    <div className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-200 overflow-hidden cursor-pointer">
+      {/* Image Container – fixed aspect ratio + overlay badge */}
+      <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden">
+        {/* Rating badge – top-left */}
+        <div className="absolute top-3 left-3 z-5">
+          <span className="inline-flex items-center gap-1 bg-green-600 text-white text-xs font-medium px-2.5 py-1 rounded-md shadow-sm">
+            ⭐ {product.rating}
+          </span>
+        </div>
+
         <SafeImage
           src={image}
           alt={product.name}
           width={200}
           height={100}
-          className="h-full w-full object-cover group-hover:scale-105 transition-transform"
+          // className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
       </div>
 
-      {/* Content */}
-      <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-900 line-clamp-1">
+      {/* Card Content */}
+      <div className="p-4 flex flex-col">
+        <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 mb-1">
           {product.name}
         </h3>
 
-        <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+        <p className="text-sm text-gray-600 line-clamp-2 mb-3">
           {product.description}
         </p>
 
-        {/* Rating */}
-        <div className="mt-2 flex items-center gap-2">
-          <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-md">
-            ⭐ {product.rating}
-          </span>
-        </div>
-
-        {/* Category & Store */}
-        <div className="text-xs text-gray-500 mt-2 flex flex-col gap-1">
-          <p>Store: {product.storeId?.name}</p>
-          <p>Category: {product.categoryId?.name}</p>
-          <p>Type: {product.type}</p>
-        </div>
+        {/* Store / Category / Type */}
+        {/* <div className="text-xs text-gray-500 space-y-0.5 mb-3">
+          <p>
+            Store:{" "}
+            <span className="font-medium">{product.storeId?.name || "—"}</span>
+          </p>
+          <p>
+            Category:{" "}
+            <span className="font-medium">
+              {product.categoryId?.name || "—"}
+            </span>
+          </p>
+          <p>
+            Type: <span className="font-medium capitalize">{product.type}</span>
+          </p>
+        </div> */}
 
         {/* Price */}
-        <p className="text-xl font-bold text-indigo-600 mt-3">
+        <p className="text-xl font-bold text-indigo-600 mb-1">
           ₹{price?.toFixed(2)}
           {product.type === "rental" && (
-            <span className="text-sm text-gray-500"> / unit</span>
+            <span className="text-sm font-normal text-gray-500 ml-1">
+              / unit
+            </span>
           )}
         </p>
 
-        {/* Availability */}
-        {product.variants && product.variants.length ? (
+        {/* Stock Status */}
+        {product.variants && product.variants.length > 0 && (
           <p
-            className={`text-sm mt-1 ${
-              product.avilablity ? "text-green-600" : "text-red-500"
+            className={`text-sm font-medium mt-1 ${
+              product.variants.some((v) => v.stock > 0)
+                ? "text-green-600"
+                : "text-red-500"
             }`}
           >
-            {product.variants.some((i) => i.stock)
+            {/* {product.variants.some((v) => v.stock > 0)
               ? "In Stock"
-              : "Out of Stock"}
-          </p>
-        ) : null}
+              : "Out of Stock"} */}
 
-        {/* Tags */}
-        {product.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-3">
-            {product.tags.map((tag) => (
-              <span
-                key={tag}
-                className="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-md"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+            {product.variants.some((v) => v.stock > 0) ? "" : "Out of Stock"}
+          </p>
         )}
 
-        {/* Button / Link */}
+        {/* View Button */}
         <Link
           href={`/products/${product._id}?v=2`}
-          className="block mt-4 text-center bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-all"
+          className="mt-auto block text-center bg-indigo-600 text-white py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition-colors mt-4"
         >
           View Product
         </Link>
@@ -158,7 +260,7 @@ interface AllProductsProps {
 
 function AllProducts({ products }: AllProductsProps) {
   return (
-    <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {products.length > 0 ? (
         products.map((product) => (
           <ProductCard key={product._id} product={product} />
