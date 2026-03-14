@@ -6,11 +6,19 @@ import SodakuGame from "@/components/Games/Sodaku";
 import NameWheelGame from "@/components/Games/NameWheelGame";
 import BounceGame from "@/components/Games/BounceGame";
 import ZipProGame from "@/components/Games/ZipProGame";
+import StrangerGame from "@/components/Games/StrangerGame";
 
 export default function Page() {
-  const [game, setGame] = useState<"snake" | "sudoku" | "NameWheelGame" | "BounceGame" | "ZipProGame" | null>(
-    null,
-  );
+  const [game, setGame] = useState<
+    | "snake"
+    | "sudoku"
+    | "NameWheelGame"
+    | "BounceGame"
+    | "ZipProGame"
+    | "StrangerGame"
+    | "FriendsGame"
+    | null
+  >(null);
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center gap-8 bg-gradient-to-br from-black via-slate-900 to-black p-6">
@@ -43,18 +51,31 @@ export default function Page() {
               🎡 Play Lucky Wheel
             </button>
 
-             <button
+            <button
               onClick={() => setGame("BounceGame")}
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-red-600 text-white font-bold shadow-[0_0_25px_pink] hover:scale-105 transition"
             >
               🔴 Play Bounce Game
             </button>
-              <button
+            <button
               onClick={() => setGame("ZipProGame")}
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-red-600 text-white font-bold shadow-[0_0_25px_pink] hover:scale-105 transition"
             >
               🎡 Zip Game
             </button>
+            <button
+              onClick={() => setGame("StrangerGame")}
+              className="px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-red-600 text-white font-bold shadow-[0_0_25px_pink] hover:scale-105 transition"
+            >
+              🎡 Stranger Game
+            </button>
+             <button
+              onClick={() => setGame("FriendsGame")}
+              className="px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-red-600 text-white font-bold shadow-[0_0_25px_pink] hover:scale-105 transition"
+            >
+              🎡 Friends Game
+            </button>
+        
           </div>
         </div>
       )}
@@ -97,7 +118,7 @@ export default function Page() {
         </div>
       )}
 
-        {game === "BounceGame" && (
+      {game === "BounceGame" && (
         <div className="flex flex-col items-center gap-4">
           <BounceGame />
 
@@ -110,7 +131,7 @@ export default function Page() {
         </div>
       )}
 
-  {game === "ZipProGame" && (
+      {game === "ZipProGame" && (
         <div className="flex flex-col items-center gap-4">
           <ZipProGame />
 
@@ -122,7 +143,32 @@ export default function Page() {
           </button>
         </div>
       )}
-      
+
+      {game === "StrangerGame" && (
+        <div className="flex flex-col items-center gap-4">
+          <StrangerGame querstions={"Strangers"}/>
+
+          <button
+            onClick={() => setGame(null)}
+            className="px-6 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
+          >
+            ⬅ Back
+          </button>
+        </div>
+      )}
+
+      {game === "FriendsGame" && (
+        <div className="flex flex-col items-center gap-4">
+          <StrangerGame querstions={"Friends"} />
+
+          <button
+            onClick={() => setGame(null)}
+            className="px-6 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
+          >
+            ⬅ Back
+          </button>
+        </div>
+      )}
     </main>
   );
 }
