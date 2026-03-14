@@ -47,7 +47,7 @@ export default function Page() {
               onClick={() => setGame("BounceGame")}
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-red-600 text-white font-bold shadow-[0_0_25px_pink] hover:scale-105 transition"
             >
-              🎡 Play Bounce Game
+              🔴 Play Bounce Game
             </button>
               <button
               onClick={() => setGame("ZipProGame")}
