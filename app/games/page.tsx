@@ -7,6 +7,7 @@ import NameWheelGame from "@/components/Games/NameWheelGame";
 import BounceGame from "@/components/Games/BounceGame";
 import ZipProGame from "@/components/Games/ZipProGame";
 import StrangerGame from "@/components/Games/StrangerGame";
+import ArrowPuzzle from "@/components/Games/ArrowPuzzle";
 
 export default function Page() {
   const [game, setGame] = useState<
@@ -17,6 +18,7 @@ export default function Page() {
     | "ZipProGame"
     | "StrangerGame"
     | "FriendsGame"
+    | "ArrowPuzzleGame"
     | null
   >(null);
 
@@ -69,13 +71,19 @@ export default function Page() {
             >
               🎡 Stranger Game
             </button>
-             <button
+            <button
               onClick={() => setGame("FriendsGame")}
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-red-600 text-white font-bold shadow-[0_0_25px_pink] hover:scale-105 transition"
             >
               🎡 Friends Game
             </button>
-        
+
+            <button
+              onClick={() => setGame("ArrowPuzzleGame")}
+              className="px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-red-600 text-white font-bold shadow-[0_0_25px_pink] hover:scale-105 transition"
+            >
+              🎡 Arrow Puzzle Game
+            </button>
           </div>
         </div>
       )}
@@ -146,7 +154,7 @@ export default function Page() {
 
       {game === "StrangerGame" && (
         <div className="flex flex-col items-center gap-4">
-          <StrangerGame querstions={"Strangers"}/>
+          <StrangerGame querstions={"Strangers"} />
 
           <button
             onClick={() => setGame(null)}
@@ -160,6 +168,19 @@ export default function Page() {
       {game === "FriendsGame" && (
         <div className="flex flex-col items-center gap-4">
           <StrangerGame querstions={"Friends"} />
+
+          <button
+            onClick={() => setGame(null)}
+            className="px-6 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
+          >
+            ⬅ Back
+          </button>
+        </div>
+      )}
+
+      {game === "ArrowPuzzleGame" && (
+        <div className="flex flex-col items-center gap-4">
+          <ArrowPuzzle />
 
           <button
             onClick={() => setGame(null)}
