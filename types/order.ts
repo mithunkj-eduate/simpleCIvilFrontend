@@ -6,8 +6,9 @@ export enum OrderStatus {
 
 export enum PaymentMethod {
   CASH = "CASH",
-  CARD = "CARD",
+  // CARD = "CARD",
   ONLINE = "ONLINE",
+  WALLET ="WALLET"
 }
 
 export enum DeliveryStatus {

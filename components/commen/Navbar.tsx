@@ -74,6 +74,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       // { name: "Marketplace", href: "#", current: false },
       { name: "Company", href: "/aboutus?v=2", current: false },
       { name: "Blog", href: "/blog?v=2", current: false },
+      { name: "Wallet", href: "/wallet?v=2", current: false },
     ];
 
     if (state.user?.id) {

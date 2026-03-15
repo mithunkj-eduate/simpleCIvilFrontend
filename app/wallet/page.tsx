@@ -4,10 +4,11 @@ import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import { useContext, useEffect, useState } from "react";
 import WalletCard from "./WalletCard";
-import { UserType } from "@/utils/enum.types";
+import { LicenseTypes, UserType } from "@/utils/enum.types";
 import RoleStats from "./RoleStats";
 import TransactionTable from "./TransactionTable";
 import WithdrawModal from "./WithdrawModal";
+import Navbar from "@/components/commen/Navbar";
 
 export enum WalletType {
   SHOPPING = "SHOPPING",
@@ -98,6 +99,8 @@ export default function WalletPage() {
 
   return (
     <div className="p-6 space-y-6">
+      <Navbar NavType={LicenseTypes.USER} />
+
       {wallet && <WalletCard wallet={wallet} />}
 
       {wallet && <RoleStats role={wallet.role} />}
