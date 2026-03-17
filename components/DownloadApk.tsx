@@ -1,7 +1,7 @@
 const handleDownload = () => {
   const link = document.createElement("a");
   link.href = "/apk/my-app.apk";
-  link.download = "my-app.apk";
+  link.download = "shareurinterest.apk";
   link.click();
 };
 
