@@ -13,10 +13,11 @@ import {
 import { api } from "@/components/helpers/apiheader";
 import { useFormik } from "formik";
 import { SignupSchema } from "@/validations/validationSchemas";
-import { msgType } from "@/utils/commenTypes";
+import { ApiErrorResponse, msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
 import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
 
 export interface SignupFormValues {
   name: string;
@@ -92,6 +93,23 @@ const Signup: React.FC = () => {
         }
       } catch (error) {
         console.error("Signup error:", error);
+        // Cast the error to your specific interface
+        const axiosError = error as AxiosError<ApiErrorResponse>;
+
+        if (axiosError.response) {
+          // This will match your backend: { message: "role is not allowed..." }
+          setMessage({
+            flag: true,
+            message: axiosError.response.data.message,
+            operation: Operation.NONE,
+          });
+        } else {
+          setMessage({
+            flag: true,
+            message: "An unexpected error occurred",
+            operation: Operation.NONE,
+          });
+        }
       }
     },
   });

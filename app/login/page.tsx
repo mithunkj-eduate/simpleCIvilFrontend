@@ -3,14 +3,17 @@
 import NavBar from "@/components/commen/Navbar";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
-import { LicenseTypes } from "@/utils/enum.types";
+import { LicenseTypes, Operation } from "@/utils/enum.types";
 import { api } from "@/components/helpers/apiheader";
 import Cookies from "js-cookie";
-import axios from "axios";
+import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import { LoginSchema } from "@/validations/validationSchemas";
+import { ApiErrorResponse, msgType } from "@/utils/commenTypes";
+import { emptyMessage } from "@/utils/constants";
+import MessageModal from "@/customComponents/MessageModal";
 
 // JSON Config
 export const LoginFormJson = [
@@ -36,6 +39,7 @@ interface LoginFormValues {
 
 const Login: React.FC = () => {
   const router = useRouter();
+  const [message, setMessage] = useState<msgType>(emptyMessage);
 
   const formik = useFormik<LoginFormValues>({
     initialValues: {
@@ -56,10 +60,26 @@ const Login: React.FC = () => {
           router.push("/?v=2");
         }
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          alert(error.response?.data.message || "Login failed");
+        // if (axios.isAxiosError(error)) {
+        //   alert(error.response?.data.message || "Login failed");
+        // } else {
+        //   alert("Unexpected error occurred");
+        // }
+
+        const axiosError = error as AxiosError<ApiErrorResponse>;
+
+        if (axiosError.response) {
+          setMessage({
+            flag: true,
+            message: axiosError.response.data.message,
+            operation: Operation.NONE,
+          });
         } else {
-          alert("Unexpected error occurred");
+          setMessage({
+            flag: true,
+            message: "An unexpected error occurred",
+            operation: Operation.NONE,
+          });
         }
       }
     },
@@ -135,6 +155,15 @@ const Login: React.FC = () => {
           </p>
         </form>
       </div>
+
+      <MessageModal
+        handleClose={() => {
+          setMessage(emptyMessage);
+        }}
+        modalFlag={message.flag}
+        operation={message.operation}
+        value={message.message}
+      />
     </>
   );
 };
