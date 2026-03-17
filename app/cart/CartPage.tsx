@@ -95,10 +95,37 @@ export default function CartPage() {
     return sum + price;
   }, 0);
 
-  const totalPrice = cartItems.reduce((sum, item) => {
-    const price = item.salePrice ? item.salePrice * item.quantity : 0;
-    return sum + price;
-  }, 0);
+  const shippingCharge = subtotal > 1000 ? 0 : 100
+
+  const totalPrice = subtotal + shippingCharge
+
+  const handleUpdateQty = async (cartId: string, type: "inc" | "dec") => {
+    try {
+      setCartItems((prev) =>
+        prev.map((item) => {
+          if (item._id !== cartId) return item;
+
+          const newQty =
+            type === "inc" ? item.quantity + 1 : Math.max(1, item.quantity - 1);
+
+          return { ...item, quantity: newQty };
+        }),
+      );
+
+      // Optional backend update
+      if (TOKEN) {
+        await api.put(
+          `/carts/${cartId}`,
+          { operation: type === "inc" ? "INCREMENT" : "DECREMENT" },
+          {
+            headers: { Authorization: `Bearer ${TOKEN}` },
+          },
+        );
+      }
+    } catch (err) {
+      console.error("Error updating quantity", err);
+    }
+  };
 
   return (
     <div className="bg-white">
@@ -178,7 +205,27 @@ export default function CartPage() {
                           {/* --- END NEW VARIANT DISPLAY SECTION --- */}
                         </div>
                         <div className="flex flex-1 items-end justify-between text-sm">
-                          <p className="text-gray-500">Qty: {item.quantity}</p>
+                          {/* <p className="text-gray-500">Qty: {item.quantity}</p> */}
+
+                          <div className="flex items-center gap-3">
+                            <button
+                              onClick={() => handleUpdateQty(item._id, "dec")}
+                              className="px-2 py-1 border rounded bg-gray-100 hover:bg-gray-200"
+                            >
+                              -
+                            </button>
+
+                            <span className="font-semibold">
+                              {item.quantity}
+                            </span>
+
+                            <button
+                              onClick={() => handleUpdateQty(item._id, "inc")}
+                              className="px-2 py-1 border rounded bg-indigo-500 text-white hover:bg-indigo-600"
+                            >
+                              +
+                            </button>
+                          </div>
                           <div className="flex">
                             <button
                               type="button"
@@ -225,7 +272,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-600">Shipping</p>
-                  <p className="text-sm font-medium text-gray-900">Free</p>
+                  <p className="text-sm font-medium text-gray-900">{shippingCharge ? `₹${shippingCharge}` :  "Free"}</p>
                 </div>
                 <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                   <p className="text-base font-medium text-gray-900">Total</p>
