@@ -5,6 +5,7 @@ import { TextArea } from "@/stories/TextArea/TextArea";
 import React, { useContext, useEffect, useState } from "react";
 import AutoSelect from "./AutoSelect";
 import {
+  ApiErrorResponse,
   AutoCompleteOption,
   ProductInputType,
   // VariantType,
@@ -18,6 +19,7 @@ import Api, { api, BASE_URL } from "@/components/helpers/apiheader";
 import MessageModal from "@/customComponents/MessageModal";
 import { emptyMessage } from "@/utils/constants";
 import { SafeImage } from "@/app/utils/SafeImage";
+import { AxiosError } from "axios";
 
 export const StoreFormJson = [
   {
@@ -503,9 +505,26 @@ const AddProduct = ({
 
         onProductAdded?.();
       }
-    } catch (err) {
-      setError("Operation failed");
-      console.error(err);
+    } catch (error) {
+      // setError("Operation failed");
+      console.error(error);
+
+      const axiosError = error as AxiosError<ApiErrorResponse>;
+
+      if (axiosError.response) {
+        // This will match your backend: { message: "role is not allowed..." }
+        setMessage({
+          flag: true,
+          message: axiosError.response.data.message,
+          operation: Operation.NONE,
+        });
+      } else {
+        setMessage({
+          flag: true,
+          message: "An unexpected error occurred",
+          operation: Operation.NONE,
+        });
+      }
     } finally {
       setLoading(false);
     }

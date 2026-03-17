@@ -51,7 +51,7 @@ const CategoriesPage = () => {
                 status: product.status,
                 createdAt: product.createdAt || "N/A",
                 updatedAt: product.updatedAt || "N/A",
-              }))
+              })),
             );
           } else {
             console.error("Failed to fetch users:", res.data);
@@ -74,22 +74,26 @@ const CategoriesPage = () => {
         {loading ? (
           <Loading />
         ) : (
-          <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between pb-4">
-              <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+          <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-gray-900">
                 All Categories
               </h1>
 
               <Button
                 mode="primary"
-                className="ml-auto px-4 py-2 text-sm md:text-base rounded-md bg-orange-600 hover:bg-orange-700 text-white transition-colors"
+                className="w-full sm:w-auto px-4 py-2 text-sm md:text-base rounded-md bg-orange-600 hover:bg-orange-700 text-white transition-colors"
                 onClick={() => setModalFlag(true)}
               >
                 Add Category
               </Button>
             </div>
+
+            {/* Table */}
             <div className="overflow-x-auto rounded-md bg-white border border-gray-200 shadow-sm">
-              <table className="min-w-full divide-y divide-gray-200">
+              <table className="min-w-[600px] w-full divide-y divide-gray-200">
+                {/* Table Head */}
                 <thead className="bg-gray-50">
                   <tr>
                     {productsTableHeader.map((header, index) => (
@@ -102,6 +106,8 @@ const CategoriesPage = () => {
                     ))}
                   </tr>
                 </thead>
+
+                {/* Table Body */}
                 <tbody className="divide-y divide-gray-200">
                   {products.length > 0 ? (
                     products.map((product, index) => (
@@ -131,7 +137,7 @@ const CategoriesPage = () => {
                           {product.createdAt}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500">
-                          <Button
+                          {/* <Button
                             mode="secondary"
                             className="px-3 py-1 text-xs md:text-sm bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
                             onClick={(e) => {
@@ -140,7 +146,7 @@ const CategoriesPage = () => {
                             }}
                           >
                             Manage
-                          </Button>
+                          </Button> */}
                         </td>
                       </tr>
                     ))
@@ -161,12 +167,9 @@ const CategoriesPage = () => {
         )}
       </div>
 
-      <AddModal
-        modalFlag={modalFlag}
-        setModalFlag={setModalFlag}
-        // eslint-disable-next-line react/no-children-prop
-        children={<AddCategory setModalFlag={setModalFlag} />}
-      />
+      <AddModal modalFlag={modalFlag} setModalFlag={setModalFlag}>
+        <AddCategory setModalFlag={setModalFlag} />
+      </AddModal>
     </>
   );
 };

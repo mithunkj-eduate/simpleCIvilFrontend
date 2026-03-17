@@ -14,18 +14,16 @@ const UsersPage = () => {
   const usersTableHeader = [
     {
       name: "Name",
-      className:
-        "md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate",
     },
-    { name: "Email", className: "max-sm:hidden" },
-    { name: "Phone", className: "" },
-    { name: "Auth Method", className: "max-sm:hidden" },
-    { name: "Permission", className: "max-sm:hidden" },
-    { name: "Status", className: "max-sm:hidden" },
-    { name: "Role", className: "max-sm:hidden" },
-    // { name: "Created At",className: "" },
-    // { name: "Last Logged In",className: "" },
-    { name: "Action", className: "" },
+    { name: "Email" },
+    { name: "Phone" },
+    { name: "Auth Method" },
+    { name: "Permission" },
+    { name: "Status" },
+    { name: "Role" },
+    // { name: "Created At },
+    // { name: "Last Logged In },
+    { name: "Action" },
   ];
 
   useEffect(() => {
@@ -53,7 +51,7 @@ const UsersPage = () => {
                 role: user.role || "N/A",
                 createdAt: user.createdAt || "N/A",
                 lastLoggedIn: user.lastLoggedIn || "N/A",
-              }))
+              })),
             );
           } else {
             console.error("Failed to fetch users:", res.data);
@@ -72,71 +70,62 @@ const UsersPage = () => {
     <>
       <Navbar NavType={LicenseTypes.ADMIN} />
       <main>
-        <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-            All Users
-          </h1>
+        <div className="flex-1 min-h-screen flex flex-col justify-between">
+          {loading ? (
+            <Loading />
+          ) : (
+            <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-gray-900">
+                  All Users
+                </h1>
+              </div>
 
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            {loading ? (
-              <Loading />
-            ) : (
-              <div className="w-full md:p-10 p-4">
-                <div className="flex flex-col items-center max-w-6xl w-full overflow-hidden rounded-md bg-white border border-gray-500/20">
-                  <table className="table-fixed w-full overflow-hidden">
-                    <thead className="text-gray-900 text-sm text-left">
-                      <tr>
-                        {usersTableHeader.map((header, index) => (
-                          <th
-                            key={index}
-                            className={`${header.className} px-4 py-3`}
-                          >
-                            {header.name}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="text-sm text-gray-500">
-                      {users &&
-                        users.map((user, index) => (
-                          <tr
-                            key={index}
-                            className="border-t border-gray-500/20"
-                          >
-                            <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
-                              <div className="bg-gray-500/10 rounded p-2">
-                                {/* <Image
+              {/* Table */}
+              <div className="overflow-x-auto rounded-md bg-white border border-gray-200 shadow-sm">
+                <table className="min-w-[600px] w-full divide-y divide-gray-200">
+                  {/* Table Head */}
+                  <thead className="bg-gray-50">
+                    <tr>
+                      {usersTableHeader.map((header, index) => (
+                        <th
+                          key={index}
+                          className={`${header.className} px-4 py-3`}
+                        >
+                          {header.name}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+
+                  {/* Table Body */}
+                  <tbody className="divide-y divide-gray-200">
+                    {users &&
+                      users.map((user, index) => (
+                        <tr key={index} className="border-t border-gray-500/20">
+                          <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
+                            <div className="bg-gray-500/10 rounded p-2">
+                              {/* <Image
                         src={user ? "" : "/placeholder.png"}
                         alt="product Image"
                         className="w-16"
                         width={1280}
                         height={720}
                       /> */}
-                                {user.name
-                                  ? user.name.charAt(0).toUpperCase()
-                                  : "N/A"}
-                              </div>
-                              <span className="truncate w-full">
-                                {user.name}
-                              </span>
-                            </td>
-                            <td className="px-4 py-3 max-sm:hidden">
-                              {user.email}
-                            </td>
-                            <td className="px-4 py-3">{user.phoneNumber}</td>
-                            <td className="px-4 py-3 max-sm:hidden">
-                              {user.authMethod}
-                            </td>
-                            <td className="px-4 py-3 max-sm:hidden">
-                              {user.permission}
-                            </td>
-                            <td className="px-4 py-3 max-sm:hidden">
-                              {user.status}
-                            </td>
-                            <td className="px-4 py-3 max-sm:hidden">
-                              {user.role}
-                            </td>
-                            {/* <td className="px-4 py-3 max-sm:hidden">
+                              {user.name
+                                ? user.name.charAt(0).toUpperCase()
+                                : "N/A"}
+                            </div>
+                            <span className="truncate w-full">{user.name}</span>
+                          </td>
+                          <td className="px-4 py-3">{user.email}</td>
+                          <td className="px-4 py-3">{user.phoneNumber}</td>
+                          <td className="px-4 py-3">{user.authMethod}</td>
+                          <td className="px-4 py-3">{user.permission}</td>
+                          <td className="px-4 py-3">{user.status}</td>
+                          <td className="px-4 py-3">{user.role}</td>
+                          {/* <td className="px-4 py-3 max-sm:hidden">
                           <button className="flex items-center gap-1 px-1.5 md:px-3.5 py-2 bg-orange-600 text-white rounded-md">
                             <span className="hidden md:block">Visit</span>
                             <Image
@@ -146,14 +135,13 @@ const UsersPage = () => {
                       />
                           </button>
                         </td> */}
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </main>
 

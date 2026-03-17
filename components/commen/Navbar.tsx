@@ -81,6 +81,9 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       items.push({ name: "Orders", href: "/orders?v=2", current: false });
     }
 
+    if (state.user?.id) {
+      items.push({ name: "Profile", href: "/profile?v=2", current: false });
+    }
     if (
       state.user &&
       state.user.role &&
