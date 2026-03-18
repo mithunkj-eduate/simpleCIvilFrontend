@@ -88,38 +88,38 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     () => [
       {
         name: navLabels.dashboard,
-        href: "/farmer/dashboard?v=2",
+        href: `/farmer/dashboard?v=${state.version}`,
         current: true,
       },
 
       {
         name: navLabels.cropPlanning,
-        href: "/farmer/cropPlan?v=2",
+        href: `/farmer/cropPlan?v=${state.version}`,
         current: false,
       },
       {
         name: navLabels.production,
-        href: "/farmer/addReport?v=2",
+        href: `/farmer/addReport?v=${state.version}`,
         current: false,
       },
       {
         name: navLabels.trends,
-        href: "/farmer/trends?v=2",
+        href: `/farmer/trends?v=${state.version}`,
         current: false,
       },
       {
         name: navLabels.recommendations,
-        href: "/farmer/recommendations?v=2",
+        href: `/farmer/recommendations?v=${state.version}`,
         current: false,
       },
       {
         name: navLabels.myFarm,
-        href: "/farmer/profile?v=2",
+        href: `/farmer/profile?v=${state.version}`,
         current: false,
       },
       {
         name: navLabels.market,
-        href: "/farmer/marketPrices?v=2",
+        href: `/farmer/marketPrices?v=${state.version}`,
         current: false,
       },
     ],
@@ -230,7 +230,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           {state.user && state.user.id ? (
             <Link
-              href="/cart?v=2"
+              href={`/cart?v=${state.version}`}
               className={classNames(
                 className ? className : "",
                 "text-sm/6 font-semibold text-gray-900 me-2",
@@ -265,7 +265,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
             </a>
           ) : (
             <a
-              href="/login?v=2"
+              href={`/login?v=${state.version}`}
               className={classNames(
                 className ? className : "",
                 "text-sm/6 font-semibold text-gray-900",
@@ -337,7 +337,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               </div>
               <div className="py-6">
                 <a
-                  href="/cart?v=2"
+                  href={`/cart?v=${state.version}`}
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                 >
                   <svg
@@ -367,7 +367,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                   </a>
                 ) : (
                   <a
-                    href="/login?v=2"
+                    href={`/login?v=${state.version}`}
                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                   >
                     Log in
@@ -376,7 +376,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               </div>
               <div className="py-6">
                 <a
-                  href="/signup?v=2"
+                  href={`/signup?v=${state.version}`}
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                 >
                   SignUp
