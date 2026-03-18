@@ -5,6 +5,7 @@ import { payloadTypes } from "@/context/reducer";
 import AutocompleteSelect from "@/hooks/StoreAutocompleteSelect";
 
 import { useContext } from "react";
+import Cookies from "js-cookie";
 
 export default function VerstionChange() {
   const { state, dispatch } = useContext(AppContext);
@@ -27,6 +28,7 @@ export default function VerstionChange() {
       }
       onChange={(e, newValue) => {
         if (newValue) {
+          Cookies.set("version", newValue?.value);
           dispatch({
             type: payloadTypes.SET_VERSION,
             payload: { version: Number(newValue?.value) },

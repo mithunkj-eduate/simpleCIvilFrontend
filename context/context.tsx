@@ -36,6 +36,8 @@ const AppProvider: React.FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { TOKEN: token } = Api();
   const lang = Cookies.get("lang") ?? "en";
+  const version = Cookies.get("version");
+
   console.log(lang);
   const getUser = async () => {
     try {
@@ -101,6 +103,15 @@ const AppProvider: React.FC<Props> = ({ children }) => {
       getUser();
     }
   }, [token]);
+
+  useEffect(() => {
+    if (version) {
+      dispatch({
+        type: payloadTypes.SET_VERSION,
+        payload: { version: Number(version) },
+      });
+    }
+  }, [version]);
 
   return (
     <AppContext.Provider value={{ dispatch, state }}>
