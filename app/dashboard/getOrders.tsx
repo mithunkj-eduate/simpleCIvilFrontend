@@ -211,7 +211,7 @@ const GetOrderPage = () => {
 
   const handleClose = () => {
     if (message.operation === Operation.CREATE)
-      router.push("/dashboard/orders?v=2");
+      router.push(`/dashboard/orders?v=${state.version}`);
     setMessage(emptyMessage);
   };
   return (

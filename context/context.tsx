@@ -11,12 +11,14 @@ export type InitialStateType = {
   user: User | null;
   cart: ICartItem[];
   lang: string;
+  version: number;
 };
 
 export const initialState: InitialStateType = {
   user: null,
   cart: [],
   lang: "en",
+  version: 1,
 };
 
 const AppContext = createContext<{

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import Api, { api } from "@/components/helpers/apiheader";
 import { PaymentMethod } from "@/types/order";
@@ -9,6 +9,7 @@ import Loading from "@/components/helpers/Loading";
 import { PaymentStatus } from "@/types/payment";
 import Navbar from "@/components/commen/Navbar";
 import { LicenseTypes } from "@/utils/enum.types";
+import { AppContext } from "@/context/context";
 
 interface Payment {
   _id: string;
@@ -26,6 +27,7 @@ export default function AllPaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const {state} = useContext(AppContext)
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -157,7 +159,7 @@ export default function AllPaymentsPage() {
                   key={payment._id}
                   className="hover:bg-gray-50 transition-colors cursor-pointer"
                   onClick={() =>
-                    router.push(`/console/payments/${payment.orderId?._id}?v=2`)
+                    router.push(`/console/payments/${payment.orderId?._id}?v=${state.version}`)
                   }
                 >
                   <td className="px-6 py-4 text-sm text-gray-900">
@@ -202,7 +204,7 @@ export default function AllPaymentsPage() {
           <Button
             mode="secondary"
             className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md"
-            onClick={() => router.push("/orders?v=2")}
+            onClick={() => router.push(`/orders?v=${state.version}`)}
           >
             Back to Orders
           </Button>

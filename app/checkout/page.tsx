@@ -154,7 +154,7 @@ export default function CheckoutPage() {
   const handleClose = () => {
     setMessage(emptyMessage);
     state.cart = [];
-    router.push("/orders?v=2");
+    router.push(`/orders?v=${state.version}`);
   };
 
   const paymentMethodOptions = Object.values(PaymentMethod).map((method) => ({

@@ -5,6 +5,7 @@ export enum payloadTypes {
   SET_USER = "SET_USER",
   SET_CART = "SET_CART",
   SET_LANG = "SET_LANG",
+  SET_VERSION = "SET_VERSION",
 
   RESET = "RESET",
 }
@@ -25,6 +26,13 @@ export const reducer = (state: InitialStateType, action: Actions) => {
       return {
         ...state,
         lang: action.payload.lang,
+      };
+
+      
+ case payloadTypes.SET_VERSION:
+      return {
+        ...state,
+        version: action.payload.version,
       };
 
     case payloadTypes.RESET:

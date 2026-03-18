@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useContext } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -26,6 +26,7 @@ import { api, BASE_URL } from "@/components/helpers/apiheader";
 import Link from "next/link";
 import { CartVariantType } from "@/types/cart";
 import { SafeImage } from "../utils/SafeImage";
+import { AppContext } from "@/context/context";
 
 // Sample ProductCard component
 interface Product {
@@ -56,7 +57,7 @@ interface Product {
 
 function ProductCard({ product }: { product: Product }) {
   const price = product.variants[0]?.price || 0;
-
+const {state} = useContext(AppContext)
   // const image = product.image.length
   //   ? `${BASE_URL_IMAGE}${product.image[0]}`
   //   : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
@@ -243,7 +244,7 @@ function ProductCard({ product }: { product: Product }) {
 
         {/* View Button */}
         <Link
-          href={`/products/${product._id}?v=2`}
+          href={`/products/${product._id}?v=${state.version}`}
           className="mt-auto block text-center bg-indigo-600 text-white py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition-colors mt-4"
         >
           View Product
