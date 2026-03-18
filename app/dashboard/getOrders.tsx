@@ -46,23 +46,58 @@ const GetOrderPage = () => {
   };
 
   // GET USER'S CURRENT LOCATION
+  // useEffect(() => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (pos) => {
+  //         setCurrentLocation({
+  //           lat: pos.coords.latitude,
+  //           lng: pos.coords.longitude,
+  //         });
+  //       },
+  //       (err) => {
+  //         console.error("Error getting location:", err);
+  //         alert("Unable to get your location");
+  //       },
+  //     );
+  //   }
+  // }, []);
+
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setCurrentLocation({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          });
-        },
-        (err) => {
-          console.error("Error getting location:", err);
-          alert("Unable to get your location");
-        },
-      );
+    if (!navigator.geolocation) {
+      setMessage({
+        flag: true,
+        message: "Geolocation not supported",
+        operation: Operation.NONE,
+      });
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setCurrentLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        });
+      },
+      (err) => {
+        console.error("Location error:", err);
+        setMessage({
+          flag: true,
+          message: "Location permission denied",
+          operation: Operation.NONE,
+        });
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      },
+    );
   }, []);
+
   console.log(currentLocation, "currentLocation");
+
   const GetUsers = async () => {
     setLoading(true);
     try {
