@@ -8,12 +8,13 @@ import { api } from "@/components/helpers/apiheader";
 import Cookies from "js-cookie";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useFormik } from "formik";
 import { LoginSchema } from "@/validations/validationSchemas";
 import { ApiErrorResponse, msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
+import { AppContext } from "@/context/context";
 
 // JSON Config
 export const LoginFormJson = [
@@ -40,7 +41,7 @@ interface LoginFormValues {
 const Login: React.FC = () => {
   const router = useRouter();
   const [message, setMessage] = useState<msgType>(emptyMessage);
-
+const {state} = useContext(AppContext)
   const formik = useFormik<LoginFormValues>({
     initialValues: {
       phoneNumber: "",
@@ -151,7 +152,7 @@ const Login: React.FC = () => {
           </div>
 
           <p className="mt-4">
-            Not a member? <a href="/signup?v=2">Signup</a>
+            Not a member? <a href={`/signup?v=${state.version}`}>Signup</a>
           </p>
         </form>
       </div>

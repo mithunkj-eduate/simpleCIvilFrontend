@@ -212,7 +212,6 @@ const AddProduct = ({
 
       if (res.data.data) {
         const data = res.data.data;
-        console.log(data, "data");
         setFormData({
           name: data.name || "",
           description: data.description || "",
@@ -352,7 +351,7 @@ const AddProduct = ({
       const checkVariants = variants.filter(
         (i) => i.sku !== "" && i.price !== 0,
       );
-      console.log(checkVariants, "checkVariants");
+
       if (!checkVariants.length) {
         setMessage({
           flag: true,
@@ -383,11 +382,6 @@ const AddProduct = ({
         const images = res.data.images.map((i: { path: string }) => i.path);
         imagePaths.push(...images);
       }
-      console.log(
-        imagePaths[0],
-        "imagespath",
-        imagePaths && imagePaths.length && imagePaths,
-      );
 
       if (productImages.length && imagePaths && imagePaths.length) {
         const body: ProductInputType = {
@@ -436,7 +430,7 @@ const AddProduct = ({
             Authorization: `Bearer ${TOKEN}`,
           },
         });
-        console.log(res, "res");
+
         setMessage({
           flag: true,
           message:
@@ -493,7 +487,7 @@ const AddProduct = ({
             Authorization: `Bearer ${TOKEN}`,
           },
         });
-        console.log(res, "res");
+
         setMessage({
           flag: true,
           message:

@@ -79,7 +79,6 @@ const AddSession = ({
           });
 
           if (res.data) {
-            console.log(res.data);
             setFormData({
               seasonName: res.data.seasonName,
               startDate: toStandardDateDisplay(res.data.startDate),
@@ -97,7 +96,6 @@ const AddSession = ({
   const submitForm = async (values: typeof initialCropPlanValues) => {
     try {
       if (!TOKEN || !state.user) return;
-      console.log("submited", values);
 
       if (!values.seasonName || !values.startDate || !values.endDate) {
         setMessage({
@@ -123,7 +121,6 @@ const AddSession = ({
         startDate: values.startDate,
         endDate: values.endDate,
       };
-      console.log(body, "body");
 
       const path =
         operations.operation === Operation.UPDATE
@@ -140,7 +137,6 @@ const AddSession = ({
         },
       });
 
-      console.log(res, "res");
       if (res.status === 200 && res.data) {
         setMessage({
           flag: true,

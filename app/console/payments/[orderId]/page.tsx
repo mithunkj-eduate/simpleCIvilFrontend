@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Api, { api } from "@/components/helpers/apiheader";
 import { PaymentMethod } from "@/types/order";
@@ -11,6 +11,7 @@ import { Operation } from "@/utils/enum.types";
 import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
+import { AppContext } from "@/context/context";
 
 interface Payment {
   _id: string;
@@ -31,6 +32,7 @@ export default function PaymentPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const [message, setMessage] = useState<msgType>(emptyMessage);
+  const {state} = useContext(AppContext)
 
 
   useEffect(() => {
@@ -190,7 +192,7 @@ export default function PaymentPage() {
           <Button
             mode="secondary"
             className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md"
-            onClick={() => router.push("/orders?v=2")}
+            onClick={() => router.push(`/orders?v=${state.version}`)}
           >
             Back to Orders
           </Button>

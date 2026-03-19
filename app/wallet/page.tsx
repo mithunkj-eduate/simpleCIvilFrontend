@@ -83,7 +83,6 @@ export default function WalletPage() {
             },
           );
 
-          console.log(res, historyRes, "res");
           if (historyRes.data) {
             setTransactions(historyRes.data);
           }

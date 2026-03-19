@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useContext } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -26,6 +26,7 @@ import { api, BASE_URL } from "@/components/helpers/apiheader";
 import Link from "next/link";
 import { CartVariantType } from "@/types/cart";
 import { SafeImage } from "../utils/SafeImage";
+import { AppContext } from "@/context/context";
 
 // Sample ProductCard component
 interface Product {
@@ -56,7 +57,7 @@ interface Product {
 
 function ProductCard({ product }: { product: Product }) {
   const price = product.variants[0]?.price || 0;
-
+const {state} = useContext(AppContext)
   // const image = product.image.length
   //   ? `${BASE_URL_IMAGE}${product.image[0]}`
   //   : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
@@ -65,7 +66,6 @@ function ProductCard({ product }: { product: Product }) {
     ? `${BASE_URL}${product.image[0]}`
     : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
 
-  console.log(image, "image");
   // return (
   //   <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-300 group cursor-pointer overflow-hidden">
   //     {/* Product Image */}
@@ -243,7 +243,7 @@ function ProductCard({ product }: { product: Product }) {
 
         {/* View Button */}
         <Link
-          href={`/products/${product._id}?v=2`}
+          href={`/products/${product._id}?v=${state.version}`}
           className="mt-auto block text-center bg-indigo-600 text-white py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition-colors mt-4"
         >
           View Product
@@ -564,7 +564,7 @@ export default function ProductsPage() {
     }
 
     queryParams.append("sort", selectedSort.value);
-    console.log("Fetching products with query params:", queryParams.toString());
+
     try {
       const response = await api.get(
         `/commen/products?${queryParams.toString()}`,
@@ -574,7 +574,7 @@ export default function ProductsPage() {
         throw new Error("Failed to fetch products");
       }
       const data = await response.data;
-      console.log(data, "data");
+
       setProductsData(data);
       setFilteredProducts(data.data);
 

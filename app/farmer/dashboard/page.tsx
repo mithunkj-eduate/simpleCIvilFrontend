@@ -27,7 +27,6 @@ function LanguageSwitcher() {
 
 export default function FarmerDashboard() {
   const { state } = useContext(AppContext);
-  console.log(state.lang);
   const lang = state.lang ?? "en";
   return (
     <div>

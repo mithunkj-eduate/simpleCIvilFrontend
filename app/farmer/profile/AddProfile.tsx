@@ -245,7 +245,6 @@ const AddProfile = ({ setModalFlag, operations }: AddProfileProps) => {
 
   const submitForm = async (values: typeof initialFarmerProfileValues) => {
     try {
-      console.log("submited", formData);
       if (!TOKEN || !state.user) return;
 
       const lat = Number(values.latitude);

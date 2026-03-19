@@ -84,8 +84,7 @@ const products = [
 ];
 
 export default function AllProducts() {
-  const path = useParams();
-  console.log("path", path);
+  // const path = useParams();
   // const {response} = useGetApi( {apiPath: "/products"})
 
   return (

@@ -96,8 +96,6 @@ const GetOrderPage = () => {
     );
   }, []);
 
-  console.log(currentLocation, "currentLocation");
-
   const GetUsers = async () => {
     setLoading(true);
     try {
@@ -194,7 +192,7 @@ const GetOrderPage = () => {
         if (res.status) {
           setMessage({
             flag: true,
-            message: "Update successfully",
+            message: "Accepted order successfully",
             operation: Operation.CREATE,
           });
         } else {
@@ -207,11 +205,10 @@ const GetOrderPage = () => {
       setLoading(false);
     }
   };
-  console.log(Orders);
 
   const handleClose = () => {
     if (message.operation === Operation.CREATE)
-      router.push("/dashboard/orders?v=2");
+      router.push(`/dashboard/orders?v=${state.version}`);
     setMessage(emptyMessage);
   };
   return (
@@ -235,7 +232,7 @@ const GetOrderPage = () => {
                     person.deliveryLocation[1],
                   );
 
-                  const delvary = dis < 2 ? 30 : (dis / 1000) * 10;
+                  const delvary = dis < 2 ? 30 : dis * 10;
 
                   return (
                     <li
@@ -342,7 +339,6 @@ const GetOrderPage = () => {
                         {/* <Button
                         className=""
                         onClick={() => {
-                          console.log(person.storeLocation, "location");
                           if (person.storeLocation.length)
                             router.push(
                               `/dashboard/orders/map?lat=${person.storeLocation[0]}&lng=${person.storeLocation[1]}`

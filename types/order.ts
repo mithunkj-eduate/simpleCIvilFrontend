@@ -8,7 +8,7 @@ export enum PaymentMethod {
   CASH = "CASH",
   // CARD = "CARD",
   ONLINE = "ONLINE",
-  WALLET ="WALLET"
+  WALLET = "WALLET",
 }
 
 export enum DeliveryStatus {
@@ -75,12 +75,11 @@ export interface IOrder {
   updatedAt: Date;
 }
 
-
-export interface ResOrderType{
-_id:string,
-items:[]
+export interface ResOrderType {
+  _id: string;
+  items: [];
 }
 
-export interface getOrdersType{
-  OrderType:ResOrderType
+export interface getOrdersType {
+  OrderType: ResOrderType;
 }

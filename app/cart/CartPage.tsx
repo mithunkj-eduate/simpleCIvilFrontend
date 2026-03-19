@@ -17,7 +17,7 @@ export default function CartPage() {
   const [cartItems, setCartItems] = useState<ICartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { dispatch } = useContext(AppContext);
+  const { state,dispatch } = useContext(AppContext);
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const { TOKEN } = Api();
   const router = useRouter();
@@ -32,7 +32,6 @@ export default function CartPage() {
           headers: { Authorization: `Bearer ${TOKEN}` },
         });
         if (!response.data.data) throw new Error("Failed to fetch cart");
-        console.log(response.data, "data");
         setCartItems(response.data.data.items);
       } catch (err) {
         setError("Error fetching cart. Please try again.");
@@ -51,7 +50,7 @@ export default function CartPage() {
       const response = await api.delete(`/carts/${cartId}`, {
         headers: { Authorization: `Bearer ${TOKEN}` },
       });
-      console.log(response.data);
+
       if (response.data) {
         setCartItems((prev) => prev.filter((item) => item._id !== cartId));
         setMessage({
@@ -290,7 +289,7 @@ export default function CartPage() {
                     payload: { cart: cartItems },
                   });
 
-                  router.push("/checkout?v=2");
+                  router.push(`/checkout?v=${state.version}`);
                 }}
                 mode="primary"
                 className="mt-6 w-full"
