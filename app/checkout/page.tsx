@@ -88,11 +88,19 @@ export default function CheckoutPage() {
     );
   }, []);
 
+  const GST_PERCENT = 18;
+
   // CALCULATE TOTALS
   const subtotal = cartItems.reduce((sum, item) => {
     const price = item.salePrice ? item.salePrice * item.quantity : 0;
     return sum + price;
   }, 0);
+
+  const shippingCharge = subtotal > 1000 ? 0 : 100;
+
+  const gstAmount = (subtotal * GST_PERCENT) / 100;
+
+  const totalPrice = subtotal + gstAmount + shippingCharge;
   interface initialValuesTypes {
     fullName: string;
     email: string;
@@ -256,7 +264,6 @@ export default function CheckoutPage() {
                         />
                       </div>
 
-
                       <div className="sm:col-span-2">
                         <Label>Payment Method</Label>
                         <AutocompleteSelect
@@ -316,13 +323,22 @@ export default function CheckoutPage() {
 
                   <div className="flex justify-between">
                     <p className="text-sm text-gray-600">Shipping</p>
-                    <p className="text-sm font-medium text-gray-900">Free</p>
+                    <p className="text-sm font-medium text-gray-900">
+                      {shippingCharge ? `₹${shippingCharge}` : "Free"}
+                    </p>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <p className="text-sm text-gray-600">GST</p>
+                    <p className="text-sm font-medium text-gray-900">
+                      {gstAmount}
+                    </p>
                   </div>
 
                   <div className="flex justify-between border-t pt-4">
                     <p className="text-base font-medium text-gray-900">Total</p>
                     <p className="text-base font-medium text-gray-900">
-                      ₹{subtotal.toFixed(2)}
+                      ₹{totalPrice.toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -410,8 +426,10 @@ function createOrdersFromCart(
       (sum, orderItem) => sum + orderItem.priceSnapshot * orderItem.quantity,
       0,
     );
-    const shippingCost = 0; // Assuming free shipping for simplicity
-
+    const shippingCost = storeSubtotal < 1000 ? 100 : 0; // Assuming free shipping for simplicity
+    const GST_PERCENT = 18;
+    const gstAmount = (storeSubtotal * GST_PERCENT) / 100;
+    
     finalOrders.push({
       buyerId: buyerId,
       venderId: data.vendorId,
@@ -426,8 +444,8 @@ function createOrdersFromCart(
         subtotal: storeSubtotal,
         shipping: shippingCost,
         discount: 0,
-        tax: 0,
-        total: storeSubtotal + shippingCost,
+        tax: gstAmount,
+        total: storeSubtotal + gstAmount + shippingCost,
       },
 
       paymentMethod: PaymentMethod.CASH, // Default to CASH
