@@ -24,7 +24,6 @@ export function SafeImage({
   const [imgSrc, setImgSrc] = useState(src);
   if (!src) return <div>Loading ...</div>;
 
-  console.log(src,imgSrc,"SafeImage")
   return (
     <Image
       src={imgSrc}

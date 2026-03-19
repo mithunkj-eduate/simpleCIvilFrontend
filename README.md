@@ -1,52 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 👋 Hi, I'm Mithun K J
 
-## Getting Started
+🚀 Full Stack Developer | MERN Stack + Golang
+📍 Bengaluru, India
+💼 3.5+ Years Experience
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🔥 About Me
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+* 💻 Full Stack Developer specializing in **React.js, Node.js, and Golang**
+* 🏗️ Built scalable **multi-vendor marketplace (seller, reseller, rental system)**
+* 🔐 Strong experience in **authentication systems (JWT, refresh tokens)**
+* ⚡ Working with **GraphQL (Apollo Client) & modern backend architecture**
+* 🌍 Passionate about building **real-world, production-ready applications**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Featured Project
 
-## Learn More
+### 🛒 Multi-Vendor Marketplace
 
-To learn more about Next.js, take a look at the following resources:
+🔗 Live: https://apisr.shareurinterest.com/
+🔒 Code: Available upon request
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Features:**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+* Multi-vendor system (Seller / Reseller / Rental)
+* Wallet system (Cash / Online / Wallet balance)
+* Order lifecycle management
+* Admin dashboard & role-based access
+* Location-based services
 
-## Deploy on Vercel
+**Tech Stack:**
+`React.js` `Node.js` `Express.js` `MongoDB`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 📸 ShareMyInterest (Social Platform)
 
+* Instagram-like platform with posts, likes & feeds
+* Scalable backend APIs and responsive UI
 
-Raider delivery flow:
-saller register -> login -> console page -> create store -> create products
+**Tech Stack:**
+`React.js` `Node.js` `MongoDB`
 
-buyer register -> login -> products page -> add to cart -> procced to buy
+---
 
-saller -> orders page -> change order status confirmed 
+### ⚙️ TransformTMC
 
-raider register -> login -> console page -> get near all store confirmed  and pending delivery status orders -> accept witch order want  -> Orders page -> accepted orders is dispay -> click pickup button order deliveryStatus update to shipped -> when reach the buyer -> click delivery button generate 30 scondes code and show to input and submit button
+* Built using **React, TypeScript, GraphQL, Golang, Entgo**
+* Optimized data fetching using Apollo Client
 
-buyer -> orders page ->Click Button Genearted Code Display the Generated code that code give to Raider
+---
 
-raider -> fill the Genereted code click submit button -> message Order Delivered successfully 
- 
+## 🛠️ Tech Stack
 
+### Frontend
+
+![React](https://img.shields.io/badge/-React-black?style=flat-square\&logo=react)
+![Next.js](https://img.shields.io/badge/-Next.js-black?style=flat-square\&logo=next.js)
+![TypeScript](https://img.shields.io/badge/-TypeScript-black?style=flat-square\&logo=typescript)
+![Tailwind](https://img.shields.io/badge/-Tailwind-black?style=flat-square\&logo=tailwind-css)
+
+### Backend
+
+![Node.js](https://img.shields.io/badge/-Node.js-black?style=flat-square\&logo=node.js)
+![Express](https://img.shields.io/badge/-Express-black?style=flat-square\&logo=express)
+![Golang](https://img.shields.io/badge/-Go-black?style=flat-square\&logo=go)
+
+### Database & Tools
+
+![MongoDB](https://img.shields.io/badge/-MongoDB-black?style=flat-square\&logo=mongodb)
+![GraphQL](https://img.shields.io/badge/-GraphQL-black?style=flat-square\&logo=graphql)
+![Docker](https://img.shields.io/badge/-Docker-black?style=flat-square\&logo=docker)
+![AWS](https://img.shields.io/badge/-AWS-black?style=flat-square\&logo=amazon-aws)
+
+---
+
+## 📊 GitHub Stats
+
+![Mithun's GitHub stats](https://github-readme-stats.vercel.app/api?username=your-username\&show_icons=true\&theme=radical)
+
+---
+
+## 📫 Connect With Me
+
+* 🔗 LinkedIn: https://linkedin.com/in/mithun-k-j-8118b9274
+* 📧 Email: [mithunkj1996@gmail.com](mailto:mithunkj1996@gmail.com)
+
+---
+
+⭐️ *“Building scalable products with clean and efficient code.”*

@@ -247,7 +247,6 @@ const AddCropPlan = ({
     }
 
     try {
-      console.log("submited", formData);
       if (!TOKEN || !state.user) return;
 
       const body = {
@@ -272,7 +271,7 @@ const AddCropPlan = ({
           Authorization: `Bearer ${TOKEN}`,
         },
       });
-      console.log(res, "res");
+
       if (res.status === 200 && res.data) {
         setMessage({
           flag: true,

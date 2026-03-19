@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
+import confetti from "canvas-confetti";
 
 type Difficulty = "easy" | "medium" | "hard";
 
@@ -13,6 +14,21 @@ export default function App() {
   const [time, setTime] = useState(0);
   const [bestTime, setBestTime] = useState<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // sound start
+  const winSound = useRef<HTMLAudioElement>(null);
+
+  const [muted, setMuted] = useState(false);
+
+  const playWinSound = () => {
+    if (!muted && winSound.current) {
+      winSound.current.currentTime = 0;
+      winSound.current.volume = 0.7;
+      winSound.current.play();
+    }
+  };
+
+  // sond closed
 
   useEffect(() => {
     loadBestTime();
@@ -145,6 +161,12 @@ export default function App() {
     ) {
       stopTimer();
       saveBestTime(time);
+
+      confetti({
+        particleCount: 500,
+        spread: 60,
+      });
+      playWinSound();
       setMessage("🎉 Correct! Puzzle Solved!");
     } else {
       setMessage("❌ Incorrect Solution");
@@ -158,6 +180,15 @@ export default function App() {
       <div className="flex gap-4 mb-4">
         <div>⏱ {formatTime(time)}</div>
         <div>🏆 Best: {bestTime ? formatTime(bestTime) : "--:--"}</div>
+
+        <div>
+          <button
+            onClick={() => setMuted(!muted)}
+            className="px-2 py-1 rounded"
+          >
+            {muted ? "🔇" : "🔊"}
+          </button>
+        </div>
       </div>
 
       <div className="flex gap-3 mb-4">

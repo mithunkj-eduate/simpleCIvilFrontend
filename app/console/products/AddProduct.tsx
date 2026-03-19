@@ -5,6 +5,7 @@ import { TextArea } from "@/stories/TextArea/TextArea";
 import React, { useContext, useEffect, useState } from "react";
 import AutoSelect from "./AutoSelect";
 import {
+  ApiErrorResponse,
   AutoCompleteOption,
   ProductInputType,
   // VariantType,
@@ -18,6 +19,7 @@ import Api, { api, BASE_URL } from "@/components/helpers/apiheader";
 import MessageModal from "@/customComponents/MessageModal";
 import { emptyMessage } from "@/utils/constants";
 import { SafeImage } from "@/app/utils/SafeImage";
+import { AxiosError } from "axios";
 
 export const StoreFormJson = [
   {
@@ -210,7 +212,6 @@ const AddProduct = ({
 
       if (res.data.data) {
         const data = res.data.data;
-        console.log(data, "data");
         setFormData({
           name: data.name || "",
           description: data.description || "",
@@ -350,7 +351,7 @@ const AddProduct = ({
       const checkVariants = variants.filter(
         (i) => i.sku !== "" && i.price !== 0,
       );
-      console.log(checkVariants, "checkVariants");
+
       if (!checkVariants.length) {
         setMessage({
           flag: true,
@@ -381,11 +382,6 @@ const AddProduct = ({
         const images = res.data.images.map((i: { path: string }) => i.path);
         imagePaths.push(...images);
       }
-      console.log(
-        imagePaths[0],
-        "imagespath",
-        imagePaths && imagePaths.length && imagePaths,
-      );
 
       if (productImages.length && imagePaths && imagePaths.length) {
         const body: ProductInputType = {
@@ -434,7 +430,7 @@ const AddProduct = ({
             Authorization: `Bearer ${TOKEN}`,
           },
         });
-        console.log(res, "res");
+
         setMessage({
           flag: true,
           message:
@@ -491,7 +487,7 @@ const AddProduct = ({
             Authorization: `Bearer ${TOKEN}`,
           },
         });
-        console.log(res, "res");
+
         setMessage({
           flag: true,
           message:
@@ -503,9 +499,26 @@ const AddProduct = ({
 
         onProductAdded?.();
       }
-    } catch (err) {
-      setError("Operation failed");
-      console.error(err);
+    } catch (error) {
+      // setError("Operation failed");
+      console.error(error);
+
+      const axiosError = error as AxiosError<ApiErrorResponse>;
+
+      if (axiosError.response) {
+        // This will match your backend: { message: "role is not allowed..." }
+        setMessage({
+          flag: true,
+          message: axiosError.response.data.message,
+          operation: Operation.NONE,
+        });
+      } else {
+        setMessage({
+          flag: true,
+          message: "An unexpected error occurred",
+          operation: Operation.NONE,
+        });
+      }
     } finally {
       setLoading(false);
     }

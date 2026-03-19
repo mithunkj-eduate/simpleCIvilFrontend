@@ -68,18 +68,24 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
 
   const Navigation = useMemo(() => {
     const items = [
-      { name: "Home", href: "/?v=2", current: true },
-      { name: "Product", href: "/products?v=2", current: false },
+      { name: "Home", href: `/?v=${state.version}`, current: true },
+      { name: "Product", href: `/products?v=${state.version}`, current: false },
       // { name: "Contact", href: "/contactus", current: false },
       // { name: "Marketplace", href: "#", current: false },
-      { name: "Company", href: "/aboutus?v=2", current: false },
-      { name: "Blog", href: "/blog?v=2", current: false },
+      { name: "Company", href: `/aboutus?v=${state.version}`, current: false },
+      { name: "Blog", href: `/blog?v=${state.version}`, current: false },
+      { name: "Wallet", href: `/wallet?v=${state.version}`, current: false },
+      { name: "Games", href: `/games?v=${state.version}`, current: false },
+
     ];
 
     if (state.user?.id) {
-      items.push({ name: "Orders", href: "/orders?v=2", current: false });
+      items.push({ name: "Orders", href: `/orders?v=${state.version}`, current: false });
     }
 
+    if (state.user?.id) {
+      items.push({ name: "Profile", href: `/profile?v=${state.version}`, current: false });
+    }
     if (
       state.user &&
       state.user.role &&
@@ -93,11 +99,11 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         UserType.FARMER,
       ].includes(state.user.role as UserType)
     ) {
-      items.push({ name: "Console", href: "/console?v=2", current: false });
+      items.push({ name: "Console", href: `/console?v=${state.version}`, current: false });
     }
 
     if (state.user && state.user?.role === UserType.RAIDER) {
-      items.push({ name: "Console", href: "/dashboard?v=2", current: false });
+      items.push({ name: "Console", href: `/dashboard?v=${state.version}`, current: false });
     }
 
     if (
@@ -109,7 +115,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     ) {
       items.push({
         name: "Farmer",
-        href: "/farmer/dashboard?v=2",
+        href: `/farmer/dashboard?v=${state.version}`,
         current: false,
       });
     }
@@ -119,13 +125,13 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
 
   const ConsoleNavigation = useMemo(() => {
     const items = [
-      { name: "Dashboard", href: "/console?v=2", current: true },
-      { name: "Stores", href: "/console/stores?v=2", current: false },
+      { name: "Dashboard", href: `/console?v=${state.version}`, current: true },
+      { name: "Stores", href: `/console/stores?v=${state.version}`, current: false },
       // { name: "Categories", href: "/console/categories", current: false },
 
-      { name: "Products", href: "/console/products?v=2", current: false },
-      { name: "Orders", href: "/console/orders?v=2", current: false },
-      { name: "Payments", href: "/console/payments?v=2", current: false },
+      { name: "Products", href: `/console/products?v=${state.version}`, current: false },
+      { name: "Orders", href: `/console/orders?v=${state.version}`, current: false },
+      { name: "Payments", href:   `/console/payments?v=${state.version}`, current: false },
     ];
 
     if (
@@ -136,11 +142,11 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       )
     ) {
       items.push(
-        { name: "Users", href: "/console/users?v=2", current: false },
+        { name: "Users", href: `/console/users?v=${state.version}`, current: false },
 
         {
           name: "Categories",
-          href: "/console/categories?v=2",
+          href: `/console/categories?v=${state.version}`,
           current: false,
         },
       );
@@ -151,8 +157,8 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
 
   const ConsoleDelveryBoyNavigation = useMemo(
     () => [
-      { name: "Dashboard", href: "/dashboard?v=2", current: true },
-      { name: "Orders", href: "/dashboard/orders?v=2", current: false },
+      { name: "Dashboard", href: `/dashboard?v=${state.version}`, current: true },
+      { name: "Orders", href: `/dashboard/orders?v=${state.version}`, current: false },
       // { name: "Map", href: "/dashboard/routemap", current: false },
     ],
     [],
@@ -239,7 +245,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           {state.user && state.user.id ? (
             <Link
-              href="/cart?v=2"
+              href={`/cart?v=${state.version}`}
               className={classNames(
                 className ? className : "",
                 "text-sm/6 font-semibold text-gray-900 me-2",
@@ -275,7 +281,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
             </a>
           ) : (
             <a
-              href="/login?v=2"
+              href={`/login?v=${state.version}`}
               className={classNames(
                 className ? className : "",
                 "text-sm/6 font-semibold text-gray-900",
@@ -348,7 +354,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               </div>
               <div className="py-6">
                 <a
-                  href="/cart?v=2"
+                  href={`/cart?v=${state.version}`}
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                 >
                   <svg
@@ -378,7 +384,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                   </a>
                 ) : (
                   <a
-                    href="/login?v=2"
+                    href={`/login?v=${state.version}`}
                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                   >
                     Log in
@@ -387,7 +393,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
               </div>
               <div className="py-6">
                 <a
-                  href="/signup?v=2"
+                  href={`/signup?v=${state.version}`}
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                 >
                   SignUp

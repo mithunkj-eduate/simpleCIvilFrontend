@@ -1,7 +1,9 @@
 "use client";
 import Card from "@/components/Card";
+import DownloadApk from "@/components/DownloadApk";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
+import VerstionChange from "@/components/VerstionChange";
 import Navbar from "@/components/commen/Navbar";
 import { LicenseTypes } from "@/utils/enum.types";
 
@@ -10,8 +12,8 @@ export default function Home() {
     <>
       <Navbar NavType={LicenseTypes.USER} />
       <HeroSection />
-        <h1>Mithun new build</h1>
-        <h1>Mithun new build new build two</h1>
+      <h1>Mithun new build</h1>
+      <h1>Mithun new build new build two</h1>
 
       {/* ⭐ Categories */}
       <div className="bg-gray-50">
@@ -55,6 +57,17 @@ export default function Home() {
         </p>
         <Peoples />
       </div> */}
+      <div className="flex justify-center items-center pb-4 bg-gray-100">
+        <div className="bg-white p-8 rounded-2xl shadow-lg text-center">
+          <VerstionChange />
+        </div>
+      </div>
+      <div className="flex justify-center items-center pb-4 bg-gray-100">
+        <div className="bg-white p-8 rounded-2xl shadow-lg text-center">
+          <h2 className="text-xl font-semibold mb-4">Download Our App</h2>
+          <DownloadApk />
+        </div>
+      </div>
 
       <Footer />
     </>

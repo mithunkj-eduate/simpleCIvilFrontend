@@ -36,7 +36,7 @@ const SeasonList = () => {
             "Content-Type": "application/json",
           },
         });
-        console.log(res.data,"ddh");
+
         if (res.data) {
           setFormData(
             res.data.data.map((item: formDataTypes) => ({
@@ -96,7 +96,6 @@ const SeasonList = () => {
                       width={24}
                       height={24}
                       onClick={() => {
-                        console.log(season,"ses")
                         setOperation(Operation.UPDATE);
                         setSeesionModal(true);
                         setSelectedId(season._id);

@@ -129,7 +129,7 @@ const AddStore = ({ setModalFlag, selectedId, operations }: AddStoreProps) => {
         },
       });
 
-      if (res.status === 200 && res.data.data) {
+      if (res.status === 200) {
         setMessage({
           flag: true,
           message:

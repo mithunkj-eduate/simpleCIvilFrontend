@@ -40,19 +40,52 @@ export default function CheckoutPage() {
   const [message, setMessage] = useState<msgType>(emptyMessage);
 
   const [source, setSource] = useState<{ lat: number; lng: number } | null>(
-    null
+    null,
   );
 
   // GET USER LOCATION
+  // useEffect(() => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition((pos) => {
+  //       setSource({
+  //         lat: pos.coords.latitude,
+  //         lng: pos.coords.longitude,
+  //       });
+  //     });
+  //   }
+  // }, []);
+
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((pos) => {
+    if (!navigator.geolocation) {
+      setMessage({
+        flag: true,
+        message: "Geolocation not supported",
+        operation: Operation.NONE,
+      });
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
         setSource({
           lat: pos.coords.latitude,
           lng: pos.coords.longitude,
         });
-      });
-    }
+      },
+      (err) => {
+        console.error("Location error:", err);
+        setMessage({
+          flag: true,
+          message: "Location permission denied",
+          operation: Operation.NONE,
+        });
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      },
+    );
   }, []);
 
   // CALCULATE TOTALS
@@ -60,7 +93,6 @@ export default function CheckoutPage() {
     const price = item.salePrice ? item.salePrice * item.quantity : 0;
     return sum + price;
   }, 0);
-  console.log(cartItems, "cartItems");
   interface initialValuesTypes {
     fullName: string;
     email: string;
@@ -76,7 +108,7 @@ export default function CheckoutPage() {
     deliveryAddress: "",
     paymentMethod: "",
   };
-  console.log(state.cart, "cart");
+
   /**
    * ---------------------------------------------------------
    * HANDLE ORDER CREATE - FOR NEW SCHEMA
@@ -90,9 +122,10 @@ export default function CheckoutPage() {
           state.cart, // Using 'any' for the provided JSON structure
           state.user ? state.user.id : "",
           values.deliveryAddress,
-          source ? [source.lat, source.lng] : [0, 0]
+          source
+            ? [source.lat, source.lng]
+            : [13.019797282773808, 77.63735063146159],
         );
-        console.log(body, "body1");
 
         for (let i = 0; i < body.length; i++) {
           await api.post("/orders", body[i], {
@@ -119,7 +152,7 @@ export default function CheckoutPage() {
   const handleClose = () => {
     setMessage(emptyMessage);
     state.cart = [];
-    router.push("/orders?v=2");
+    router.push(`/orders?v=${state.version}`);
   };
 
   const paymentMethodOptions = Object.values(PaymentMethod).map((method) => ({
@@ -223,6 +256,7 @@ export default function CheckoutPage() {
                         />
                       </div>
 
+
                       <div className="sm:col-span-2">
                         <Label>Payment Method</Label>
                         <AutocompleteSelect
@@ -238,7 +272,7 @@ export default function CheckoutPage() {
                           onChange={(e, newValue) =>
                             setFieldValue(
                               "paymentMethod",
-                              newValue?.value || ""
+                              newValue?.value || "",
                             )
                           }
                         />
@@ -312,12 +346,12 @@ function createOrdersFromCart(
   cartItems: ICartItem[], // Using 'any' for the provided JSON structure
   buyerId: string,
   deliveryAddress: string,
-  coordinates: [number, number]
+  coordinates: [number, number],
 ): IOrder[] {
   // Use a Map to group items by storeId
   const ordersByStore = new Map<
     string,
-    { items: IOrderItem[]; vendorId: string; storeDetails:  unknown }
+    { items: IOrderItem[]; vendorId: string; storeDetails: unknown }
   >();
 
   // let tempSubtotal = 0; // Temp variable to calculate subtotal during grouping
@@ -374,7 +408,7 @@ function createOrdersFromCart(
     // Calculate the subtotal for this specific store's order
     const storeSubtotal = data.items.reduce(
       (sum, orderItem) => sum + orderItem.priceSnapshot * orderItem.quantity,
-      0
+      0,
     );
     const shippingCost = 0; // Assuming free shipping for simplicity
 

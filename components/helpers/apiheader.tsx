@@ -48,7 +48,6 @@ export const BASE_URL_SNAP =
     ? process.env.NEXT_PUBLIC_PRODUCTION_SNAP_BASE_URL
     : process.env.NEXT_PUBLIC_DEVELOPMENT_SPAN_BASE_URL;
 
-console.log(BASE_URL, "BASE_URL");
 
 export const api = axios.create({
   baseURL: `${BASE_URL || "http://localhost:9000"}/api`,

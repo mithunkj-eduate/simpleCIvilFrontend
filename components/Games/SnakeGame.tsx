@@ -10,13 +10,38 @@ export default function SnakeGame() {
   const directionRef = useRef<Position>({ x: 0, y: 0 });
   const foodRef = useRef<Position>({ x: 5, y: 5 });
 
-  const eatSound = useRef<HTMLAudioElement | null>(null);
-
   const [snake, setSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
   const [food, setFood] = useState<Position>({ x: 5, y: 5 });
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+
+  // sound start
+  const eatSound = useRef<HTMLAudioElement>(null);
+  // const winSound = useRef<HTMLAudioElement>(null);
+
+  const [muted, setMuted] = useState(false);
+
+  const playEatSound = () => {
+    if (!muted && eatSound.current) {
+      eatSound.current.currentTime = 0;
+      eatSound.current.volume = 0.4;
+      eatSound.current.play();
+    }
+  };
+
+  // const playWinSound = () => {
+  //   if (!muted && winSound.current) {
+  //     winSound.current.currentTime = 0;
+  //     winSound.current.volume = 0.7;
+  //     winSound.current.play();
+  //   }
+  // };
+
+  // if (win) {
+  //   playWinSound();
+  // }
+  // sond closed
 
   // Dynamic tile size (responsive)
   const getTileSize = () => {
@@ -65,7 +90,7 @@ export default function SnakeGame() {
   }, []);
 
   const generateFood = (snakeBody: Position[]) => {
-    let newFood: { x: number; y: number; };
+    let newFood: { x: number; y: number };
     do {
       newFood = {
         x: Math.floor(Math.random() * tileCount),
@@ -115,7 +140,7 @@ export default function SnakeGame() {
       const currentFood = foodRef.current;
 
       if (newHead.x === currentFood.x && newHead.y === currentFood.y) {
-        eatSound.current?.play();
+        playEatSound();
         setScore((prev) => prev + 1);
 
         const newFood = generateFood(newSnake);
@@ -188,10 +213,10 @@ export default function SnakeGame() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-black via-slate-900 to-black text-white p-4">
-      <audio
-        ref={eatSound}
-        src="/sounds/eat.mp3"
-      />
+      {/* sound */}
+      <audio ref={eatSound} src="/sounds/clicksound.mp3" />
+      {/* <audio ref={winSound} src="/sounds/win.mp3" /> */}
+      {/* sound close */}
 
       <h1 className="text-3xl md:text-5xl font-bold text-cyan-400 mb-4 drop-shadow-[0_0_20px_#22d3ee]">
         🐍 Neon Snake
@@ -213,12 +238,20 @@ export default function SnakeGame() {
         </div>
       )}
 
-      <button
-        onClick={restartGame}
-        className="mt-4 px-8 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 hover:scale-105 active:scale-95 transition transform shadow-[0_0_25px_#f472b6]"
-      >
-        Restart Game
-      </button>
+      <div className="flex gap-3">
+        <button
+          onClick={() => setMuted(!muted)}
+          className="px-4 py-4 mt-3 rounded"
+        >
+          {muted ? "🔇" : "🔊"}
+        </button>
+        <button
+          onClick={restartGame}
+          className="mt-4 px-8 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 hover:scale-105 active:scale-95 transition transform shadow-[0_0_25px_#f472b6]"
+        >
+          Restart Game
+        </button>
+      </div>
 
       {/* Modern Mobile Controls */}
       <div className="mt-8 grid grid-cols-3 gap-4 w-56 md:hidden">

@@ -46,23 +46,56 @@ const GetOrderPage = () => {
   };
 
   // GET USER'S CURRENT LOCATION
+  // useEffect(() => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (pos) => {
+  //         setCurrentLocation({
+  //           lat: pos.coords.latitude,
+  //           lng: pos.coords.longitude,
+  //         });
+  //       },
+  //       (err) => {
+  //         console.error("Error getting location:", err);
+  //         alert("Unable to get your location");
+  //       },
+  //     );
+  //   }
+  // }, []);
+
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setCurrentLocation({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          });
-        },
-        (err) => {
-          console.error("Error getting location:", err);
-          alert("Unable to get your location");
-        }
-      );
+    if (!navigator.geolocation) {
+      setMessage({
+        flag: true,
+        message: "Geolocation not supported",
+        operation: Operation.NONE,
+      });
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setCurrentLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        });
+      },
+      (err) => {
+        console.error("Location error:", err);
+        setMessage({
+          flag: true,
+          message: "Location permission denied",
+          operation: Operation.NONE,
+        });
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      },
+    );
   }, []);
-  console.log(currentLocation, "currentLocation");
+
   const GetUsers = async () => {
     setLoading(true);
     try {
@@ -112,7 +145,7 @@ const GetOrderPage = () => {
                 attributes: firstItem?.attributesSnapshot || {},
                 priceSnapshot: firstItem?.priceSnapshot || 0,
               };
-            })
+            }),
           );
         } else {
           console.error("Failed to fetch users:", res);
@@ -135,7 +168,8 @@ const GetOrderPage = () => {
 
   const handleSubmit = async (
     orderId: string,
-    orderAcceptStatus: OrderAcceptStatus
+    orderAcceptStatus: OrderAcceptStatus,
+    delvary: number,
   ) => {
     setLoading(true);
     try {
@@ -145,23 +179,24 @@ const GetOrderPage = () => {
           {
             orderId,
             orderAcceptStatus,
+            amount: delvary,
           },
           {
             headers: {
               Authorization: `Bearer ${TOKEN}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         if (res.status) {
           setMessage({
             flag: true,
-            message: "Update successfully",
+            message: "Accepted order successfully",
             operation: Operation.CREATE,
           });
         } else {
-          console.error("Failed to fetch users:", res);
+          console.error("Fa0led to fetch users:", res);
         }
       }
     } catch (error) {
@@ -170,10 +205,10 @@ const GetOrderPage = () => {
       setLoading(false);
     }
   };
-  console.log(Orders);
 
   const handleClose = () => {
-    if (message.operation === Operation.CREATE) router.push("/dashboard/orders?v=2");
+    if (message.operation === Operation.CREATE)
+      router.push(`/dashboard/orders?v=${state.version}`);
     setMessage(emptyMessage);
   };
   return (
@@ -189,104 +224,121 @@ const GetOrderPage = () => {
             </h1>
             <div className="mt-8 overflow-x-auto rounded-md bg-white m-2">
               <ul role="list" className="divide-y divide-gray-100">
-                {Orders.map((person, index) => (
-                  <li key={index} className="flex justify-between gap-x-6 py-5">
-                    <div className="flex min-w-0 gap-x-4">
-                      <div className="min-w-0 flex-auto">
-                        <div>
-                          {person.items.map((item, i) => (
-                            <p key={i} className="text-xs text-gray-700">
-                              {item.productName} (x{item.quantity})
-                            </p>
-                          ))}
-                        </div>
+                {Orders.map((person, index) => {
+                  const dis = getDistance(
+                    person.storeLocation[0],
+                    person.storeLocation[1],
+                    person.deliveryLocation[0],
+                    person.deliveryLocation[1],
+                  );
 
-                        <p className="mt-1 truncate text-xs/5 text-gray-500">
-                          Qty: {person.quantity} Price: {person.totalPrice}
-                        </p>
-                        <p className="mt-1 truncate text-xs/5 text-gray-500">
-                          store: {person.storeName}
-                        </p>
-                        <p className="mt-1 truncate text-xs/5 text-gray-500">
-                          store Address: {person.storeAddress}
-                        </p>
-                        <p className="mt-1 truncate text-xs/5 text-gray-500">
-                          Delivery Address: {person.deliveryAddress}
-                        </p>
-                        <div className="mt-1 truncate text-xs/5 text-gray-900">
-                          Pickup{" "}
-                          <span className="text-md text-gray-900">
-                            {(currentLocation || location) &&
-                            person.deliveryLocation
-                              ? getDistance(
-                                  currentLocation
-                                    ? currentLocation.lat
-                                    : location.lat,
-                                  currentLocation
-                                    ? currentLocation.lng
-                                    : location.lng,
-                                  person.deliveryLocation[0],
-                                  person.deliveryLocation[1]
-                                )?.toFixed(2)
-                              : null}{" "}
-                            km
-                          </span>{" "}
-                          Drop{" "}
-                          <span className="text-md text-gray-900">
-                            {person.storeLocation && person.deliveryLocation
-                              ? getDistance(
-                                  person.storeLocation[0],
-                                  person.storeLocation[1],
-                                  person.deliveryLocation[0],
-                                  person.deliveryLocation[1]
-                                )?.toFixed(2)
-                              : null}{" "}
-                            km
-                          </span>
-                        </div>
-                        <div>
-                          <Button
-                            mode="accept"
-                            className="m-2"
-                            onClick={() =>
-                              handleSubmit(
-                                person.id,
-                                OrderAcceptStatus.ACCEPTED
-                              )
-                            }
-                          >
-                            Accept{" "}
-                          </Button>
-                          <Button
-                            mode="cancel"
-                            className="m-2"
-                            onClick={() =>
-                              handleSubmit(
-                                person.id,
-                                OrderAcceptStatus.CANCELLED
-                              )
-                            }
-                          >
-                            {" "}
-                            cancel
-                          </Button>
+                  const delvary = dis < 2 ? 30 : dis * 10;
+
+                  return (
+                    <li
+                      key={index}
+                      className="flex justify-between gap-x-6 py-5"
+                    >
+                      <div className="flex min-w-0 gap-x-4">
+                        <div className="min-w-0 flex-auto">
+                          <div>
+                            {person.items.map((item, i) => (
+                              <p key={i} className="text-xs text-gray-700">
+                                {item.productName} (x{item.quantity})
+                              </p>
+                            ))}
+                          </div>
+
+                          <p className="mt-1 truncate text-xs/5 text-green-500">
+                            Earnings: {delvary} Rupees
+                          </p>
+                          <p className="mt-1 truncate text-xs/5 text-gray-500">
+                            Qty: {person.quantity} Price: {person.totalPrice}
+                          </p>
+                          <p className="mt-1 truncate text-xs/5 text-gray-500">
+                            store: {person.storeName}
+                          </p>
+                          <p className="mt-1 truncate text-xs/5 text-gray-500">
+                            store Address: {person.storeAddress}
+                          </p>
+                          <p className="mt-1 truncate text-xs/5 text-gray-500">
+                            Delivery Address: {person.deliveryAddress}
+                          </p>
+                          <div className="mt-1 truncate text-xs/5 text-gray-900">
+                            Pickup{" "}
+                            <span className="text-md text-gray-900">
+                              {(currentLocation || location) &&
+                              person.deliveryLocation
+                                ? getDistance(
+                                    currentLocation
+                                      ? currentLocation.lat
+                                      : location.lat,
+                                    currentLocation
+                                      ? currentLocation.lng
+                                      : location.lng,
+                                    person.deliveryLocation[0],
+                                    person.deliveryLocation[1],
+                                  )?.toFixed(2)
+                                : null}{" "}
+                              km
+                            </span>{" "}
+                            Drop{" "}
+                            <span className="text-md text-gray-900">
+                              {person.storeLocation && person.deliveryLocation
+                                ? getDistance(
+                                    person.storeLocation[0],
+                                    person.storeLocation[1],
+                                    person.deliveryLocation[0],
+                                    person.deliveryLocation[1],
+                                  )?.toFixed(2)
+                                : null}{" "}
+                              km
+                            </span>
+                          </div>
+                          <div>
+                            <Button
+                              mode="accept"
+                              className="m-2"
+                              onClick={() =>
+                                handleSubmit(
+                                  person.id,
+                                  OrderAcceptStatus.ACCEPTED,
+                                  delvary,
+                                )
+                              }
+                            >
+                              Accept{" "}
+                            </Button>
+                            <Button
+                              mode="cancel"
+                              className="m-2"
+                              onClick={() =>
+                                handleSubmit(
+                                  person.id,
+                                  OrderAcceptStatus.CANCELLED,
+                                  0,
+                                )
+                              }
+                            >
+                              {" "}
+                              cancel
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                      <p className="text-sm/6 text-gray-900">
-                        Payment Method : {person.paymentMethod}
-                      </p>
-                      <p className="mt-1 text-xs/5 text-gray-500">
-                        Created :
-                        <time dateTime={person.createdAt}>
-                          {person.createdAt}
-                        </time>
-                      </p>
-                      {/* <Button
+                      <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                        <p className="text-sm/6 text-gray-900">
+                          Payment Method : {person.paymentMethod}
+                        </p>
+                        <p className="mt-1 text-xs/5 text-gray-500">
+                          Created :
+                          <time dateTime={person.createdAt}>
+                            {person.createdAt}
+                          </time>
+                        </p>
+                        {/* <Button
                         className=""
                         onClick={() => {
-                          console.log(person.storeLocation, "location");
                           if (person.storeLocation.length)
                             router.push(
                               `/dashboard/orders/map?lat=${person.storeLocation[0]}&lng=${person.storeLocation[1]}`
@@ -295,9 +347,10 @@ const GetOrderPage = () => {
                       >
                         Map
                       </Button> */}
-                    </div>
-                  </li>
-                ))}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
             <div className="mt-8">

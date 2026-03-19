@@ -118,7 +118,6 @@ const DeliveryOrderPage = () => {
 
   const handleGenerateCode = async (orderId: string, buyerId: string) => {
     try {
-      console.log(orderId, buyerId, "item");
       if (!orderId || !buyerId) {
         setMessage({
           flag: true,
@@ -186,21 +185,54 @@ const DeliveryOrderPage = () => {
   };
 
   // GET USER'S CURRENT LOCATION
+  // useEffect(() => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (pos) => {
+  //         setCurrentLocation({
+  //           lat: pos.coords.latitude,
+  //           lng: pos.coords.longitude,
+  //         });
+  //       },
+  //       (err) => {
+  //         console.error("Error getting location:", err);
+  //         alert("Unable to get your location");
+  //       },
+  //     );
+  //   }
+  // }, []);
+
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setCurrentLocation({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          });
-        },
-        (err) => {
-          console.error("Error getting location:", err);
-          alert("Unable to get your location");
-        },
-      );
+    if (!navigator.geolocation) {
+      setMessage({
+          flag: true,
+          message: "Geolocation not supported",
+          operation: Operation.NONE,
+        });
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setCurrentLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        });
+      },
+      (err) => {
+        console.error("Location error:", err);
+        setMessage({
+          flag: true,
+          message: "Location permission denied",
+          operation: Operation.NONE,
+        });
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      },
+    );
   }, []);
 
   const handleClose = () => {
@@ -229,7 +261,6 @@ const DeliveryOrderPage = () => {
                     key={index}
                   >
                     <div className="flex min-w-0 gap-x-4">
-                      
                       <div className="size-12 flex-none rounded-full bg-gray-50">
                         <div>
                           {person.orderAcceptStatus ===
@@ -448,6 +479,44 @@ const DeliveryOrderPage = () => {
                             Map
                           </Button> */}
 
+                          <button
+                            onClick={() => {
+                              const number =
+                                person.storeLocation.length &&
+                                person.deliveryStatus === DeliveryStatus.PENDING
+                                  ? person.storeNumber
+                                  : person.buyerNumber;
+
+                              window.location.href = `tel:${number}`;
+                            }}
+                            className="rounded-md px-4 py-2.5 ms-2 bg-gray-200 text-gray-900 hover:bg-gray-300"
+                          >
+                            Call
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              const lat =
+                                person.storeLocation.length &&
+                                person.deliveryStatus === DeliveryStatus.PENDING
+                                  ? person.storeLocation[0]
+                                  : person.deliveryLocation[0];
+
+                              const lng =
+                                person.storeLocation.length &&
+                                person.deliveryStatus === DeliveryStatus.PENDING
+                                  ? person.storeLocation[1]
+                                  : person.deliveryLocation[1];
+
+                              const mapUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+
+                              window.open(mapUrl, "_system");
+                            }}
+                            className="rounded-md px-4 py-2.5 ms-2 text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-500"
+                          >
+                            Map
+                          </button>
+                          {/* 
                           <a
                             href={`tel:${
                               person.storeLocation.length &&
@@ -458,8 +527,8 @@ const DeliveryOrderPage = () => {
                             className="rounded-md px-4 py-2.5 ms-2 bg-gray-200 text-gray-900 hover:bg-gray-300 focus-visible:outline-gray-300"
                           >
                             Call
-                          </a>
-
+                          </a> */}
+                          {/* 
                           <a
                             className="rounded-md px-4 py-2.5 ms-2 text-sm font-semibold shadow-xs bg-indigo-600 text-white hover:bg-indigo-500 focus-visible:outline-indigo-600"
                             href={`${
@@ -470,7 +539,7 @@ const DeliveryOrderPage = () => {
                             }`}
                           >
                             Map
-                          </a>
+                          </a> */}
                         </div>
                       )}
                     </div>

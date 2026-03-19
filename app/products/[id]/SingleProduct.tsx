@@ -91,9 +91,9 @@ export default function ProductDetails() {
         });
 
         const data = res.data.data;
-        console.log(data);
+
         setProduct(data);
-        console.log(data, "data");
+
         // set default image
         setSelectedImage(
           data.image.length
@@ -125,14 +125,14 @@ export default function ProductDetails() {
   // When variants or selections change → compute matchedVariant & displayPrice & image
   useEffect(() => {
     if (!product) return;
-    console.log(selectedColor, selectedSize, selectedWeight, "selectedWeight");
+
     const variant = findMatchingVariant(
       product.variants || [],
       selectedColor,
       selectedSize,
       selectedWeight,
     );
-    console.log(variant, "variant");
+
     setMatchedVariant(variant);
 
     // set price:
@@ -151,7 +151,6 @@ export default function ProductDetails() {
     }
     setDisplayPrice(price);
 
-    console.log(variant, "variant");
     // set image to variant image if available, otherwise product.image[0]
     const variantImage =
       variant && variant?.images.length && `${BASE_URL}${variant.images[0]}`;
@@ -196,7 +195,7 @@ export default function ProductDetails() {
       });
       return;
     }
-    console.log(product, "product", matchedVariant);
+
     // if variants exist, ensure matchedVariant exists and is in stock
     if ((product.variants?.length ?? 0) > 0) {
       if (!selectedVariant) {
@@ -229,7 +228,7 @@ export default function ProductDetails() {
         return;
       }
     }
-    console.log(product.storeId._id, "product.storeId._id");
+
     try {
       // payload includes variant sku + attribute snapshot for later receipt
       const payload: unknown = {

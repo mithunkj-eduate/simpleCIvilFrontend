@@ -96,3 +96,7 @@ export interface commenTypes {
   id: string;
   name: string;
 }
+
+export interface ApiErrorResponse {
+  message: string;
+}

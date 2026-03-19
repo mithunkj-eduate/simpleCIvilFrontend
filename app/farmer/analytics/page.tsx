@@ -56,10 +56,7 @@ export default function AnalyticsPage() {
   }, [selectedDistrict?.value, TOKEN, state.user]);
 
   const loadData = async () => {
-    console.log("clled analitys aoi");
-
     if (!TOKEN || !state.user) return;
-    console.log("clled analitys  ....");
     const [sum, profit, over] = await Promise.all([
       api.get(`/farmer/profitSummary?district=${selectedDistrict?.value}`, {
         headers: {

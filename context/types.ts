@@ -12,6 +12,9 @@ type reducerPayload = {
   [payloadTypes.SET_LANG]: {
     lang: string;
   };
+  [payloadTypes.SET_VERSION]: {
+    version: number;
+  };
 
   [payloadTypes.RESET]: {
     resetState: InitialStateType;

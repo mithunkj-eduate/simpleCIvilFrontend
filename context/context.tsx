@@ -11,12 +11,14 @@ export type InitialStateType = {
   user: User | null;
   cart: ICartItem[];
   lang: string;
+  version: number;
 };
 
 export const initialState: InitialStateType = {
   user: null,
   cart: [],
   lang: "en",
+  version: 1,
 };
 
 const AppContext = createContext<{
@@ -34,7 +36,8 @@ const AppProvider: React.FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { TOKEN: token } = Api();
   const lang = Cookies.get("lang") ?? "en";
-  console.log(lang);
+  const version = Cookies.get("version");
+
   const getUser = async () => {
     try {
       const res = await api.get(`/user/verify`, {
@@ -99,6 +102,15 @@ const AppProvider: React.FC<Props> = ({ children }) => {
       getUser();
     }
   }, [token]);
+
+  useEffect(() => {
+    if (version) {
+      dispatch({
+        type: payloadTypes.SET_VERSION,
+        payload: { version: Number(version) },
+      });
+    }
+  }, [version]);
 
   return (
     <AppContext.Provider value={{ dispatch, state }}>

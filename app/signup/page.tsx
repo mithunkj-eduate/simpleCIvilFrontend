@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Label } from "@/stories/Label/Label";
 import { Input } from "@/stories/Input/Input";
 import NavBar from "@/components/commen/Navbar";
@@ -13,10 +13,12 @@ import {
 import { api } from "@/components/helpers/apiheader";
 import { useFormik } from "formik";
 import { SignupSchema } from "@/validations/validationSchemas";
-import { msgType } from "@/utils/commenTypes";
+import { ApiErrorResponse, msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
 import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
+import { AppContext } from "@/context/context";
 
 export interface SignupFormValues {
   name: string;
@@ -57,6 +59,7 @@ export const UserTypeData: UserType[] = [
 ];
 
 const Signup: React.FC = () => {
+  const {state} = useContext(AppContext)
   const router = useRouter();
   const initialValues: SignupFormValues = {
     name: "",
@@ -88,10 +91,27 @@ const Signup: React.FC = () => {
             operation: Operation.CREATE,
           });
 
-          router.push("/login?v=2");
+          router.push(`/login?v=${state.version}`);
         }
       } catch (error) {
         console.error("Signup error:", error);
+        // Cast the error to your specific interface
+        const axiosError = error as AxiosError<ApiErrorResponse>;
+
+        if (axiosError.response) {
+          // This will match your backend: { message: "role is not allowed..." }
+          setMessage({
+            flag: true,
+            message: axiosError.response.data.message,
+            operation: Operation.NONE,
+          });
+        } else {
+          setMessage({
+            flag: true,
+            message: "An unexpected error occurred",
+            operation: Operation.NONE,
+          });
+        }
       }
     },
   });
@@ -197,7 +217,7 @@ const Signup: React.FC = () => {
 
           <p className="mt-4 text-center text-sm">
             Already a member?{" "}
-            <a href="/login?v=2" className="text-indigo-600">
+            <a href={`/login?v=${state.version}`} className="text-indigo-600">
               Login
             </a>
           </p>
