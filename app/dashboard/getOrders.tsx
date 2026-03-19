@@ -194,7 +194,7 @@ const GetOrderPage = () => {
         if (res.status) {
           setMessage({
             flag: true,
-            message: "Update successfully",
+            message: "Accepted order successfully",
             operation: Operation.CREATE,
           });
         } else {
@@ -235,7 +235,7 @@ const GetOrderPage = () => {
                     person.deliveryLocation[1],
                   );
 
-                  const delvary = dis < 2 ? 30 : (dis / 1000) * 10;
+                  const delvary = dis < 2 ? 30 : dis * 10;
 
                   return (
                     <li

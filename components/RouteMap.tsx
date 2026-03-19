@@ -26,12 +26,11 @@ export default function RouteMap() {
 
   // USER'S LIVE SOURCE LOCATION
   const [source, setSource] = useState<{ lat: number; lng: number } | null>(
-    null
+    null,
   );
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey:
-      process.env.GOOGLE_API_KEY ?? "AIzaSyADsDeet4Re2Yt-lGU83dyLeMmXeaXrPfg",
+    googleMapsApiKey: process.env.GOOGLE_API_KEY ?? "",
   });
 
   const [directions, setDirections] =
@@ -50,7 +49,7 @@ export default function RouteMap() {
         (err) => {
           console.error("Error getting location:", err);
           alert("Unable to get your location");
-        }
+        },
       );
     }
   }, []);
@@ -72,10 +71,10 @@ export default function RouteMap() {
           } else {
             console.error("Directions request failed:", status);
           }
-        }
+        },
       );
     }
-  }, [isLoaded, source, lat, lng,destination]);
+  }, [isLoaded, source, lat, lng, destination]);
 
   if (!isLoaded) return <p>Loading Map...</p>;
   if (!source) return <p>Fetching your current location...</p>;
