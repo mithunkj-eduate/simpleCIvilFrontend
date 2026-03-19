@@ -32,7 +32,6 @@ export default function CartPage() {
           headers: { Authorization: `Bearer ${TOKEN}` },
         });
         if (!response.data.data) throw new Error("Failed to fetch cart");
-        console.log(response.data, "data");
         setCartItems(response.data.data.items);
       } catch (err) {
         setError("Error fetching cart. Please try again.");
@@ -51,7 +50,7 @@ export default function CartPage() {
       const response = await api.delete(`/carts/${cartId}`, {
         headers: { Authorization: `Bearer ${TOKEN}` },
       });
-      console.log(response.data);
+
       if (response.data) {
         setCartItems((prev) => prev.filter((item) => item._id !== cartId));
         setMessage({

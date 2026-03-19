@@ -66,7 +66,6 @@ const {state} = useContext(AppContext)
     ? `${BASE_URL}${product.image[0]}`
     : "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-08.jpg"; // fallback image in public folder
 
-  console.log(image, "image");
   // return (
   //   <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-300 group cursor-pointer overflow-hidden">
   //     {/* Product Image */}
@@ -565,7 +564,7 @@ export default function ProductsPage() {
     }
 
     queryParams.append("sort", selectedSort.value);
-    console.log("Fetching products with query params:", queryParams.toString());
+
     try {
       const response = await api.get(
         `/commen/products?${queryParams.toString()}`,
@@ -575,7 +574,7 @@ export default function ProductsPage() {
         throw new Error("Failed to fetch products");
       }
       const data = await response.data;
-      console.log(data, "data");
+
       setProductsData(data);
       setFilteredProducts(data.data);
 

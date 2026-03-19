@@ -187,7 +187,6 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
               "Content-Type": "application/json",
             },
           });
-          console.log(res);
           //   if (res.data) {
           //     setFormData({
           //       cropName: res.data.cropName,
@@ -214,7 +213,6 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
   const submitForm = async (values: typeof initialCropPlanValues) => {
     try {
       if (!TOKEN || !state.user) return;
-      console.log("submited", values);
 
       if (!selectedState || !selectedDistrict || !selectedCrop) {
         setMessage({
@@ -233,8 +231,6 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
         cropName: selectedCrop?.value,
       };
 
-      console.log(body, "body");
-
       const path = "/farmer/production";
 
       const res = await api({
@@ -246,7 +242,6 @@ const AddProductionReport = ({ setModalFlag, operations }: AddProfileProps) => {
         },
       });
 
-      console.log(res, "res");
       if (res.status === 200 && res.data) {
         setMessage({
           flag: true,

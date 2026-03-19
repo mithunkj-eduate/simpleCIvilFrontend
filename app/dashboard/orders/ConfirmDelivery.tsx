@@ -68,7 +68,7 @@ export default function ConfirmDelivery({
           headers: { Authorization: `Bearer ${TOKEN}` },
         },
       );
-      console.log("res", res);
+
       if (res) {
         setMessage({
           flag: true,

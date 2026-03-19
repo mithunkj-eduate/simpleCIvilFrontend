@@ -96,8 +96,6 @@ const GetOrderPage = () => {
     );
   }, []);
 
-  console.log(currentLocation, "currentLocation");
-
   const GetUsers = async () => {
     setLoading(true);
     try {
@@ -207,7 +205,6 @@ const GetOrderPage = () => {
       setLoading(false);
     }
   };
-  console.log(Orders);
 
   const handleClose = () => {
     if (message.operation === Operation.CREATE)
@@ -342,7 +339,6 @@ const GetOrderPage = () => {
                         {/* <Button
                         className=""
                         onClick={() => {
-                          console.log(person.storeLocation, "location");
                           if (person.storeLocation.length)
                             router.push(
                               `/dashboard/orders/map?lat=${person.storeLocation[0]}&lng=${person.storeLocation[1]}`

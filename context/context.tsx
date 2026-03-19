@@ -38,7 +38,6 @@ const AppProvider: React.FC<Props> = ({ children }) => {
   const lang = Cookies.get("lang") ?? "en";
   const version = Cookies.get("version");
 
-  console.log(lang);
   const getUser = async () => {
     try {
       const res = await api.get(`/user/verify`, {

@@ -93,7 +93,6 @@ export default function CheckoutPage() {
     const price = item.salePrice ? item.salePrice * item.quantity : 0;
     return sum + price;
   }, 0);
-  console.log(cartItems, "cartItems");
   interface initialValuesTypes {
     fullName: string;
     email: string;
@@ -109,7 +108,7 @@ export default function CheckoutPage() {
     deliveryAddress: "",
     paymentMethod: "",
   };
-  console.log(state.cart, "cart");
+
   /**
    * ---------------------------------------------------------
    * HANDLE ORDER CREATE - FOR NEW SCHEMA
@@ -127,7 +126,6 @@ export default function CheckoutPage() {
             ? [source.lat, source.lng]
             : [13.019797282773808, 77.63735063146159],
         );
-        console.log(body, "body1");
 
         for (let i = 0; i < body.length; i++) {
           await api.post("/orders", body[i], {

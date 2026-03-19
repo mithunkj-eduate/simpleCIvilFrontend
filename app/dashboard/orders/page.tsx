@@ -118,7 +118,6 @@ const DeliveryOrderPage = () => {
 
   const handleGenerateCode = async (orderId: string, buyerId: string) => {
     try {
-      console.log(orderId, buyerId, "item");
       if (!orderId || !buyerId) {
         setMessage({
           flag: true,

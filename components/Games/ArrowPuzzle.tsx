@@ -131,7 +131,7 @@ export default function ArrowPuzzlePro() {
 
       setPlayer({ x, y });
       setScore((s) => s + 10);
-      console.log(goal, x, y, "goal");
+
       if (x === goal.x && y === goal.y) {
         setWin(true);
 
