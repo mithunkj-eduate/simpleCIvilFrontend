@@ -13,6 +13,7 @@ import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import { CartVariantType } from "@/types/cart";
 import { SafeImage } from "@/app/utils/SafeImage";
+import Loading from "@/components/helpers/Loading";
 
 export default function ProductDetails() {
   const [product, setProduct] = useState<any>(null);
@@ -165,7 +166,7 @@ export default function ProductDetails() {
       );
   }, [product, selectedColor, selectedSize, selectedWeight]);
 
-  if (loading) return <p className="text-center py-10">Loading…</p>;
+  if (loading) return <Loading />;
   if (error || !product)
     return <p className="text-red-500 text-center">{error}</p>;
 

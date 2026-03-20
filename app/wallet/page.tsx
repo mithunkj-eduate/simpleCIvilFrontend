@@ -9,6 +9,7 @@ import RoleStats from "./RoleStats";
 import TransactionTable from "./TransactionTable";
 import WithdrawModal from "./WithdrawModal";
 import Navbar from "@/components/commen/Navbar";
+import Loading from "@/components/helpers/Loading";
 
 export enum WalletType {
   SHOPPING = "SHOPPING",
@@ -94,7 +95,7 @@ export default function WalletPage() {
     }
   }, [TOKEN, state.user]);
 
-  // if (!wallet) return <div>Loading...</div>;
+  if (!wallet) return <div><Loading /></div>;
 
   return (
     <div className="p-6 space-y-6">

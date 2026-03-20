@@ -12,6 +12,7 @@ import { msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
 import { SafeImage } from "../utils/SafeImage";
+import Loading from "@/components/helpers/Loading";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<ICartItem[]>([]);
@@ -81,7 +82,7 @@ export default function CartPage() {
   //   return sum + price;
   // }, 0);
 
-  if (loading) return <p className="text-center py-10">Loading...</p>;
+  if (loading) return <p className="text-center py-10"><Loading /></p>;
   if (error || !cartItems)
     return (
       <p className="text-red-500 text-center py-10">

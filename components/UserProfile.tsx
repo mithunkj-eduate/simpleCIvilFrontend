@@ -1,11 +1,16 @@
 "use client";
 import { AppContext } from "@/context/context";
 import React, { useContext } from "react";
+import Loading from "./helpers/Loading";
 
 const UserProfile = () => {
   const { state } = useContext(AppContext);
   if (!state.user?.id) {
-    return <p className="text-center mt-10">Loading...</p>;
+    return (
+      <p className="text-center mt-10">
+        <Loading />
+      </p>
+    );
   } else {
     return (
       <div className="max-w-4xl mx-auto p-4">

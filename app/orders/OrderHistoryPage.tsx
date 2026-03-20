@@ -9,6 +9,7 @@ import GenerateCode from "./GenerateCode";
 import { DeliveryProgress } from "./DeliveryProgress";
 import { DeliveryStatus } from "@/types/order";
 import { SafeImage } from "../utils/SafeImage";
+import Loading from "@/components/helpers/Loading";
 
 /* Similar Products */
 interface SimilarProduct {
@@ -95,7 +96,7 @@ export default function OrderHistoryPage() {
      UI RENDER
   ---------------------------- */
 
-  if (loading) return <p className="text-center py-10">Loading...</p>;
+  if (loading) return <p className="text-center py-10"><Loading /></p>;
   if (error) return <p className="text-red-500 text-center py-10">{error}</p>;
 
   return (

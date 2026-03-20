@@ -27,6 +27,7 @@ import Link from "next/link";
 import { CartVariantType } from "@/types/cart";
 import { SafeImage } from "../utils/SafeImage";
 import { AppContext } from "@/context/context";
+import Loading from "@/components/helpers/Loading";
 
 // Sample ProductCard component
 interface Product {
@@ -1272,9 +1273,7 @@ export default function ProductsPage() {
               {/* Product grid */}
               <div className="lg:col-span-3 ">
                 {loading ? (
-                  <p className="text-gray-500 text-center py-10">
-                    Loading products...
-                  </p>
+                  <Loading />
                 ) : error ? (
                   <p className="text-red-500 text-center py-10">{error}</p>
                 ) : (

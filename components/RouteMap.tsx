@@ -10,6 +10,7 @@ import {
 import Navbar from "@/components/commen/Navbar";
 import { LicenseTypes } from "@/utils/enum.types";
 import { useSearchParams } from "next/navigation";
+import Loading from "./helpers/Loading";
 
 const containerStyle = {
   width: "100%",
@@ -76,7 +77,7 @@ export default function RouteMap() {
     }
   }, [isLoaded, source, lat, lng, destination]);
 
-  if (!isLoaded) return <p>Loading Map...</p>;
+  if (!isLoaded) return <p><Loading /></p>;
   if (!source) return <p>Fetching your current location...</p>;
 
   return (

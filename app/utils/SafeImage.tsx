@@ -1,4 +1,5 @@
 "use client";
+import Loading from "@/components/helpers/Loading";
 import Image from "next/image";
 import React from "react";
 
@@ -22,7 +23,7 @@ export function SafeImage({
   onClick,
 }: Props) {
   const [imgSrc, setImgSrc] = useState(src);
-  if (!src) return <div>Loading ...</div>;
+  if (!src) return <div><Loading /></div>;
 
   return (
     <Image
