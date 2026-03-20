@@ -121,7 +121,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     }
 
     return items;
-  }, [state.user]);
+  }, [state.user,state.version]);
 
   const ConsoleNavigation = useMemo(() => {
     const items = [
@@ -153,7 +153,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     }
 
     return items;
-  }, [state.user]);
+  }, [state.user,state.version]);
 
   const ConsoleDelveryBoyNavigation = useMemo(
     () => [
@@ -161,9 +161,9 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       { name: "Orders", href: `/dashboard/orders?v=${state.version}`, current: false },
       // { name: "Map", href: "/dashboard/routemap", current: false },
     ],
-    [],
+    [state.version],
   );
-
+console.log(state.version)
   useEffect(() => {
     if (NavType === LicenseTypes.ADMIN && state.user) {
       setItems(ConsoleNavigation);
@@ -180,6 +180,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     ConsoleNavigation,
     state.user,
     ConsoleDelveryBoyNavigation,
+    state.version
   ]);
 
   return (

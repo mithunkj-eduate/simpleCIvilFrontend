@@ -18,7 +18,7 @@ export const initialState: InitialStateType = {
   user: null,
   cart: [],
   lang: "en",
-  version: 1,
+  version: 2,
 };
 
 const AppContext = createContext<{
@@ -110,7 +110,7 @@ const AppProvider: React.FC<Props> = ({ children }) => {
         payload: { version: Number(version) },
       });
     }
-  }, [version]);
+  }, [version,state.version]);
 
   return (
     <AppContext.Provider value={{ dispatch, state }}>
