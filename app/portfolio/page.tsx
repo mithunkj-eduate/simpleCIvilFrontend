@@ -168,39 +168,132 @@ const PortfolioForm = () => {
     }));
   };
 
-  // Handle array of objects
+  // // Handle array of objects
+  // const handleArrayChange = (
+  //   section: string,
+  //   index: number,
+  //   field: string,
+  //   value: any,
+  // ) => {
+  //   const newArr = [...portfolio[section]];
+  //   newArr[index][field] = value;
+  //   setPortfolio((prev) => ({ ...prev, [section]: newArr }));
+  // };
+
+
+
+  // Add a new hero stat
+// addArrayItem("hero.stats", { value: "", label: "" });
+
+// Add a new project
+// addArrayItem("projects", { title: "", desc: "", link: "", tech: [], bg: "" });
+
+// Add a new experience
+// addArrayItem("about.experience", { company: "", role: "", period: "", tech: [] });
+
+// Helper: get nested object value
+const getNested = (obj: any, path: string) => {
+  return path.split(".").reduce((acc, key) => acc?.[key], obj);
+};
+
+// Helper: set nested object value
+const setNested = (obj: any, path: string, value: any) => {
+  const keys = path.split(".");
+  const lastKey = keys.pop()!;
+  let temp = obj;
+  keys.forEach((key) => {
+    if (!temp[key]) temp[key] = {};
+    temp = temp[key];
+  });
+  temp[lastKey] = value;
+};
+
+// Add new array item
+const addArrayItem = (sectionPath: string, item: any) => {
+  console.log(sectionPath,item,"sectionPath")
+  setPortfolio((prev) => {
+    const updated = { ...prev };
+    const arr = getNested(updated, sectionPath) || [];
+    setNested(updated, sectionPath, [...arr, item]);
+    return updated;
+  });
+};
+
+  // // Add new array item
+  // const addArrayItem = (section: string, item: any) => {
+  //   console.log(section, "prev", portfolio);
+
+  //   setPortfolio((prev) => ({
+  //     ...prev,
+  //     [section]: [...prev[section], item],
+  //   }));
+  // };
+
+  // // Get nested value from string path
+  // const getNested = (obj: any, path: string) => {
+  //   return path.split(".").reduce((acc, key) => acc?.[key], obj);
+  // };
+
+  // // Set nested value
+  // const setNested = (obj: any, path: string, value: any) => {
+  //   const keys = path.split(".");
+  //   const lastKey = keys.pop()!;
+  //   let temp = obj;
+  //   keys.forEach((key) => {
+  //     if (!temp[key]) temp[key] = {};
+  //     temp = temp[key];
+  //   });
+  //   temp[lastKey] = value;
+  // };
+
+  const removeArrayItem = (sectionPath: string, index: number) => {
+    const arr = getNested(portfolio, sectionPath);
+    if (!Array.isArray(arr)) return; // safety
+    const newArr = [...arr];
+    newArr.splice(index, 1);
+
+    setPortfolio((prev) => {
+      const updated = { ...prev };
+      setNested(updated, sectionPath, newArr);
+      return updated;
+    });
+  };
+
   const handleArrayChange = (
-    section: string,
+    sectionPath: string,
     index: number,
     field: string,
     value: any,
   ) => {
-    const newArr = [...portfolio[section]];
-    newArr[index][field] = value;
-    setPortfolio((prev) => ({ ...prev, [section]: newArr }));
+    const arr = getNested(portfolio, sectionPath);
+    if (!Array.isArray(arr)) return;
+
+    const newArr = [...arr];
+    if (field)
+      newArr[index][field] = value; // for objects
+    else newArr[index] = value; // for string arrays like about.desc
+
+    setPortfolio((prev) => {
+      const updated = { ...prev };
+      setNested(updated, sectionPath, newArr);
+      return updated;
+    });
   };
 
-  // Add new array item
-  const addArrayItem = (section: string, item: any) => {
-    setPortfolio((prev) => ({
-      ...prev,
-      [section]: [...prev[section], item],
-    }));
-  };
-
-  // Remove array item
-  const removeArrayItem = (section: string, index: number) => {
-    const newArr = [...portfolio[section]];
-    newArr.splice(index, 1);
-    setPortfolio((prev) => ({ ...prev, [section]: newArr }));
-  };
+  // // Remove array item
+  // const removeArrayItem = (section: string, index: number) => {
+  //   console.log(section, "section", portfolio, portfolio[section]);
+  //   const newArr = [...portfolio[section]];
+  //   newArr.splice(index, 1);
+  //   setPortfolio((prev) => ({ ...prev, [section]: newArr }));
+  // };
 
   // Submit form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       if (!TOKEN || !state.user) return;
-
+console.log(portfolio)
       try {
         const res = await api.put(`/portfolio`, portfolio, {
           headers: {
