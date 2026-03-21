@@ -102,15 +102,17 @@ import { AppContext } from "@/context/context";
 import MessageModal from "@/customComponents/MessageModal";
 import { ApiErrorResponse, msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
-import { Operation } from "@/utils/enum.types";
+import { LicenseTypes, Operation } from "@/utils/enum.types";
 import Loading from "@/components/helpers/Loading";
 import { AxiosError } from "axios";
 import { Button } from "@/stories/Button/Button";
+import Navbar from "@/components/commen/Navbar";
 
 const PortfolioForm = () => {
   const [portfolio, setPortfolio] = useState(defaultPortfolio);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<msgType>(emptyMessage);
+  const [open, setOpen] = useState(false);
 
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
@@ -180,44 +182,42 @@ const PortfolioForm = () => {
   //   setPortfolio((prev) => ({ ...prev, [section]: newArr }));
   // };
 
-
-
   // Add a new hero stat
-// addArrayItem("hero.stats", { value: "", label: "" });
+  // addArrayItem("hero.stats", { value: "", label: "" });
 
-// Add a new project
-// addArrayItem("projects", { title: "", desc: "", link: "", tech: [], bg: "" });
+  // Add a new project
+  // addArrayItem("projects", { title: "", desc: "", link: "", tech: [], bg: "" });
 
-// Add a new experience
-// addArrayItem("about.experience", { company: "", role: "", period: "", tech: [] });
+  // Add a new experience
+  // addArrayItem("about.experience", { company: "", role: "", period: "", tech: [] });
 
-// Helper: get nested object value
-const getNested = (obj: any, path: string) => {
-  return path.split(".").reduce((acc, key) => acc?.[key], obj);
-};
+  // Helper: get nested object value
+  const getNested = (obj: any, path: string) => {
+    return path.split(".").reduce((acc, key) => acc?.[key], obj);
+  };
 
-// Helper: set nested object value
-const setNested = (obj: any, path: string, value: any) => {
-  const keys = path.split(".");
-  const lastKey = keys.pop()!;
-  let temp = obj;
-  keys.forEach((key) => {
-    if (!temp[key]) temp[key] = {};
-    temp = temp[key];
-  });
-  temp[lastKey] = value;
-};
+  // Helper: set nested object value
+  const setNested = (obj: any, path: string, value: any) => {
+    const keys = path.split(".");
+    const lastKey = keys.pop()!;
+    let temp = obj;
+    keys.forEach((key) => {
+      if (!temp[key]) temp[key] = {};
+      temp = temp[key];
+    });
+    temp[lastKey] = value;
+  };
 
-// Add new array item
-const addArrayItem = (sectionPath: string, item: any) => {
-  console.log(sectionPath,item,"sectionPath")
-  setPortfolio((prev) => {
-    const updated = { ...prev };
-    const arr = getNested(updated, sectionPath) || [];
-    setNested(updated, sectionPath, [...arr, item]);
-    return updated;
-  });
-};
+  // Add new array item
+  const addArrayItem = (sectionPath: string, item: any) => {
+    console.log(sectionPath, item, "sectionPath");
+    setPortfolio((prev) => {
+      const updated = { ...prev };
+      const arr = getNested(updated, sectionPath) || [];
+      setNested(updated, sectionPath, [...arr, item]);
+      return updated;
+    });
+  };
 
   // // Add new array item
   // const addArrayItem = (section: string, item: any) => {
@@ -293,7 +293,7 @@ const addArrayItem = (sectionPath: string, item: any) => {
     e.preventDefault();
     try {
       if (!TOKEN || !state.user) return;
-console.log(portfolio)
+      console.log(portfolio);
       try {
         const res = await api.put(`/portfolio`, portfolio, {
           headers: {
@@ -339,230 +339,119 @@ console.log(portfolio)
 
   if (loading) return <Loading />;
 
+  const handleOpen = () => {
+    setOpen(true);
+
+    // auto close after 2 seconds
+    setTimeout(() => {
+      setOpen(false);
+    }, 10000);
+  };
+
   return (
-    <div className="max-w-5xl mx-auto p-4 space-y-8">
-      <h1 className="text-3xl font-bold text-center">Update Portfolio</h1>
+    <>
+      <Navbar NavType={LicenseTypes.USER} />
+      {state.user && open && <PortfolioLink id={state.user?.id} />}
+      <div className="max-w-5xl mx-auto p-4 space-y-8">
+        <div className="flex gap-3">
+          <h1 className="text-3xl font-bold text-center flex-start">
+            Update Portfolio{" "}
+          </h1>
+          <button
+            onClick={handleOpen}
+            className="bg-cyan-500 text-white px-4 py-2 rounded hover:bg-cyan-600 flex-end"
+          >
+            Open
+          </button>
+        </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
-        {/* HERO SECTION */}
-        <section className="border p-4 rounded-lg space-y-4">
-          <h2 className="text-2xl font-semibold">Hero Section</h2>
-          {["name", "highlight", "subtitle", "desc", "image"].map((field) => (
-            <div key={field}>
-              <label className="block font-medium mb-1">{field}</label>
-              <input
-                type="text"
-                value={portfolio.hero[field]}
-                onChange={(e) => handleChange("hero", field, e.target.value)}
-                className="w-full border rounded px-3 py-2"
-              />
-            </div>
-          ))}
-
-          {/* Hero Stats */}
-          <div>
-            <label className="block font-medium mb-2">Stats</label>
-            {portfolio.hero.stats.map((stat, i) => (
-              <div key={i} className="flex gap-2 mb-2 flex-col sm:flex-row">
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* HERO SECTION */}
+          <section className="border p-4 rounded-lg space-y-4">
+            <h2 className="text-2xl font-semibold">Hero Section</h2>
+            {["name", "highlight", "subtitle", "desc", "image"].map((field) => (
+              <div key={field}>
+                <label className="block font-medium mb-1">{field}</label>
                 <input
                   type="text"
-                  placeholder="Value"
-                  value={stat.value}
-                  onChange={(e) =>
-                    handleArrayChange("hero.stats", i, "value", e.target.value)
-                  }
-                  className="flex-1 border rounded px-3 py-2"
-                />
-                <input
-                  type="text"
-                  placeholder="Label"
-                  value={stat.label}
-                  onChange={(e) =>
-                    handleArrayChange("hero.stats", i, "label", e.target.value)
-                  }
-                  className="flex-1 border rounded px-3 py-2"
-                />
-                <Button
-                  mode="delete"
-                  type="button"
-                  onClick={() => removeArrayItem("hero.stats", i)}
-                  className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
-                >
-                  Delete
-                </Button>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() =>
-                addArrayItem("hero.stats", { value: "", label: "" })
-              }
-              className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
-            >
-              Add Stat
-            </button>
-          </div>
-        </section>
-
-        {/* PROJECTS */}
-        <section className="border p-4 rounded-lg space-y-4">
-          <h2 className="text-2xl font-semibold">Projects</h2>
-          {portfolio.projects.map((proj, i) => (
-            <div key={i} className="border p-3 rounded-lg flex flex-col gap-2">
-              {["title", "desc", "link", "bg"].map((field) => (
-                <input
-                  key={field}
-                  type="text"
-                  placeholder={field}
-                  value={proj[field]}
-                  onChange={(e) =>
-                    handleArrayChange("projects", i, field, e.target.value)
-                  }
+                  value={portfolio.hero[field]}
+                  onChange={(e) => handleChange("hero", field, e.target.value)}
                   className="w-full border rounded px-3 py-2"
                 />
+              </div>
+            ))}
+
+            {/* Hero Stats */}
+            <div>
+              <label className="block font-medium mb-2">Stats</label>
+              {portfolio.hero.stats.map((stat, i) => (
+                <div key={i} className="flex gap-2 mb-2 flex-col sm:flex-row">
+                  <input
+                    type="text"
+                    placeholder="Value"
+                    value={stat.value}
+                    onChange={(e) =>
+                      handleArrayChange(
+                        "hero.stats",
+                        i,
+                        "value",
+                        e.target.value,
+                      )
+                    }
+                    className="flex-1 border rounded px-3 py-2"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Label"
+                    value={stat.label}
+                    onChange={(e) =>
+                      handleArrayChange(
+                        "hero.stats",
+                        i,
+                        "label",
+                        e.target.value,
+                      )
+                    }
+                    className="flex-1 border rounded px-3 py-2"
+                  />
+                  <Button
+                    mode="delete"
+                    type="button"
+                    onClick={() => removeArrayItem("hero.stats", i)}
+                    className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </Button>
+                </div>
               ))}
-              <input
-                type="text"
-                placeholder="Tech (comma separated)"
-                value={proj.tech.join(", ")}
-                onChange={(e) =>
-                  handleArrayChange(
-                    "projects",
-                    i,
-                    "tech",
-                    e.target.value.split(","),
-                  )
-                }
-                className="w-full border rounded px-3 py-2"
-              />
-              <Button
-                mode="delete"
+              <button
                 type="button"
-                onClick={() => removeArrayItem("projects", i)}
-                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                onClick={() =>
+                  addArrayItem("hero.stats", { value: "", label: "" })
+                }
+                className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
               >
-                Delete Project
-              </Button>
+                Add Stat
+              </button>
             </div>
-          ))}
-          <button
-            type="button"
-            onClick={() =>
-              addArrayItem("projects", {
-                title: "",
-                desc: "",
-                link: "",
-                tech: [],
-                bg: "",
-              })
-            }
-            className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
-          >
-            Add Project
-          </button>
-        </section>
+          </section>
 
-        {/* ABOUT */}
-        <section className="border p-4 rounded-lg space-y-4">
-          <h2 className="text-2xl font-semibold">About</h2>
-
-          {/* About Desc */}
-          <div>
-            <label className="block font-medium mb-2">Description</label>
-            {portfolio.about.desc.map((d, i) => (
-              <div key={i} className="flex gap-2 mb-2">
-                <input
-                  type="text"
-                  value={d}
-                  onChange={(e) =>
-                    handleArrayChange("about.desc", i, "", e.target.value)
-                  }
-                  className="flex-1 border rounded px-3 py-2"
-                />
-                <Button
-                  mode="delete"
-                  type="button"
-                  onClick={() => removeArrayItem("about.desc", i)}
-                  className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
-                >
-                  Delete
-                </Button>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() => addArrayItem("about.desc", "")}
-              className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
-            >
-              Add Description
-            </button>
-          </div>
-
-          {/* Info */}
-          <div>
-            <label className="block font-medium mb-2">Info</label>
-            {portfolio.about.info.map((info, i) => (
-              <div key={i} className="flex gap-2 mb-2 flex-col sm:flex-row">
-                <input
-                  type="text"
-                  placeholder="Label"
-                  value={info.label}
-                  onChange={(e) =>
-                    handleArrayChange("about.info", i, "label", e.target.value)
-                  }
-                  className="flex-1 border rounded px-3 py-2"
-                />
-                <input
-                  type="text"
-                  placeholder="Value"
-                  value={info.value}
-                  onChange={(e) =>
-                    handleArrayChange("about.info", i, "value", e.target.value)
-                  }
-                  className="flex-1 border rounded px-3 py-2"
-                />
-                <Button
-                  mode="delete"
-                  type="button"
-                  onClick={() => removeArrayItem("about.info", i)}
-                  className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
-                >
-                  Delete
-                </Button>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() =>
-                addArrayItem("about.info", { label: "", value: "" })
-              }
-              className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
-            >
-              Add Info
-            </button>
-          </div>
-
-          {/* Experience */}
-          <div>
-            <label className="block font-medium mb-2">Experience</label>
-            {portfolio.about.experience.map((exp, i) => (
+          {/* PROJECTS */}
+          <section className="border p-4 rounded-lg space-y-4">
+            <h2 className="text-2xl font-semibold">Projects</h2>
+            {portfolio.projects.map((proj, i) => (
               <div
                 key={i}
-                className="flex flex-col gap-2 mb-2 border p-2 rounded"
+                className="border p-3 rounded-lg flex flex-col gap-2"
               >
-                {["company", "role", "period"].map((field) => (
+                {["title", "desc", "link", "bg"].map((field) => (
                   <input
                     key={field}
                     type="text"
                     placeholder={field}
-                    value={exp[field]}
+                    value={proj[field]}
                     onChange={(e) =>
-                      handleArrayChange(
-                        "about.experience",
-                        i,
-                        field,
-                        e.target.value,
-                      )
+                      handleArrayChange("projects", i, field, e.target.value)
                     }
                     className="w-full border rounded px-3 py-2"
                   />
@@ -570,10 +459,10 @@ console.log(portfolio)
                 <input
                   type="text"
                   placeholder="Tech (comma separated)"
-                  value={exp.tech.join(", ")}
+                  value={proj.tech.join(", ")}
                   onChange={(e) =>
                     handleArrayChange(
-                      "about.experience",
+                      "projects",
                       i,
                       "tech",
                       e.target.value.split(","),
@@ -584,223 +473,428 @@ console.log(portfolio)
                 <Button
                   mode="delete"
                   type="button"
-                  onClick={() => removeArrayItem("about.experience", i)}
-                  className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
+                  onClick={() => removeArrayItem("projects", i)}
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                 >
-                  Delete Experience
+                  Delete Project
                 </Button>
               </div>
             ))}
             <button
               type="button"
               onClick={() =>
-                addArrayItem("about.experience", {
-                  company: "",
-                  role: "",
-                  period: "",
+                addArrayItem("projects", {
+                  title: "",
+                  desc: "",
+                  link: "",
                   tech: [],
+                  bg: "",
                 })
               }
               className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
             >
-              Add Experience
+              Add Project
             </button>
-          </div>
-        </section>
+          </section>
 
-        {/* SKILLS */}
-        <section className="border p-4 rounded-lg space-y-4">
-          <h2 className="text-2xl font-semibold">Skills</h2>
-          {portfolio.skills.map((skill, i) => (
-            <div
-              key={i}
-              className="flex flex-col gap-2 mb-2 border p-2 rounded"
-            >
-              <input
-                type="text"
-                placeholder="Title"
-                value={skill.title}
-                onChange={(e) =>
-                  handleArrayChange("skills", i, "title", e.target.value)
-                }
-                className="w-full border rounded px-3 py-2"
-              />
-              <input
-                type="text"
-                placeholder="Items (comma separated)"
-                value={skill.items.join(",")}
-                onChange={(e) =>
-                  handleArrayChange(
-                    "skills",
-                    i,
-                    "items",
-                    e.target.value.split(","),
-                  )
-                }
-                className="w-full border rounded px-3 py-2"
-              />
-              <Button
-                mode="delete"
+          {/* ABOUT */}
+          <section className="border p-4 rounded-lg space-y-4">
+            <h2 className="text-2xl font-semibold">About</h2>
+
+            {/* About Desc */}
+            <div>
+              <label className="block font-medium mb-2">Description</label>
+              {portfolio.about.desc.map((d, i) => (
+                <div key={i} className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={d}
+                    onChange={(e) =>
+                      handleArrayChange("about.desc", i, "", e.target.value)
+                    }
+                    className="flex-1 border rounded px-3 py-2"
+                  />
+                  <Button
+                    mode="delete"
+                    type="button"
+                    onClick={() => removeArrayItem("about.desc", i)}
+                    className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </Button>
+                </div>
+              ))}
+              <button
                 type="button"
-                onClick={() => removeArrayItem("skills", i)}
-                className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
+                onClick={() => addArrayItem("about.desc", "")}
+                className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
               >
-                Delete Skill
-              </Button>
+                Add Description
+              </button>
             </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addArrayItem("skills", { title: "", items: [] })}
-            className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
-          >
-            Add Skill
-          </button>
-        </section>
 
-        {/* CONTACT */}
-        <section className="border p-4 rounded-lg space-y-4">
-          <h2 className="text-2xl font-semibold">Contact</h2>
-          {["title", "desc", "email", "phone"].map((field) => (
-            <input
-              key={field}
-              type="text"
-              placeholder={field}
-              value={portfolio.contact[field]}
-              onChange={(e) => handleChange("contact", field, e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            />
-          ))}
+            {/* Info */}
+            <div>
+              <label className="block font-medium mb-2">Info</label>
+              {portfolio.about.info.map((info, i) => (
+                <div key={i} className="flex gap-2 mb-2 flex-col sm:flex-row">
+                  <input
+                    type="text"
+                    placeholder="Label"
+                    value={info.label}
+                    onChange={(e) =>
+                      handleArrayChange(
+                        "about.info",
+                        i,
+                        "label",
+                        e.target.value,
+                      )
+                    }
+                    className="flex-1 border rounded px-3 py-2"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Value"
+                    value={info.value}
+                    onChange={(e) =>
+                      handleArrayChange(
+                        "about.info",
+                        i,
+                        "value",
+                        e.target.value,
+                      )
+                    }
+                    className="flex-1 border rounded px-3 py-2"
+                  />
+                  <Button
+                    mode="delete"
+                    type="button"
+                    onClick={() => removeArrayItem("about.info", i)}
+                    className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </Button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() =>
+                  addArrayItem("about.info", { label: "", value: "" })
+                }
+                className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
+              >
+                Add Info
+              </button>
+            </div>
 
-          {/* Social Links */}
-          <div>
-            <label className="block font-medium mb-2">Social Links</label>
-            {portfolio.contact.social.map((s, i) => (
-              <div key={i} className="flex gap-2 mb-2 flex-col sm:flex-row">
+            {/* Experience */}
+            <div>
+              <label className="block font-medium mb-2">Experience</label>
+              {portfolio.about.experience.map((exp, i) => (
+                <div
+                  key={i}
+                  className="flex flex-col gap-2 mb-2 border p-2 rounded"
+                >
+                  {["company", "role", "period"].map((field) => (
+                    <input
+                      key={field}
+                      type="text"
+                      placeholder={field}
+                      value={exp[field]}
+                      onChange={(e) =>
+                        handleArrayChange(
+                          "about.experience",
+                          i,
+                          field,
+                          e.target.value,
+                        )
+                      }
+                      className="w-full border rounded px-3 py-2"
+                    />
+                  ))}
+                  <input
+                    type="text"
+                    placeholder="Tech (comma separated)"
+                    value={exp.tech.join(", ")}
+                    onChange={(e) =>
+                      handleArrayChange(
+                        "about.experience",
+                        i,
+                        "tech",
+                        e.target.value.split(","),
+                      )
+                    }
+                    className="w-full border rounded px-3 py-2"
+                  />
+                  <Button
+                    mode="delete"
+                    type="button"
+                    onClick={() => removeArrayItem("about.experience", i)}
+                    className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
+                  >
+                    Delete Experience
+                  </Button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() =>
+                  addArrayItem("about.experience", {
+                    company: "",
+                    role: "",
+                    period: "",
+                    tech: [],
+                  })
+                }
+                className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
+              >
+                Add Experience
+              </button>
+            </div>
+          </section>
+
+          {/* SKILLS */}
+          <section className="border p-4 rounded-lg space-y-4">
+            <h2 className="text-2xl font-semibold">Skills</h2>
+            {portfolio.skills.map((skill, i) => (
+              <div
+                key={i}
+                className="flex flex-col gap-2 mb-2 border p-2 rounded"
+              >
                 <input
                   type="text"
-                  placeholder="Name"
-                  value={s.name}
+                  placeholder="Title"
+                  value={skill.title}
                   onChange={(e) =>
-                    handleArrayChange(
-                      "contact.social",
-                      i,
-                      "name",
-                      e.target.value,
-                    )
+                    handleArrayChange("skills", i, "title", e.target.value)
                   }
-                  className="flex-1 border rounded px-3 py-2"
+                  className="w-full border rounded px-3 py-2"
                 />
                 <input
                   type="text"
-                  placeholder="Link"
-                  value={s.link}
+                  placeholder="Items (comma separated)"
+                  value={skill.items.join(",")}
                   onChange={(e) =>
                     handleArrayChange(
-                      "contact.social",
+                      "skills",
                       i,
-                      "link",
-                      e.target.value,
+                      "items",
+                      e.target.value.split(","),
                     )
                   }
-                  className="flex-1 border rounded px-3 py-2"
+                  className="w-full border rounded px-3 py-2"
                 />
                 <Button
                   mode="delete"
                   type="button"
-                  onClick={() => removeArrayItem("contact.social", i)}
+                  onClick={() => removeArrayItem("skills", i)}
                   className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
                 >
-                  Delete
+                  Delete Skill
                 </Button>
               </div>
             ))}
             <button
               type="button"
-              onClick={() =>
-                addArrayItem("contact.social", { name: "", link: "" })
-              }
+              onClick={() => addArrayItem("skills", { title: "", items: [] })}
               className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
             >
-              Add Social Link
+              Add Skill
             </button>
-          </div>
-        </section>
+          </section>
 
-        {/* FOOTER */}
-        <section className="border p-4 rounded-lg space-y-4">
-          <h2 className="text-2xl font-semibold">Footer</h2>
-          <input
-            type="text"
-            placeholder="Footer Text"
-            value={portfolio.footer.text}
-            onChange={(e) => handleChange("footer", "text", e.target.value)}
-            className="w-full border rounded px-3 py-2"
-          />
-
-          {/* Footer Links */}
-          <div>
-            <label className="block font-medium mb-2">Links</label>
-            {portfolio.footer.links.map((link, i) => (
-              <div key={i} className="flex gap-2 mb-2 flex-col sm:flex-row">
-                <input
-                  type="text"
-                  placeholder="Name"
-                  value={link.name}
-                  onChange={(e) =>
-                    handleArrayChange("footer.links", i, "name", e.target.value)
-                  }
-                  className="flex-1 border rounded px-3 py-2"
-                />
-                <input
-                  type="text"
-                  placeholder="Link"
-                  value={link.link}
-                  onChange={(e) =>
-                    handleArrayChange("footer.links", i, "link", e.target.value)
-                  }
-                  className="flex-1 border rounded px-3 py-2"
-                />
-                <Button
-                  mode="delete"
-                  type="button"
-                  onClick={() => removeArrayItem("footer.links", i)}
-                  // className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
-                >
-                  Delete
-                </Button>
-              </div>
+          {/* CONTACT */}
+          <section className="border p-4 rounded-lg space-y-4">
+            <h2 className="text-2xl font-semibold">Contact</h2>
+            {["title", "desc", "email", "phone"].map((field) => (
+              <input
+                key={field}
+                type="text"
+                placeholder={field}
+                value={portfolio.contact[field]}
+                onChange={(e) => handleChange("contact", field, e.target.value)}
+                className="w-full border rounded px-3 py-2"
+              />
             ))}
-            <button
-              type="button"
-              onClick={() =>
-                addArrayItem("footer.links", { name: "", link: "" })
-              }
-              className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
-            >
-              Add Footer Link
-            </button>
-          </div>
-        </section>
 
-        <button
-          type="submit"
-          className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600"
-        >
-          Save Portfolio
-        </button>
-      </form>
+            {/* Social Links */}
+            <div>
+              <label className="block font-medium mb-2">Social Links</label>
+              {portfolio.contact.social.map((s, i) => (
+                <div key={i} className="flex gap-2 mb-2 flex-col sm:flex-row">
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    value={s.name}
+                    onChange={(e) =>
+                      handleArrayChange(
+                        "contact.social",
+                        i,
+                        "name",
+                        e.target.value,
+                      )
+                    }
+                    className="flex-1 border rounded px-3 py-2"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Link"
+                    value={s.link}
+                    onChange={(e) =>
+                      handleArrayChange(
+                        "contact.social",
+                        i,
+                        "link",
+                        e.target.value,
+                      )
+                    }
+                    className="flex-1 border rounded px-3 py-2"
+                  />
+                  <Button
+                    mode="delete"
+                    type="button"
+                    onClick={() => removeArrayItem("contact.social", i)}
+                    className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </Button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() =>
+                  addArrayItem("contact.social", { name: "", link: "" })
+                }
+                className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
+              >
+                Add Social Link
+              </button>
+            </div>
+          </section>
 
-      <MessageModal
-        handleClose={() => {
-          setMessage(emptyMessage);
-        }}
-        modalFlag={message.flag}
-        operation={message.operation}
-        value={message.message}
-      />
-    </div>
+          {/* FOOTER */}
+          <section className="border p-4 rounded-lg space-y-4">
+            <h2 className="text-2xl font-semibold">Footer</h2>
+            <input
+              type="text"
+              placeholder="Footer Text"
+              value={portfolio.footer.text}
+              onChange={(e) => handleChange("footer", "text", e.target.value)}
+              className="w-full border rounded px-3 py-2"
+            />
+
+            {/* Footer Links */}
+            <div>
+              <label className="block font-medium mb-2">Links</label>
+              {portfolio.footer.links.map((link, i) => (
+                <div key={i} className="flex gap-2 mb-2 flex-col sm:flex-row">
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    value={link.name}
+                    onChange={(e) =>
+                      handleArrayChange(
+                        "footer.links",
+                        i,
+                        "name",
+                        e.target.value,
+                      )
+                    }
+                    className="flex-1 border rounded px-3 py-2"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Link"
+                    value={link.link}
+                    onChange={(e) =>
+                      handleArrayChange(
+                        "footer.links",
+                        i,
+                        "link",
+                        e.target.value,
+                      )
+                    }
+                    className="flex-1 border rounded px-3 py-2"
+                  />
+                  <Button
+                    mode="delete"
+                    type="button"
+                    onClick={() => removeArrayItem("footer.links", i)}
+                    // className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </Button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() =>
+                  addArrayItem("footer.links", { name: "", link: "" })
+                }
+                className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
+              >
+                Add Footer Link
+              </button>
+            </div>
+          </section>
+
+          <button
+            type="submit"
+            className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600"
+          >
+            Save Portfolio
+          </button>
+        </form>
+
+        <MessageModal
+          handleClose={() => {
+            setMessage(emptyMessage);
+          }}
+          modalFlag={message.flag}
+          operation={message.operation}
+          value={message.message}
+        />
+      </div>
+    </>
   );
 };
 
 export default PortfolioForm;
+
+const PortfolioLink = ({ id }: { id: string }) => {
+  const url = `https://portfolio.shareurinterest.com/${id}`;
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="bg-gray-900 text-white p-4 rounded-lg flex flex-col sm:flex-row items-center justify-between gap-3 m-3">
+      <p className="text-sm break-all">{url}</p>
+
+      <div className="flex gap-2">
+        <button
+          onClick={handleCopy}
+          type="button"
+          className="bg-gray-700 px-3 py-2 rounded hover:bg-gray-600"
+        >
+          {copied ? "Copied!" : "Copy"}
+        </button>
+
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-cyan-500 px-4 py-2 rounded hover:bg-cyan-600"
+        >
+          View
+        </a>
+      </div>
+    </div>
+  );
+};
+
+export { PortfolioLink };
