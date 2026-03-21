@@ -14,7 +14,6 @@ import { payloadTypes } from "@/context/reducer";
 import Cookies from "js-cookie";
 import { usePathname, useRouter } from "next/navigation";
 
-
 interface NavProps {
   NavType: LicenseTypes;
   AdminDashboard?: boolean;
@@ -76,15 +75,27 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       { name: "Blog", href: `/blog?v=${state.version}`, current: false },
       { name: "Wallet", href: `/wallet?v=${state.version}`, current: false },
       { name: "Games", href: `/games?v=${state.version}`, current: false },
-
+      {
+        name: "Portpolio",
+        href: `/portfolio?v=${state.version}`,
+        current: false,
+      },
     ];
 
     if (state.user?.id) {
-      items.push({ name: "Orders", href: `/orders?v=${state.version}`, current: false });
+      items.push({
+        name: "Orders",
+        href: `/orders?v=${state.version}`,
+        current: false,
+      });
     }
 
     if (state.user?.id) {
-      items.push({ name: "Profile", href: `/profile?v=${state.version}`, current: false });
+      items.push({
+        name: "Profile",
+        href: `/profile?v=${state.version}`,
+        current: false,
+      });
     }
     if (
       state.user &&
@@ -99,11 +110,19 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         UserType.FARMER,
       ].includes(state.user.role as UserType)
     ) {
-      items.push({ name: "Console", href: `/console?v=${state.version}`, current: false });
+      items.push({
+        name: "Console",
+        href: `/console?v=${state.version}`,
+        current: false,
+      });
     }
 
     if (state.user && state.user?.role === UserType.RAIDER) {
-      items.push({ name: "Console", href: `/dashboard?v=${state.version}`, current: false });
+      items.push({
+        name: "Console",
+        href: `/dashboard?v=${state.version}`,
+        current: false,
+      });
     }
 
     if (
@@ -121,17 +140,33 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     }
 
     return items;
-  }, [state.user,state.version]);
+  }, [state.user, state.version]);
 
   const ConsoleNavigation = useMemo(() => {
     const items = [
       { name: "Dashboard", href: `/console?v=${state.version}`, current: true },
-      { name: "Stores", href: `/console/stores?v=${state.version}`, current: false },
+      {
+        name: "Stores",
+        href: `/console/stores?v=${state.version}`,
+        current: false,
+      },
       // { name: "Categories", href: "/console/categories", current: false },
 
-      { name: "Products", href: `/console/products?v=${state.version}`, current: false },
-      { name: "Orders", href: `/console/orders?v=${state.version}`, current: false },
-      { name: "Payments", href:   `/console/payments?v=${state.version}`, current: false },
+      {
+        name: "Products",
+        href: `/console/products?v=${state.version}`,
+        current: false,
+      },
+      {
+        name: "Orders",
+        href: `/console/orders?v=${state.version}`,
+        current: false,
+      },
+      {
+        name: "Payments",
+        href: `/console/payments?v=${state.version}`,
+        current: false,
+      },
     ];
 
     if (
@@ -142,7 +177,11 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       )
     ) {
       items.push(
-        { name: "Users", href: `/console/users?v=${state.version}`, current: false },
+        {
+          name: "Users",
+          href: `/console/users?v=${state.version}`,
+          current: false,
+        },
 
         {
           name: "Categories",
@@ -153,17 +192,25 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     }
 
     return items;
-  }, [state.user,state.version]);
+  }, [state.user, state.version]);
 
   const ConsoleDelveryBoyNavigation = useMemo(
     () => [
-      { name: "Dashboard", href: `/dashboard?v=${state.version}`, current: true },
-      { name: "Orders", href: `/dashboard/orders?v=${state.version}`, current: false },
+      {
+        name: "Dashboard",
+        href: `/dashboard?v=${state.version}`,
+        current: true,
+      },
+      {
+        name: "Orders",
+        href: `/dashboard/orders?v=${state.version}`,
+        current: false,
+      },
       // { name: "Map", href: "/dashboard/routemap", current: false },
     ],
     [state.version],
   );
-console.log(state.version)
+  console.log(state.version);
   useEffect(() => {
     if (NavType === LicenseTypes.ADMIN && state.user) {
       setItems(ConsoleNavigation);
@@ -180,7 +227,7 @@ console.log(state.version)
     ConsoleNavigation,
     state.user,
     ConsoleDelveryBoyNavigation,
-    state.version
+    state.version,
   ]);
 
   return (

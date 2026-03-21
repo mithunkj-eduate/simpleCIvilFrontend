@@ -41,7 +41,7 @@ const orderFormJson = [
 ];
 
 const paymentMethodOptions: AutoCompleteOption[] = Object.values(
-  PaymentMethod
+  PaymentMethod,
 ).map((method) => ({
   value: method,
   label: method.charAt(0).toUpperCase() + method.slice(1),
@@ -116,8 +116,7 @@ export default function AddOrder({
   };
 
   return (
-                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-
+    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
       <div className="sm:flex sm:items-start">
         <div className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-gray-100 sm:mx-0 sm:size-10">
           <svg
@@ -198,7 +197,7 @@ export default function AddOrder({
                   value={selectedPaymentMethod}
                   onChange={(e, newValue) =>
                     setSelectedPaymentMethod(
-                      newValue as AutoCompleteOption | null
+                      newValue as AutoCompleteOption | null,
                     )
                   }
                 />
