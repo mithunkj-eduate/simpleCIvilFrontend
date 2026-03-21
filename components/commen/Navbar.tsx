@@ -75,13 +75,15 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       { name: "Blog", href: `/blog?v=${state.version}`, current: false },
       { name: "Wallet", href: `/wallet?v=${state.version}`, current: false },
       { name: "Games", href: `/games?v=${state.version}`, current: false },
-      {
-        name: "Portpolio",
+    ];
+    
+    if (state.user?.id) {
+      items.push({
+        name: "Portfolio",
         href: `/portfolio?v=${state.version}`,
         current: false,
-      },
-    ];
-
+      });
+    }
     if (state.user?.id) {
       items.push({
         name: "Orders",
