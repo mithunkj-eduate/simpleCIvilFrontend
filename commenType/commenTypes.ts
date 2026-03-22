@@ -99,3 +99,7 @@ export interface GetStores {
   createdAt: string;
   updatedAt: string;
 }
+
+export enum goggleDriveImageError {
+  InvalidImage = "InvalidImage",
+}

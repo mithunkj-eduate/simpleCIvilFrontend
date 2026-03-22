@@ -107,6 +107,7 @@ import Loading from "@/components/helpers/Loading";
 import { AxiosError } from "axios";
 import { Button } from "@/stories/Button/Button";
 import Navbar from "@/components/commen/Navbar";
+import { goggleDriveImageError } from "@/commenType/commenTypes";
 
 const PortfolioForm = () => {
   const [portfolio, setPortfolio] = useState(defaultPortfolio);
@@ -288,12 +289,41 @@ const PortfolioForm = () => {
   //   setPortfolio((prev) => ({ ...prev, [section]: newArr }));
   // };
 
+  function convertDriveToImageUrl(driveUrl: string) {
+    // Extract file ID using regex
+    const match = driveUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+
+    if (!match) {
+      console.error("Invalid Google Drive URL");
+      return goggleDriveImageError.InvalidImage;
+    }
+
+    // const fileId = match[1];
+
+    // Return thumbnail URL (best for <img>)
+    return driveUrl;
+  }
+
   // Submit form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       if (!TOKEN || !state.user) return;
-      console.log(portfolio);
+      const image = portfolio.hero.image
+        ? convertDriveToImageUrl(portfolio.hero.image)
+        : "";
+
+      if (image === goggleDriveImageError.InvalidImage) {
+        setMessage({
+          flag: true,
+          message: "Invalid Google Drive URL",
+          operation: Operation.NONE,
+        });
+        return;
+      }
+
+      portfolio.hero.image = image;
+
       try {
         const res = await api.put(`/portfolio`, portfolio, {
           headers: {
@@ -371,7 +401,7 @@ const PortfolioForm = () => {
             <h2 className="text-2xl font-semibold">Hero Section</h2>
             {["name", "highlight", "subtitle", "desc", "image"].map((field) => (
               <div key={field}>
-                <label className="block font-medium mb-1">{field}</label>
+                <label className="block font-medium mb-1">{field} {field === "image" ? "(google drive image link only)" : ""}</label>
                 <input
                   type="text"
                   value={portfolio.hero[field]}
@@ -418,7 +448,7 @@ const PortfolioForm = () => {
                     mode="delete"
                     type="button"
                     onClick={() => removeArrayItem("hero.stats", i)}
-                    className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
+                    // className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
                   >
                     Delete
                   </Button>

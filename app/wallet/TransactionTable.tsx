@@ -26,7 +26,7 @@ export default function TransactionTable({ transactions }: Props) {
             <tr key={t._id} className="border-t">
               <td>{t.type === "credit" ? "🟢 Credit" : "🔴 Debit"}</td>
 
-              <td>₹{t.amount}</td>
+              <td>₹{t.amount ? t.amount.toFixed(2) : 0}</td>
 
               <td>{t.reason}</td>
 
