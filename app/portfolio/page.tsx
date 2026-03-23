@@ -22,14 +22,14 @@ export const defaultPortfolio = {
       desc: "Scalable platform...",
       link: "https://apisr.shareurinterest.com/",
       tech: ["React", "Node", "MongoDB"],
-      bg: "linear-gradient(135deg,#0f0f20,#161628)",
+      image: "https://drive.google.com/file/d/",
     },
     {
       title: "ShareMyInterest",
       desc: "Instagram clone...",
       link: "https://snap.shareurinterest.com/",
       tech: ["React", "Node"],
-      bg: "linear-gradient(135deg,#18101e,#1e1228)",
+      image: "https://drive.google.com/file/d/",
     },
   ],
   about: {
@@ -404,7 +404,7 @@ const PortfolioForm = () => {
                 <label className="block font-medium mb-1">{field} {field === "image" ? "(google drive image link only)" : ""}</label>
                 <input
                   type="text"
-                  value={portfolio.hero[field]}
+                  value={portfolio.hero[field] || ""}
                   onChange={(e) => handleChange("hero", field, e.target.value)}
                   className="w-full border rounded px-3 py-2"
                 />
@@ -473,13 +473,13 @@ const PortfolioForm = () => {
               <div
                 key={i}
                 className="border p-3 rounded-lg flex flex-col gap-2"
-              >
-                {["title", "desc", "link", "bg"].map((field) => (
+              >:
+                {["title", "desc", "link", "image"].map((field) => (
                   <input
                     key={field}
                     type="text"
                     placeholder={field}
-                    value={proj[field]}
+                    value={proj[field] || ""}
                     onChange={(e) =>
                       handleArrayChange("projects", i, field, e.target.value)
                     }
@@ -518,7 +518,7 @@ const PortfolioForm = () => {
                   desc: "",
                   link: "",
                   tech: [],
-                  bg: "",
+                  image: "",
                 })
               }
               className="bg-cyan-500 text-white px-3 py-1 rounded hover:bg-cyan-600"
