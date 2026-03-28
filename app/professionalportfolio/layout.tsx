@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-page-custom-font */
 import type { Metadata } from "next";
-import "./globals.css";
+import "./globalsStyle.css";
 
 export const metadata: Metadata = {
   title: "Portfolio | Professional Landing Page",

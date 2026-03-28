@@ -6,7 +6,9 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const data = portfolioRegistry[slug] ?? samplePortfolioData;
 
@@ -20,8 +22,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: data.meta.seo.ogImage
         ? [{ url: data.meta.seo.ogImage }]
         : data.hero.image
-        ? [{ url: data.hero.image }]
-        : [],
+          ? [{ url: data.hero.image }]
+          : [],
     },
     twitter: {
       card: "summary_large_image",
