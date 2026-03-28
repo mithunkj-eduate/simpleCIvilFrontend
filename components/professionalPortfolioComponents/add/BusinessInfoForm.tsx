@@ -5,6 +5,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
+import { PortfolioProps } from "./MetaForm";
+import { BusinessInfo } from "@/lib/types";
 
 const businessSchema = Yup.object({
   ownerName: Yup.string().required("Owner name required"),
@@ -14,9 +16,14 @@ const businessSchema = Yup.object({
   licenseNumber: Yup.string(),
 });
 
-export default function BusinessInfoForm() {
+export default function BusinessInfoForm({
+  initialValues,
+  handleSave,
+}: PortfolioProps) {
+  const { businessInfo } = initialValues;
+
   const formik = useFormik({
-    initialValues: {
+    initialValues: businessInfo ?? {
       ownerName: "",
       registrationNumber: "",
       gst: "",
@@ -27,7 +34,16 @@ export default function BusinessInfoForm() {
     validationSchema: businessSchema,
     onSubmit: (values) => {
       console.log(values);
-      alert("Business Info Saved ✅");
+
+      const portfolioData = {
+        businessInfo: values,
+      };
+      if (portfolioData)
+        handleSave({
+          ...initialValues,
+          businessInfo: portfolioData.businessInfo as unknown as BusinessInfo,
+        });
+      // alert("Business Info Saved ✅");
     },
   });
 

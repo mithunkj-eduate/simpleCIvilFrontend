@@ -4,10 +4,17 @@ import React from "react";
 import { useFormik } from "formik";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
+import { PortfolioProps } from "./MetaForm";
+import { SocialLink } from "@/lib/types";
 
-export default function SocialLinksForm() {
+export default function SocialLinksForm({
+  initialValues,
+  handleSave,
+}: PortfolioProps) {
+  const { socialLinks } = initialValues;
+
   const formik = useFormik({
-    initialValues: {
+    initialValues: socialLinks ?? {
       socialLinks: [
         {
           platform: "",
@@ -18,6 +25,15 @@ export default function SocialLinksForm() {
     },
     onSubmit: (values) => {
       console.log(values);
+
+      const portfolioData = {
+        socialLinks: values,
+      };
+      if (portfolioData)
+        handleSave({
+          ...initialValues,
+          socialLinks: portfolioData.socialLinks as unknown as SocialLink[],
+        });
       alert("Social Links Saved ✅");
     },
   });
@@ -49,16 +65,10 @@ export default function SocialLinksForm() {
       </h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-6">
-
         {formik.values.socialLinks.map((item, i) => (
-          <div
-            key={i}
-            className="border rounded-2xl p-5 bg-gray-50 space-y-4"
-          >
+          <div key={i} className="border rounded-2xl p-5 bg-gray-50 space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold text-lg">
-                Social Link {i + 1}
-              </h3>
+              <h3 className="font-semibold text-lg">Social Link {i + 1}</h3>
               <button
                 type="button"
                 onClick={() => removeItem(i)}
@@ -74,9 +84,7 @@ export default function SocialLinksForm() {
                 <Input
                   placeholder="LinkedIn"
                   value={item.platform}
-                  onChange={(e) =>
-                    handleChange(i, "platform", e.target.value)
-                  }
+                  onChange={(e) => handleChange(i, "platform", e.target.value)}
                 />
               </div>
 
@@ -85,9 +93,7 @@ export default function SocialLinksForm() {
                 <Input
                   placeholder="https://..."
                   value={item.url}
-                  onChange={(e) =>
-                    handleChange(i, "url", e.target.value)
-                  }
+                  onChange={(e) => handleChange(i, "url", e.target.value)}
                 />
               </div>
 
@@ -96,9 +102,7 @@ export default function SocialLinksForm() {
                 <Input
                   placeholder="Linkedin / Twitter / Instagram"
                   value={item.icon}
-                  onChange={(e) =>
-                    handleChange(i, "icon", e.target.value)
-                  }
+                  onChange={(e) => handleChange(i, "icon", e.target.value)}
                 />
               </div>
             </div>

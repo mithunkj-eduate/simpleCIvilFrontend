@@ -4,10 +4,17 @@ import React from "react";
 import { useFormik } from "formik";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
+import { PortfolioProps } from "./MetaForm";
+import { Skill } from "@/lib/types";
 
-export default function SkillsForm() {
+export default function SkillsForm({
+  initialValues,
+  handleSave,
+}: PortfolioProps) {
+  const { skills } = initialValues;
+
   const formik = useFormik({
-    initialValues: {
+    initialValues: skills ?? {
       skills: [
         {
           name: "",
@@ -18,7 +25,16 @@ export default function SkillsForm() {
     },
     onSubmit: (values) => {
       console.log(values);
-      alert("Skills Saved ✅");
+
+      const portfolioData = {
+        skills: values,
+      };
+      if (portfolioData)
+        handleSave({
+          ...initialValues,
+          skills: portfolioData.skills as unknown as Skill[],
+        });
+      // alert("Skills Saved ✅");
     },
   });
 
@@ -44,21 +60,13 @@ export default function SkillsForm() {
 
   return (
     <div className="mx-auto max-w-4xl bg-white rounded-2xl shadow p-6 md:p-8 mt-6">
-      <h2 className="text-2xl font-bold text-center mb-6">
-        Skills Section
-      </h2>
+      <h2 className="text-2xl font-bold text-center mb-6">Skills Section</h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-6">
-
         {formik.values.skills.map((skill, i) => (
-          <div
-            key={i}
-            className="border rounded-2xl p-5 bg-gray-50 space-y-4"
-          >
+          <div key={i} className="border rounded-2xl p-5 bg-gray-50 space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold text-lg">
-                Skill {i + 1}
-              </h3>
+              <h3 className="font-semibold text-lg">Skill {i + 1}</h3>
               <button
                 type="button"
                 onClick={() => removeSkill(i)}
@@ -74,9 +82,7 @@ export default function SkillsForm() {
                 <Label>Skill Name</Label>
                 <Input
                   value={skill.name}
-                  onChange={(e) =>
-                    handleChange(i, "name", e.target.value)
-                  }
+                  onChange={(e) => handleChange(i, "name", e.target.value)}
                 />
               </div>
 
@@ -84,9 +90,7 @@ export default function SkillsForm() {
                 <Label>Category</Label>
                 <Input
                   value={skill.category}
-                  onChange={(e) =>
-                    handleChange(i, "category", e.target.value)
-                  }
+                  onChange={(e) => handleChange(i, "category", e.target.value)}
                 />
               </div>
             </div>

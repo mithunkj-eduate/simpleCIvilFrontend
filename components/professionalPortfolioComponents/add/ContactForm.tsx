@@ -4,10 +4,17 @@ import React from "react";
 import { useFormik } from "formik";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
+import { PortfolioProps } from "./MetaForm";
+import { ContactSection } from "@/lib/types";
 
-export default function ContactForm() {
+export default function ContactForm({
+  initialValues,
+  handleSave,
+}: PortfolioProps) {
+  const { contact } = initialValues;
+
   const formik = useFormik({
-    initialValues: {
+    initialValues: contact ?? {
       contact: {
         email: "",
         phone: "",
@@ -18,14 +25,21 @@ export default function ContactForm() {
           lng: "",
           zoom: 15,
         },
-        workingHours: [
-          { day: "", hours: "", closed: false },
-        ],
+        workingHours: [{ day: "", hours: "", closed: false }],
       },
     },
     onSubmit: (values) => {
       console.log(values);
-      alert("Contact Saved ✅");
+
+      const portfolioData = {
+        contact: values,
+      };
+      if (portfolioData)
+        handleSave({
+          ...initialValues,
+          contact: portfolioData.contact as unknown as ContactSection,
+        });
+      // alert("Contact Saved ✅");
     },
   });
 
@@ -50,12 +64,9 @@ export default function ContactForm() {
 
   return (
     <div className="mx-auto max-w-5xl bg-white rounded-2xl shadow p-6 md:p-8 mt-6">
-      <h2 className="text-2xl font-bold text-center mb-6">
-        Contact Section
-      </h2>
+      <h2 className="text-2xl font-bold text-center mb-6">Contact Section</h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-6">
-
         {/* BASIC INFO */}
         <div className="grid md:grid-cols-2 gap-4">
           <div>
@@ -139,9 +150,7 @@ export default function ContactForm() {
               <Input
                 placeholder="Day"
                 value={item.day}
-                onChange={(e) =>
-                  handleWorkingChange(i, "day", e.target.value)
-                }
+                onChange={(e) => handleWorkingChange(i, "day", e.target.value)}
               />
               <Input
                 placeholder="Hours"

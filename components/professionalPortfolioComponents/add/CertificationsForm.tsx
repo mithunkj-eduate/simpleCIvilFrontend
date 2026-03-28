@@ -4,10 +4,17 @@ import React from "react";
 import { useFormik } from "formik";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
+import { PortfolioProps } from "./MetaForm";
+import { Certification } from "@/lib/types";
 
-export default function CertificationsForm() {
+export default function CertificationsForm({
+  initialValues,
+  handleSave,
+}: PortfolioProps) {
+  const { certifications } = initialValues;
+
   const formik = useFormik({
-    initialValues: {
+    initialValues: certifications ?? {
       certifications: [
         {
           title: "",
@@ -18,7 +25,17 @@ export default function CertificationsForm() {
     },
     onSubmit: (values) => {
       console.log(values);
-      alert("Certifications Saved ✅");
+
+      const portfolioData = {
+        certifications: values,
+      };
+      if (portfolioData)
+        handleSave({
+          ...initialValues,
+          certifications:
+            portfolioData.certifications as unknown as Certification[],
+        });
+      // alert("Certifications Saved ✅");
     },
   });
 
@@ -49,16 +66,10 @@ export default function CertificationsForm() {
       </h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-6">
-
         {formik.values.certifications.map((cert, i) => (
-          <div
-            key={i}
-            className="border rounded-2xl p-5 bg-gray-50 space-y-4"
-          >
+          <div key={i} className="border rounded-2xl p-5 bg-gray-50 space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold text-lg">
-                Certification {i + 1}
-              </h3>
+              <h3 className="font-semibold text-lg">Certification {i + 1}</h3>
               <button
                 type="button"
                 onClick={() => removeCertification(i)}
@@ -73,9 +84,7 @@ export default function CertificationsForm() {
                 <Label>Title</Label>
                 <Input
                   value={cert.title}
-                  onChange={(e) =>
-                    handleChange(i, "title", e.target.value)
-                  }
+                  onChange={(e) => handleChange(i, "title", e.target.value)}
                 />
               </div>
 
@@ -83,9 +92,7 @@ export default function CertificationsForm() {
                 <Label>Issuer</Label>
                 <Input
                   value={cert.issuer}
-                  onChange={(e) =>
-                    handleChange(i, "issuer", e.target.value)
-                  }
+                  onChange={(e) => handleChange(i, "issuer", e.target.value)}
                 />
               </div>
 
@@ -93,9 +100,7 @@ export default function CertificationsForm() {
                 <Label>Year</Label>
                 <Input
                   value={cert.year}
-                  onChange={(e) =>
-                    handleChange(i, "year", e.target.value)
-                  }
+                  onChange={(e) => handleChange(i, "year", e.target.value)}
                 />
               </div>
             </div>

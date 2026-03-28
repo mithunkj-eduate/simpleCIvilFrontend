@@ -4,10 +4,17 @@ import React from "react";
 import { useFormik } from "formik";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
+import { PortfolioProps } from "./MetaForm";
+import { Testimonial } from "@/lib/types";
 
-export default function TestimonialsForm() {
+export default function TestimonialsForm({
+  initialValues,
+  handleSave,
+}: PortfolioProps) {
+  const { testimonials } = initialValues;
+
   const formik = useFormik({
-    initialValues: {
+    initialValues: testimonials ?? {
       testimonials: [
         {
           id: "t1",
@@ -21,7 +28,16 @@ export default function TestimonialsForm() {
     },
     onSubmit: (values) => {
       console.log(values);
-      alert("Testimonials Saved ✅");
+
+      const portfolioData = {
+        testimonials: values,
+      };
+      if (portfolioData)
+        handleSave({
+          ...initialValues,
+          testimonials: portfolioData.testimonials as unknown as Testimonial[],
+        });
+      // alert("Testimonials Saved ✅");
     },
   });
 
@@ -78,16 +94,13 @@ export default function TestimonialsForm() {
       </h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-6">
-
         {formik.values.testimonials.map((item, i) => (
           <div
             key={item.id}
             className="border rounded-2xl p-5 bg-gray-50 space-y-4"
           >
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold text-lg">
-                Testimonial {i + 1}
-              </h3>
+              <h3 className="font-semibold text-lg">Testimonial {i + 1}</h3>
               <button
                 type="button"
                 onClick={() => removeItem(i)}
@@ -103,9 +116,7 @@ export default function TestimonialsForm() {
                 <Label>Name</Label>
                 <Input
                   value={item.name}
-                  onChange={(e) =>
-                    handleChange(i, "name", e.target.value)
-                  }
+                  onChange={(e) => handleChange(i, "name", e.target.value)}
                 />
               </div>
 
@@ -113,9 +124,7 @@ export default function TestimonialsForm() {
                 <Label>Role</Label>
                 <Input
                   value={item.role}
-                  onChange={(e) =>
-                    handleChange(i, "role", e.target.value)
-                  }
+                  onChange={(e) => handleChange(i, "role", e.target.value)}
                 />
               </div>
             </div>
@@ -125,9 +134,7 @@ export default function TestimonialsForm() {
               <Label>Review</Label>
               <textarea
                 value={item.text}
-                onChange={(e) =>
-                  handleChange(i, "text", e.target.value)
-                }
+                onChange={(e) => handleChange(i, "text", e.target.value)}
                 className="w-full border rounded-lg p-3 h-24"
               />
             </div>
@@ -138,9 +145,7 @@ export default function TestimonialsForm() {
                 <Label>Rating</Label>
                 <StarRating
                   value={item.rating}
-                  onChange={(val) =>
-                    handleChange(i, "rating", val)
-                  }
+                  onChange={(val) => handleChange(i, "rating", val)}
                 />
               </div>
 
@@ -148,9 +153,7 @@ export default function TestimonialsForm() {
                 <Label>Date</Label>
                 <Input
                   value={item.date}
-                  onChange={(e) =>
-                    handleChange(i, "date", e.target.value)
-                  }
+                  onChange={(e) => handleChange(i, "date", e.target.value)}
                 />
               </div>
             </div>

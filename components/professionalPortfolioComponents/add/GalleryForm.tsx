@@ -6,10 +6,17 @@ import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
 import { SafeImage } from "@/app/utils/SafeImage";
 import { convertDriveToImageUrl } from "@/lib/utils";
+import { PortfolioProps } from "./MetaForm";
+import { GalleryImage } from "@/lib/types";
 
-export default function GalleryForm() {
+export default function GalleryForm({
+  initialValues,
+  handleSave,
+}: PortfolioProps) {
+  const { gallery } = initialValues;
+
   const formik = useFormik({
-    initialValues: {
+    initialValues: gallery ?? {
       gallery: [
         {
           url: "",
@@ -20,7 +27,16 @@ export default function GalleryForm() {
     },
     onSubmit: (values) => {
       console.log(values);
-      alert("Gallery Saved ✅");
+
+      const portfolioData = {
+        gallery: values,
+      };
+      if (portfolioData)
+        handleSave({
+          ...initialValues,
+          gallery: portfolioData.gallery as unknown as GalleryImage[],
+        });
+      // alert("Gallery Saved ✅");
     },
   });
 

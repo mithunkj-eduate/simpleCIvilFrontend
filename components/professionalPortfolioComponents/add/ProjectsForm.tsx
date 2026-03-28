@@ -4,11 +4,18 @@ import React from "react";
 import { useFormik } from "formik";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
+import { PortfolioProps } from "./MetaForm";
+import { Product, Project } from "@/lib/types";
 
-export default function ProjectsForm() {
+export default function ProjectsForm({
+  initialValues,
+  handleSave,
+}: PortfolioProps) {
+  const { projects } = initialValues;
+
   const formik = useFormik({
     initialValues: {
-      projects: [
+      projects: projects ?? [
         {
           id: "p1",
           title: "",
@@ -23,7 +30,16 @@ export default function ProjectsForm() {
     },
     onSubmit: (values) => {
       console.log(values);
-      alert("Projects Saved ✅");
+
+      const portfolioData = {
+        projects: values,
+      };
+      if (portfolioData)
+        handleSave({
+          ...initialValues,
+          projects: portfolioData.projects as unknown as Project[],
+        });
+      // alert("Projects Saved ✅");
     },
   });
 
@@ -96,21 +112,16 @@ export default function ProjectsForm() {
 
   return (
     <div className="mx-auto max-w-5xl bg-white rounded-2xl shadow p-6 md:p-8 mt-6">
-      <h2 className="text-2xl font-bold text-center mb-6">
-        Projects Section
-      </h2>
+      <h2 className="text-2xl font-bold text-center mb-6">Projects Section</h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-6">
-
         {formik.values.projects.map((project, i) => (
           <div
             key={project.id}
             className="border rounded-2xl p-5 space-y-4 bg-gray-50"
           >
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold text-lg">
-                Project {i + 1}
-              </h3>
+              <h3 className="font-semibold text-lg">Project {i + 1}</h3>
               <button
                 type="button"
                 onClick={() => removeProject(i)}
@@ -158,16 +169,12 @@ export default function ProjectsForm() {
               <Input
                 placeholder="Year"
                 value={project.year}
-                onChange={(e) =>
-                  handleProjectChange(i, "year", e.target.value)
-                }
+                onChange={(e) => handleProjectChange(i, "year", e.target.value)}
               />
               <Input
                 placeholder="Project Link"
                 value={project.link}
-                onChange={(e) =>
-                  handleProjectChange(i, "link", e.target.value)
-                }
+                onChange={(e) => handleProjectChange(i, "link", e.target.value)}
               />
             </div>
 
@@ -220,9 +227,7 @@ export default function ProjectsForm() {
                 <div key={ti} className="flex gap-2 mb-2">
                   <Input
                     value={tag}
-                    onChange={(e) =>
-                      handleTagChange(i, ti, e.target.value)
-                    }
+                    onChange={(e) => handleTagChange(i, ti, e.target.value)}
                   />
                   <button
                     type="button"

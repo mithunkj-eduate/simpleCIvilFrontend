@@ -192,16 +192,16 @@ export default function Dashboard() {
       <MetaForm initialValues={form} handleSave={handleSave} />
       <HeroForm initialValues={form} handleSave={handleSave} />
       <AboutForm  initialValues={form} handleSave={handleSave}/>
-      <BusinessInfoForm />
-      {/* <ServicesForm /> */}
-      <ProjectsForm />
-      <SkillsForm />
-      <CertificationsForm />
-      <GalleryForm />
-      <TestimonialsForm />
-      <FAQForm />
-      <ContactForm />
-      <SocialLinksForm />
+      <BusinessInfoForm  initialValues={form} handleSave={handleSave}/>
+      {/* <ServicesForm  initialValues={form} handleSave={handleSave}/> */}
+      <ProjectsForm  initialValues={form} handleSave={handleSave}/>
+      <SkillsForm  initialValues={form} handleSave={handleSave}/>
+      <CertificationsForm  initialValues={form} handleSave={handleSave}/>
+      <GalleryForm  initialValues={form} handleSave={handleSave}/>
+      <TestimonialsForm  initialValues={form} handleSave={handleSave}/>
+      <FAQForm  initialValues={form} handleSave={handleSave}/>
+      <ContactForm  initialValues={form} handleSave={handleSave}/>
+      <SocialLinksForm  initialValues={form} handleSave={handleSave}/>
 
       <MessageModal
         handleClose={handleClose}
