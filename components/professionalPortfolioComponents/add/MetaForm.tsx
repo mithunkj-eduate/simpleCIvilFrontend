@@ -6,11 +6,11 @@ import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
 import { PortfolioData, PortfolioMeta } from "@/lib/types";
 
-interface Props {
+export interface PortfolioProps {
   initialValues: PortfolioData;
   handleSave: (value: PortfolioData) => Promise<void>;
 }
-export default function MetaForm({ initialValues, handleSave }: Props) {
+export default function MetaForm({ initialValues, handleSave }: PortfolioProps) {
   const [loading, setLoading] = useState(false);
   const { meta } = initialValues;
 

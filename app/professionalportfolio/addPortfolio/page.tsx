@@ -190,8 +190,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <MetaForm initialValues={form} handleSave={handleSave} />
-      <HeroForm />
-      <AboutForm />
+      <HeroForm initialValues={form} handleSave={handleSave} />
+      <AboutForm  initialValues={form} handleSave={handleSave}/>
       <BusinessInfoForm />
       {/* <ServicesForm /> */}
       <ProjectsForm />

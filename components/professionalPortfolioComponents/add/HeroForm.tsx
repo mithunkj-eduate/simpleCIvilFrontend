@@ -5,6 +5,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
+import { PortfolioProps } from "./MetaForm";
+import { HeroSection } from "@/lib/types";
 
 const heroSchema = Yup.object({
   heading: Yup.string().required("Heading required"),
@@ -12,20 +14,34 @@ const heroSchema = Yup.object({
   image: Yup.string().url().required("Image required"),
 });
 
-export default function HeroForm() {
+export default function HeroForm({
+  initialValues,
+  handleSave,
+}: PortfolioProps) {
+  const { hero } = initialValues;
+
   const formik = useFormik({
-    initialValues: {
-      heading: "",
-      subheading: "",
-      image: "",
-      carousel: [""],
-      cta: [{ label: "", href: "", variant: "primary", icon: "" }],
-      stats: [{ label: "", value: "" }],
-    },
+    initialValues: hero,
+    //  {
+    //   heading: "",
+    //   subheading: "",
+    //   image: "",
+    //   carousel: [""],
+    //   cta: [{ label: "", href: "", variant: "primary", icon: "" }],
+    //   stats: [{ label: "", value: "" }],
+    // },
     validationSchema: heroSchema,
     onSubmit: (values) => {
       console.log(values);
-      alert("Hero Saved ✅");
+      const portfolioData = {
+        hero: values,
+      };
+      if (portfolioData)
+        handleSave({
+          ...initialValues,
+          hero: portfolioData.hero as unknown as HeroSection,
+        });
+      // alert("Hero Saved ✅");
     },
   });
 

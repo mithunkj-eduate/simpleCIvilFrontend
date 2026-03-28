@@ -5,6 +5,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
+import { PortfolioProps } from "./MetaForm";
+import { AboutSection } from "@/lib/types";
 
 const aboutSchema = Yup.object({
   title: Yup.string().required("Title required"),
@@ -12,20 +14,32 @@ const aboutSchema = Yup.object({
   image: Yup.string().url().required("Image required"),
 });
 
-export default function AboutForm() {
+export default function AboutForm({
+  initialValues,
+  handleSave,
+}: PortfolioProps) {
+  const { about } = initialValues;
+
   const formik = useFormik({
-    initialValues: {
+    initialValues: about ?? {
       title: "",
       description: "",
       image: "",
-      highlights: [
-        { icon: "", title: "", value: "" },
-      ],
+      highlights: [{ icon: "", title: "", value: "" }],
     },
     validationSchema: aboutSchema,
     onSubmit: (values) => {
       console.log(values);
-      alert("About Section Saved ✅");
+
+      const portfolioData = {
+        about: values,
+      };
+      if (portfolioData)
+        handleSave({
+          ...initialValues,
+          about: portfolioData.about as unknown as AboutSection,
+        });
+      // alert("About Section Saved ✅");
     },
   });
 
@@ -51,12 +65,9 @@ export default function AboutForm() {
 
   return (
     <div className="mx-auto max-w-4xl bg-white rounded-2xl shadow p-6 md:p-8 mt-6">
-      <h2 className="text-2xl font-bold text-center mb-6">
-        About Section
-      </h2>
+      <h2 className="text-2xl font-bold text-center mb-6">About Section</h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-6">
-
         {/* BASIC */}
         <div className="grid md:grid-cols-2 gap-6">
           <div>
@@ -79,7 +90,7 @@ export default function AboutForm() {
               value={formik.values.image}
               onChange={formik.handleChange}
             />
-              {formik.touched.image && formik.errors.image && (
+            {formik.touched.image && formik.errors.image && (
               <p className="text-red-500 text-sm">{formik.errors.image}</p>
             )}
           </div>
@@ -93,10 +104,9 @@ export default function AboutForm() {
             onChange={formik.handleChange}
             className="w-full border rounded-lg p-3 h-28"
           />
-           {formik.touched.description && formik.errors.description && (
-              <p className="text-red-500 text-sm">{formik.errors.description}</p>
-            )}
-
+          {formik.touched.description && formik.errors.description && (
+            <p className="text-red-500 text-sm">{formik.errors.description}</p>
+          )}
         </div>
 
         {/* HIGHLIGHTS */}
