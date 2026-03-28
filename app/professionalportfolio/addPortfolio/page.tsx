@@ -50,7 +50,7 @@ import ServicesForm from "@/components/professionalPortfolioComponents/add/Servi
 
 import { Input } from "@/stories/Input/Input";
 import { TextArea } from "@/stories/TextArea/TextArea";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ProjectsForm from "@/components/professionalPortfolioComponents/add/ProjectsForm";
 import SkillsForm from "@/components/professionalPortfolioComponents/add/SkillsForm";
 import CertificationsForm from "@/components/professionalPortfolioComponents/add/CertificationsForm";
@@ -60,185 +60,136 @@ import FAQForm from "@/components/professionalPortfolioComponents/add/FAQForm";
 import ContactForm from "@/components/professionalPortfolioComponents/add/ContactForm";
 import SocialLinksForm from "@/components/professionalPortfolioComponents/add/SocialLinksForm";
 import MetaForm from "@/components/professionalPortfolioComponents/add/MetaForm";
+import Api, { api } from "@/components/helpers/apiheader";
+import { AppContext } from "@/context/context";
+import { msgType } from "@/utils/commenTypes";
+import { emptyMessage } from "@/utils/constants";
+import { samplePortfolioData } from "@/data/portfolios";
+import { PortfolioData } from "@/lib/types";
+import { Operation } from "@/utils/enum.types";
+import MessageModal from "@/customComponents/MessageModal";
 
 export default function Dashboard() {
-  const [form, setForm] = useState({
-    name: "",
-    profession: "",
-    tagline: "",
-    description: "",
-    seoTitle: "",
-    seoDescription: "",
-    keywords: "",
-    accentColor: "#0ea5e9",
+  const [form, setForm] = useState<PortfolioData>(samplePortfolioData);
 
-    phone: "",
-    email: "",
-    service: "",
-    about: "",
-  });
+  // const [loading, setLoading] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+  const { TOKEN } = Api();
+  const { state } = useContext(AppContext);
+  const [message, setMessage] = useState<msgType>(emptyMessage);
+  const [operation, setOperation] = useState(Operation.CREATE);
 
-  const handleChange = (key, value) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
+  useEffect(() => {
+    if (!TOKEN || !state.user) return;
 
-  const generateSlug = (name) => name.toLowerCase().replace(/\s+/g, "-");
+    const getStore = async () => {
+      try {
+        const res = await api.get(`/professionalPortfolio`, {
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        });
 
-  const save = async () => {
+        console.log(res, "res");
+        if (res.data) {
+          setForm(res.data);
+          setOperation(Operation.UPDATE);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getStore();
+  }, [TOKEN, state.user]);
+
+  const handleSave = async (value: PortfolioData) => {
     try {
-      setLoading(true);
+      // setLoading(true);
 
-      const portfolioData = {
-        meta: {
-          slug: generateSlug(form.name),
-          profession: form.profession,
-          name: form.name,
-          tagline: form.tagline,
-          description: form.description,
-          accentColor: form.accentColor,
-          seo: {
-            title: form.seoTitle,
-            description: form.seoDescription,
-            keywords: form.keywords.split(",").map((k) => k.trim()),
-          },
-        },
+      if (!TOKEN || !state.user) return;
 
-        about: {
-          description: form.about,
-        },
+      if (operation === Operation.CREATE) {
+        const addUpdatePortfolio = async () => {
+          try {
+            const res = await api.post(`/professionalPortfolio`, value, {
+              headers: {
+                Authorization: `Bearer ${TOKEN}`,
+                "Content-Type": "application/json",
+              },
+            });
 
-        contact: {
-          phone: form.phone,
-          email: form.email,
-        },
+            if (res.data) {
+              setForm({
+                ...res.data,
+                meta: {
+                  slug: res.data.meta.slug,
+                },
+              });
+              setMessage({
+                flag: true,
+                message: "added successfully!",
+                operation: Operation.CREATE,
+              });
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        addUpdatePortfolio();
+      } else {
+        const addUpdatePortfolio = async () => {
+          try {
+            const res = await api.put(`/professionalPortfolio`, value, {
+              headers: {
+                Authorization: `Bearer ${TOKEN}`,
+                "Content-Type": "application/json",
+              },
+            });
 
-        services: [
-          {
-            id: "s1",
-            title: form.service,
-            description: form.service,
-          },
-        ],
-      };
+            if (res.data) {
+              setForm({
+                ...res.data,
+                meta: {
+                  slug: res.data.meta.slug,
+                },
+              });
+              setMessage({
+                flag: true,
+                message: "updated successfully!",
+                operation: Operation.CREATE,
+              });
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        addUpdatePortfolio();
+      }
 
-      // await fetch("/api/portfolio", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(portfolioData),
-      // });
-
-      alert("✅ Website Created Successfully!");
+      // alert("✅ Website Created Successfully!");
     } catch (err) {
       alert("❌ Error creating website");
     } finally {
-      setLoading(false);
+      // setLoading(false);
+    }
+  };
+
+  const handleClose = () => {
+    setMessage(emptyMessage);
+    if (
+      message.operation === Operation.CREATE ||
+      message.operation === Operation.UPDATE
+    ) {
+      setForm(samplePortfolioData);
+      setOperation(Operation.UPDATE);
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      {/* <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow p-6 md:p-8 space-y-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-center">
-          Create Your Website
-        </h1>
-
-        <p className="text-center text-gray-500 text-sm">
-          Your website will be created like: <br />
-          <span className="font-semibold text-blue-600">
-            yourdomain.com/{form.name ? generateSlug(form.name) : "your-name"}
-          </span>
-        </p>
-
-   
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Basic Details</h2>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <Input
-              placeholder="Full Name"
-              className="input"
-              onChange={(e) => handleChange("name", e.target.value)}
-            />
-
-            <select
-              className="input"
-              onChange={(e) => handleChange("profession", e.target.value)}
-            >
-              <option value="">Select Profession</option>
-              <option value="doctor">Doctor</option>
-              <option value="lawyer">Lawyer</option>
-              <option value="store">Store</option>
-              <option value="teacher">Teacher</option>
-              <option value="worker">Worker</option>
-              <option value="engineer">Engineer</option>
-            </select>
-
-            <Input
-              placeholder="Tagline"
-              className="input"
-              onChange={(e) => handleChange("tagline", e.target.value)}
-            />
-
-            <Input
-              type="color"
-              className="h-12 w-full rounded-lg"
-              onChange={(e) => handleChange("accentColor", e.target.value)}
-            />
-          </div>
-
-          <TextArea
-            placeholder="Short Description"
-            className="input h-24"
-            onChange={(e) => handleChange("description", e.target.value)}
-          />
-        </div>
-
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">SEO Settings</h2>
-
-          <Input
-            placeholder="SEO Title (Google title)"
-            className="input"
-            onChange={(e) => handleChange("seoTitle", e.target.value)}
-          />
-
-          <TextArea
-            placeholder="SEO Description"
-            className="input h-20"
-            onChange={(e) => handleChange("seoDescription", e.target.value)}
-          />
-
-          <Input
-            placeholder="Keywords (comma separated)"
-            className="input"
-            onChange={(e) => handleChange("keywords", e.target.value)}
-          />
-        </div>
-
-        <textarea
-          placeholder="About You / Business"
-          className="border p-3 rounded-lg w-full h-24"
-          onChange={(e) => handleChange("about", e.target.value)}
-        />
-
-        <Input
-          placeholder="Main Service (e.g. Heart Specialist, Plumbing, Teaching)"
-          className="border p-3 rounded-lg w-full"
-          onChange={(e) => handleChange("service", e.target.value)}
-        />
-
-        <button
-          onClick={save}
-          disabled={loading}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
-        >
-          {loading ? "Creating..." : "Save"}
-        </button>
-      </div> */}
-
-      <MetaForm />
+      <MetaForm initialValues={form} handleSave={handleSave} />
       <HeroForm />
       <AboutForm />
       <BusinessInfoForm />
@@ -251,6 +202,13 @@ export default function Dashboard() {
       <FAQForm />
       <ContactForm />
       <SocialLinksForm />
+
+      <MessageModal
+        handleClose={handleClose}
+        modalFlag={message.flag}
+        operation={message.operation}
+        value={message.message}
+      />
     </div>
   );
 }

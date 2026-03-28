@@ -1,30 +1,61 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
+import { PortfolioData, PortfolioMeta } from "@/lib/types";
 
-export default function MetaForm() {
+interface Props {
+  initialValues: PortfolioData;
+  handleSave: (value: PortfolioData) => Promise<void>;
+}
+export default function MetaForm({ initialValues, handleSave }: Props) {
+  const [loading, setLoading] = useState(false);
+  const { meta } = initialValues;
+
   const formik = useFormik({
     initialValues: {
-      meta: {
-        slug: "",
-        profession: "",
-        name: "",
-        tagline: "",
-        description: "",
-        accentColor: "#0ea5e9",
-        seo: {
-          title: "",
-          description: "",
-          keywords: [""],
-        },
-      },
+      meta,
+
+      // meta: {
+      //   slug: "",
+      //   profession: "",
+      //   name: "",
+      //   tagline: "",
+      //   description: "",
+      //   accentColor: "#0ea5e9",
+      //   seo: {
+      //     title: "",
+      //     description: "",
+      //     keywords: [""],
+      //   },
+      // },
     },
     onSubmit: (values) => {
       console.log(values);
-      alert("Meta Saved ✅");
+
+      const portfolioData = {
+        meta: {
+          slug: generateSlug(values.meta.name),
+          profession: values.meta.profession,
+          name: values.meta.name,
+          tagline: values.meta.tagline,
+          description: values.meta.description,
+          accentColor: values.meta.accentColor,
+          seo: {
+            title: values.meta.seo.title,
+            description: values.meta.seo.description,
+            keywords: values.meta.seo.keywords,
+          },
+        },
+      };
+      console.log(portfolioData);
+      if (portfolioData)
+        handleSave({
+          ...initialValues,
+          meta: portfolioData.meta as unknown as PortfolioMeta,
+        });
     },
   });
 
@@ -47,6 +78,59 @@ export default function MetaForm() {
     formik.setFieldValue("meta.seo.keywords", arr);
   };
 
+  const generateSlug = (name) => name.toLowerCase().replace(/\s+/g, "-");
+
+  const save = async () => {
+    try {
+      setLoading(true);
+
+      const portfolioData = {
+        meta: {
+          slug: generateSlug(form.name),
+          profession: form.profession,
+          name: form.name,
+          tagline: form.tagline,
+          description: form.description,
+          accentColor: form.accentColor,
+          seo: {
+            title: form.seoTitle,
+            description: form.seoDescription,
+            keywords: form.keywords.split(",").map((k) => k.trim()),
+          },
+        },
+
+        about: {
+          description: form.about,
+        },
+
+        contact: {
+          phone: form.phone,
+          email: form.email,
+        },
+
+        services: [
+          {
+            id: "s1",
+            title: form.service,
+            description: form.service,
+          },
+        ],
+      };
+
+      // await fetch("/api/portfolio", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(portfolioData),
+      // });
+
+      alert("✅ Website Created Successfully!");
+    } catch (err) {
+      alert("❌ Error creating website");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="mx-auto max-w-5xl bg-white rounded-2xl shadow p-6 md:p-8 mt-6">
       <h2 className="text-2xl font-bold text-center mb-6">
@@ -54,7 +138,6 @@ export default function MetaForm() {
       </h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-6">
-
         {/* BASIC INFO */}
         <div className="grid md:grid-cols-2 gap-4">
           <div>
@@ -148,10 +231,7 @@ export default function MetaForm() {
               <Input
                 value={formik.values.meta.seo.description}
                 onChange={(e) =>
-                  formik.setFieldValue(
-                    "meta.seo.description",
-                    e.target.value
-                  )
+                  formik.setFieldValue("meta.seo.description", e.target.value)
                 }
               />
             </div>
@@ -165,9 +245,7 @@ export default function MetaForm() {
               <div key={i} className="flex gap-2 mb-2">
                 <Input
                   value={k}
-                  onChange={(e) =>
-                    handleKeywordChange(i, e.target.value)
-                  }
+                  onChange={(e) => handleKeywordChange(i, e.target.value)}
                 />
                 <button
                   type="button"
@@ -194,7 +272,7 @@ export default function MetaForm() {
           type="submit"
           className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-500"
         >
-          Save Meta
+          {loading ? "loading" : "Save Meta"}
         </button>
       </form>
     </div>
