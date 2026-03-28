@@ -13,8 +13,6 @@ export default function Home() {
     <>
       <Navbar NavType={LicenseTypes.USER} />
       <HeroSection />
-      <h1>Mithun new build</h1>
-      <h1>Mithun new build new build two</h1>
 
       {/* ⭐ Categories */}
       <div className="bg-gray-50">
@@ -63,7 +61,7 @@ export default function Home() {
           <VerstionChange />
         </div>
       </div>
-      <div className="flex justify-center items-center pb-4 bg-gray-100">
+      {/* <div className="flex justify-center items-center pb-4 bg-gray-100">
         <div className="bg-white p-8 rounded-2xl shadow-lg text-center">
           <h2 className="text-xl font-semibold mb-4">Download Our App</h2>
           <DownloadApk />
@@ -75,7 +73,7 @@ export default function Home() {
           <h2 className="text-xl font-semibold mb-4">Download Our Photo Share App</h2>
           <DownloadApkShareMyInterst />
         </div>
-      </div>
+      </div> */}
 
       <Footer />
     </>

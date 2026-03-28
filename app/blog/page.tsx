@@ -15,8 +15,8 @@ const posts = [
     href: "#",
     description:
       "Renting helps you avoid big upfront costs while getting access to premium tools, electronics, and home equipment.",
-    date: "Jan 12, 2025",
-    datetime: "2025-01-12",
+    date: "Jan 12, 2026",
+    datetime: "2026-01-12",
     category: { title: "Rental", href: "#" },
     author: {
       name: "Mithun K J",
@@ -32,8 +32,8 @@ const posts = [
     href: "#",
     description:
       "Simple tricks like better photography, honest descriptions, and the right pricing can help you sell pre-owned items quickly.",
-    date: "Jan 05, 2025",
-    datetime: "2025-01-05",
+    date: "Jan 05, 2026",
+    datetime: "2026-01-05",
     category: { title: "Resale", href: "#" },
     author: {
       name: "Kiran",

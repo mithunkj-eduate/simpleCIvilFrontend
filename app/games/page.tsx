@@ -255,66 +255,72 @@ export default function Page() {
   const [game, setGame] = useState<GameType>(null);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-black p-4 sm:p-6">
-      {/* HEADER */}
-      {!game && (
-        <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-cyan-400 drop-shadow-[0_0_20px_cyan]">
-            🎮 Mini Games
-          </h1>
-          <p className="text-gray-400 mt-2 text-sm sm:text-base">
-            Choose a game and start playing 🚀
-          </p>
-        </div>
-      )}
+    <>
+      <main className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-black p-4 sm:p-6">
+        {/* HEADER */}
+        {!game && (
+          <div className="text-center mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-cyan-400 drop-shadow-[0_0_20px_cyan]">
+              🎮 Mini Games
+            </h1>
+            <p className="text-gray-400 mt-2 text-sm sm:text-base">
+              Choose a game and start playing 🚀
+            </p>
+          </div>
+        )}
 
-      {/* GAME GRID */}
-      {!game && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {games.map((g) => (
-            <button
-              key={g.key}
-              onClick={() => setGame(g.key as GameType)}
-              className={`
+        {/* GAME GRID */}
+        {!game && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            {games.map((g) => (
+              <button
+                key={g.key}
+                onClick={() => setGame(g.key as GameType)}
+                className={`
                 p-5 rounded-2xl text-white font-semibold
                 bg-gradient-to-r ${g.color}
                 shadow-lg hover:scale-105 active:scale-95
                 transition-all duration-200
                 flex items-center justify-center text-lg
               `}
-            >
-              {g.label}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* GAME AREA */}
-      {game && (
-        <div className="flex flex-col items-center gap-4 mt-6">
-          <div className="w-full max-w-4xl flex justify-between items-center">
-            <h2 className="text-white text-lg sm:text-xl font-bold">{game}</h2>
-
-            <button
-              onClick={() => setGame(null)}
-              className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
-            >
-              ⬅ Back
-            </button>
+              >
+                {g.label}
+              </button>
+            ))}
           </div>
+        )}
 
-          <div className="w-full flex justify-center">
-            {game === "snake" && <SnakeGame />}
-            {game === "sudoku" && <SodakuGame />}
-            {game === "NameWheelGame" && <NameWheelGame />}
-            {game === "BounceGame" && <BounceGame />}
-            {game === "ZipProGame" && <ZipProGame />}
-            {game === "StrangerGame" && <StrangerGame querstions="Strangers" />}
-            {game === "FriendsGame" && <StrangerGame querstions="Friends" />}
-            {game === "ArrowPuzzleGame" && <ArrowPuzzle />}
+        {/* GAME AREA */}
+        {game && (
+          <div className="flex flex-col items-center gap-4 mt-6">
+            <div className="w-full max-w-4xl flex justify-between items-center">
+              <h2 className="text-white text-lg sm:text-xl font-bold">
+                {game}
+              </h2>
+
+              <button
+                onClick={() => setGame(null)}
+                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
+              >
+                ⬅ Back
+              </button>
+            </div>
+
+            <div className="w-full flex justify-center">
+              {game === "snake" && <SnakeGame />}
+              {game === "sudoku" && <SodakuGame />}
+              {game === "NameWheelGame" && <NameWheelGame />}
+              {game === "BounceGame" && <BounceGame />}
+              {game === "ZipProGame" && <ZipProGame />}
+              {game === "StrangerGame" && (
+                <StrangerGame querstions="Strangers" />
+              )}
+              {game === "FriendsGame" && <StrangerGame querstions="Friends" />}
+              {game === "ArrowPuzzleGame" && <ArrowPuzzle />}
+            </div>
           </div>
-        </div>
-      )}
-    </main>
+        )}
+      </main>
+    </>
   );
 }

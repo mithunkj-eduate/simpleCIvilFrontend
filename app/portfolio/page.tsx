@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 
 export const defaultPortfolio = {
   hero: {
@@ -401,7 +401,10 @@ const PortfolioForm = () => {
             <h2 className="text-2xl font-semibold">Hero Section</h2>
             {["name", "highlight", "subtitle", "desc", "image"].map((field) => (
               <div key={field}>
-                <label className="block font-medium mb-1">{field} {field === "image" ? "(google drive image link only)" : ""}</label>
+                <label className="block font-medium mb-1">
+                  {field}{" "}
+                  {field === "image" ? "(google drive image link only)" : ""}
+                </label>
                 <input
                   type="text"
                   value={portfolio.hero[field] || ""}
@@ -473,7 +476,8 @@ const PortfolioForm = () => {
               <div
                 key={i}
                 className="border p-3 rounded-lg flex flex-col gap-2"
-              >:
+              >
+                :
                 {["title", "desc", "link", "image"].map((field) => (
                   <input
                     key={field}
@@ -891,38 +895,104 @@ const PortfolioForm = () => {
 
 export default PortfolioForm;
 
-const PortfolioLink = ({ id }: { id: string }) => {
-  const url = `https://portfolio.shareurinterest.com/${id}`;
-  const [copied, setCopied] = useState(false);
+interface PortfolioLinkProps {
+  id: string;
+}
 
-  const handleCopy = () => {
+const PortfolioLink: React.FC<PortfolioLinkProps> = ({ id }) => {
+  const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
+
+  const baseUrls = [
+    `https://portfolio.shareurinterest.com/${id}`,
+    `https://portfolio.shareurinterest.com/cursorportfolio/${id}`,
+    `https://portfolio.shareurinterest.com/bubbleportfolio/${id}`,
+    `https://portfolio.shareurinterest.com/developerportfolio/${id}`,
+  ];
+
+  const handleCopy = (url: string) => {
     navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedUrl(url);
+
+    setTimeout(() => {
+      setCopiedUrl(null);
+    }, 2000);
   };
 
   return (
-    <div className="bg-gray-900 text-white p-4 rounded-lg flex flex-col sm:flex-row items-center justify-between gap-3 m-3">
-      <p className="text-sm break-all">{url}</p>
-
-      <div className="flex gap-2">
-        <button
-          onClick={handleCopy}
-          type="button"
-          className="bg-gray-700 px-3 py-2 rounded hover:bg-gray-600"
-        >
-          {copied ? "Copied!" : "Copy"}
-        </button>
-
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-cyan-500 px-4 py-2 rounded hover:bg-cyan-600"
-        >
-          View
-        </a>
+    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-8 max-w-4xl mx-auto">
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold text-white mb-1">
+          Portfolio Links
+        </h3>
+        <p className="text-zinc-400 text-sm">
+          Multiple styled versions of your portfolio. Choose the one you like
+          best.
+        </p>
       </div>
+
+      <div className="space-y-4">
+        {baseUrls.map((url, index) => {
+          const isCopied = copiedUrl === url;
+          const variantName = url.includes("cursorportfolio")
+            ? "Cursor Style"
+            : url.includes("bubbleportfolio")
+              ? "Bubble Style"
+              : url.includes("developerportfolio")
+                ? "Developer Style"
+                : "Classic Style";
+
+          return (
+            <div
+              key={index}
+              className="group bg-zinc-900 hover:bg-zinc-800/80 border border-zinc-700 hover:border-violet-500/30 rounded-xl p-5 transition-all duration-300"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                {/* URL Display */}
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs uppercase tracking-widest text-zinc-500 mb-1">
+                    {variantName}
+                  </div>
+                  <p className="text-sm text-zinc-300 font-mono break-all pr-4">
+                    {url}
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex items-center gap-3 shrink-0">
+                  <button
+                    onClick={() => handleCopy(url)}
+                    type="button"
+                    className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white px-5 py-2.5 rounded-lg transition-all active:scale-95"
+                  >
+                    {isCopied ? (
+                      <>
+                        <span className="text-sm font-medium">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-sm font-medium">Copy</span>
+                      </>
+                    )}
+                  </button>
+
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-5 py-2.5 rounded-lg transition-all active:scale-95"
+                  >
+                    <span className="text-sm font-medium">View</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="text-center text-xs text-zinc-500 mt-8">
+        Tip: Try all versions and pick the one that best represents your style
+      </p>
     </div>
   );
 };
