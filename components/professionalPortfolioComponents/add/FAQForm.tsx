@@ -11,8 +11,8 @@ export default function FAQForm({ initialValues, handleSave }: PortfolioProps) {
   const { faq } = initialValues;
 
   const formik = useFormik({
-    initialValues: faq ?? {
-      faq: [
+    initialValues: {
+      faq:faq ?? [
         {
           question: "",
           answer: "",

@@ -14,8 +14,8 @@ export default function SkillsForm({
   const { skills } = initialValues;
 
   const formik = useFormik({
-    initialValues: skills ?? {
-      skills: [
+    initialValues: {
+      skills: skills ?? [
         {
           name: "",
           level: 50,

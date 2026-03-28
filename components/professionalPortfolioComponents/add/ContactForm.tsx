@@ -14,8 +14,8 @@ export default function ContactForm({
   const { contact } = initialValues;
 
   const formik = useFormik({
-    initialValues: contact ?? {
-      contact: {
+    initialValues:  {
+      contact: contact ??{
         email: "",
         phone: "",
         whatsapp: "",

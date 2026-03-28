@@ -14,8 +14,8 @@ export default function SocialLinksForm({
   const { socialLinks } = initialValues;
 
   const formik = useFormik({
-    initialValues: socialLinks ?? {
-      socialLinks: [
+    initialValues: {
+      socialLinks: socialLinks ??[
         {
           platform: "",
           url: "",

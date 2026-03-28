@@ -16,8 +16,8 @@ export default function GalleryForm({
   const { gallery } = initialValues;
 
   const formik = useFormik({
-    initialValues: gallery ?? {
-      gallery: [
+    initialValues: {
+      gallery: gallery ??[
         {
           url: "",
           alt: "",

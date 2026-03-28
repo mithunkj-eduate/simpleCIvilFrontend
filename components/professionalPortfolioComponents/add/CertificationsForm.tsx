@@ -14,8 +14,8 @@ export default function CertificationsForm({
   const { certifications } = initialValues;
 
   const formik = useFormik({
-    initialValues: certifications ?? {
-      certifications: [
+    initialValues:  {
+      certifications: certifications ??[
         {
           title: "",
           issuer: "",

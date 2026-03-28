@@ -14,8 +14,8 @@ export default function TestimonialsForm({
   const { testimonials } = initialValues;
 
   const formik = useFormik({
-    initialValues: testimonials ?? {
-      testimonials: [
+    initialValues: {
+      testimonials:testimonials ?? [
         {
           id: "t1",
           name: "",
