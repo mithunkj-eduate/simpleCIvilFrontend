@@ -1,7 +1,7 @@
 "use client";
 import Card from "@/components/Card";
-import DownloadApk from "@/components/DownloadApk";
-import DownloadApkShareMyInterst from "@/components/DownloadApkShareMyInterst";
+// import DownloadApk from "@/components/DownloadApk";
+// import DownloadApkShareMyInterst from "@/components/DownloadApkShareMyInterst";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
 import VerstionChange from "@/components/VerstionChange";
