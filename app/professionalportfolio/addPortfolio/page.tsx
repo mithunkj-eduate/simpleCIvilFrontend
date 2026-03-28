@@ -44,9 +44,22 @@
 "use client";
 
 import HeroForm from "@/components/professionalPortfolioComponents/add/HeroForm";
+import AboutForm from "@/components/professionalPortfolioComponents/add/AboutForm";
+import BusinessInfoForm from "@/components/professionalPortfolioComponents/add/BusinessInfoForm";
+import ServicesForm from "@/components/professionalPortfolioComponents/add/ServicesForm";
+
 import { Input } from "@/stories/Input/Input";
 import { TextArea } from "@/stories/TextArea/TextArea";
 import { useState } from "react";
+import ProjectsForm from "@/components/professionalPortfolioComponents/add/ProjectsForm";
+import SkillsForm from "@/components/professionalPortfolioComponents/add/SkillsForm";
+import CertificationsForm from "@/components/professionalPortfolioComponents/add/CertificationsForm";
+import GalleryForm from "@/components/professionalPortfolioComponents/add/GalleryForm";
+import TestimonialsForm from "@/components/professionalPortfolioComponents/add/TestimonialsForm";
+import FAQForm from "@/components/professionalPortfolioComponents/add/FAQForm";
+import ContactForm from "@/components/professionalPortfolioComponents/add/ContactForm";
+import SocialLinksForm from "@/components/professionalPortfolioComponents/add/SocialLinksForm";
+import MetaForm from "@/components/professionalPortfolioComponents/add/MetaForm";
 
 export default function Dashboard() {
   const [form, setForm] = useState({
@@ -126,7 +139,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow p-6 md:p-8 space-y-6">
+      {/* <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow p-6 md:p-8 space-y-6">
         <h1 className="text-2xl md:text-3xl font-bold text-center">
           Create Your Website
         </h1>
@@ -138,8 +151,7 @@ export default function Dashboard() {
           </span>
         </p>
 
-        {/* Basic Info */}
-        {/* META SECTION */}
+   
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Basic Details</h2>
 
@@ -205,21 +217,18 @@ export default function Dashboard() {
           />
         </div>
 
-        {/* About */}
         <textarea
           placeholder="About You / Business"
           className="border p-3 rounded-lg w-full h-24"
           onChange={(e) => handleChange("about", e.target.value)}
         />
 
-        {/* Service */}
         <Input
           placeholder="Main Service (e.g. Heart Specialist, Plumbing, Teaching)"
           className="border p-3 rounded-lg w-full"
           onChange={(e) => handleChange("service", e.target.value)}
         />
 
-        {/* Submit */}
         <button
           onClick={save}
           disabled={loading}
@@ -227,11 +236,21 @@ export default function Dashboard() {
         >
           {loading ? "Creating..." : "Save"}
         </button>
-      </div>
+      </div> */}
 
-      <HeroForm   />
+      <MetaForm />
+      <HeroForm />
+      <AboutForm />
+      <BusinessInfoForm />
+      {/* <ServicesForm /> */}
+      <ProjectsForm />
+      <SkillsForm />
+      <CertificationsForm />
+      <GalleryForm />
+      <TestimonialsForm />
+      <FAQForm />
+      <ContactForm />
+      <SocialLinksForm />
     </div>
   );
 }
-
-

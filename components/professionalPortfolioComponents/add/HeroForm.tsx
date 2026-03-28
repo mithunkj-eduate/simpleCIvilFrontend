@@ -49,7 +49,7 @@ export default function HeroForm() {
     }
     formik.setFieldValue(key, arr);
   };
-  console.log(formik.errors, "formil");
+
   return (
     <div className="mx-auto max-w-4xl bg-white rounded-2xl shadow p-6 md:p-8 mt-6">
       <h2 className="text-2xl font-bold text-center mb-6">Hero Section</h2>
@@ -101,6 +101,7 @@ export default function HeroForm() {
             <div key={i} className="flex gap-2 mb-2">
               <Input
                 value={item}
+                placeholder="https://"
                 onChange={(e) =>
                   handleArrayChange("carousel", i, null, e.target.value)
                 }
