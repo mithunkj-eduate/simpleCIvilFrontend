@@ -229,6 +229,11 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         current: true,
       },
       {
+        name: "Create Website With AI",
+        href: `/professionalportfolio/generatewithai?v=${state.version}`,
+        current: false,
+      },
+      {
         name: "Publish",
         href: `/professionalportfolio/publish?v=${state.version}`,
         current: false,
@@ -244,7 +249,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       setItems(Navigation);
     } else if (NavType === LicenseTypes.RAIDER) {
       setItems(ConsoleDelveryBoyNavigation);
-    } else if (NavType === LicenseTypes.WEBSIT) {
+    } else if (NavType === LicenseTypes.WEBSIT && state.user?.id) {
       setItems(websiteNavigation);
     } else if (NavType === LicenseTypes.NONE) {
       setItems([]);
