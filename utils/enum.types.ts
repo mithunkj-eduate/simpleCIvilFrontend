@@ -13,6 +13,7 @@ export enum LicenseTypes {
   RAIDER = "raider",
   FARMER = "farmer",
   WEBSIT = "website",
+  PORTFOLIO = "portfolio"
 
 }
 

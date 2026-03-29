@@ -241,6 +241,27 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     ],
     [state.version, state.user?.id],
   );
+
+  const portfolioNavigation = useMemo(
+    () => [
+      {
+        name: "Create Portfolio",
+        href: `/portfolio?v=${state.version}`,
+        current: true,
+      },
+      {
+        name: "Create Portfolio With AI",
+        href: `/portfolio/generatewithai?v=${state.version}`,
+        current: false,
+      },
+      {
+        name: "Publish",
+        href: `/portfolio/publish?v=${state.version}`,
+        current: false,
+      },
+    ],
+    [state.version, state.user?.id],
+  );
   console.log(state.version);
   useEffect(() => {
     if (NavType === LicenseTypes.ADMIN && state.user) {
@@ -249,6 +270,8 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       setItems(Navigation);
     } else if (NavType === LicenseTypes.RAIDER) {
       setItems(ConsoleDelveryBoyNavigation);
+    } else if (NavType === LicenseTypes.PORTFOLIO && state.user?.id) {
+      setItems(portfolioNavigation);
     } else if (NavType === LicenseTypes.WEBSIT && state.user?.id) {
       setItems(websiteNavigation);
     } else if (NavType === LicenseTypes.NONE) {
@@ -260,6 +283,8 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     ConsoleNavigation,
     state.user,
     ConsoleDelveryBoyNavigation,
+    websiteNavigation,
+    portfolioNavigation,
     state.version,
     state.user?.id,
   ]);

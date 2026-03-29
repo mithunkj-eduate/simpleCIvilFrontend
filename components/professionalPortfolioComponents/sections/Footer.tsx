@@ -3,7 +3,7 @@ import {
   Globe,
   Link2,
   ExternalLink,
-  Heart,
+  // Heart,
   Phone,
   Mail,
   MapPin,
