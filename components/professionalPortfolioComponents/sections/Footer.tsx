@@ -169,9 +169,9 @@ export default function Footer({ data }: FooterProps) {
           <p className="text-xs" style={{ color: "#64748b" }}>
             © {year} {meta.name}. All rights reserved.
           </p>
-          <p className="text-xs flex items-center gap-1" style={{ color: "#64748b" }}>
+          {/* <p className="text-xs flex items-center gap-1" style={{ color: "#64748b" }}>
             Made with <Heart size={11} className="text-red-400" /> using Next.js &amp; Tailwind CSS
-          </p>
+          </p> */}
         </div>
       </div>
     </footer>
