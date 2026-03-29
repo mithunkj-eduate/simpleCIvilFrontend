@@ -381,9 +381,9 @@ const PortfolioForm = () => {
   return (
     <>
       <Navbar NavType={LicenseTypes.PORTFOLIO} />
-      {state.user && open && <PortfolioLink id={state.user?.id} />}
+      {/* {state.user && open && <PortfolioLink id={state.user?.id} />} */}
       <div className="max-w-5xl mx-auto p-4 space-y-8">
-        <div className="flex gap-3">
+        {/* <div className="flex gap-3">
           <h1 className="text-3xl font-bold text-center flex-start">
             Update Portfolio{" "}
           </h1>
@@ -393,7 +393,7 @@ const PortfolioForm = () => {
           >
             Preview
           </button>
-        </div>
+        </div> */}
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* HERO SECTION */}
