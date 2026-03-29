@@ -74,6 +74,7 @@ import {
 } from "@/components/professionalPortfolioComponents/add/StepProgress";
 import { AxiosError } from "axios";
 import Navbar from "@/components/commen/Navbar";
+import Loading from "@/components/helpers/Loading";
 
 // export default function Dashboard() {
 //   const [form, setForm] = useState<PortfolioData>(samplePortfolioData);
@@ -222,7 +223,8 @@ import Navbar from "@/components/commen/Navbar";
 
 export default function Dashboard() {
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState<PortfolioData>(samplePortfolioData);
+  const [form, setForm] = useState<PortfolioData | null>(samplePortfolioData);
+  const [loading, setLoading] = useState(true);
 
   const { TOKEN } = Api();
   const { state } = useContext(AppContext);
@@ -234,6 +236,8 @@ export default function Dashboard() {
 
     const getStore = async () => {
       try {
+        setLoading(true);
+
         const res = await api.get(`/professionalPortfolio`, {
           headers: {
             Authorization: `Bearer ${TOKEN}`,
@@ -253,11 +257,13 @@ export default function Dashboard() {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
     getStore();
-  }, [TOKEN, state.user]);
+  }, [step, TOKEN, state.user]);
 
   const handleSave = async (value: PortfolioData) => {
     try {
@@ -285,6 +291,7 @@ export default function Dashboard() {
                 setForm({
                   ...res.data,
                   meta: {
+                    ...res.data.meta,
                     slug: res.data.meta.slug,
                   },
                 });
@@ -317,6 +324,7 @@ export default function Dashboard() {
                 setForm({
                   ...res.data,
                   meta: {
+                    ...res.data.meta,
                     slug: res.data.meta.slug,
                   },
                 });
@@ -357,7 +365,6 @@ export default function Dashboard() {
       message.operation === Operation.CREATE ||
       message.operation === Operation.UPDATE
     ) {
-      setForm(samplePortfolioData);
       setOperation(Operation.UPDATE);
     }
   };
@@ -371,122 +378,123 @@ export default function Dashboard() {
     if (step > 0) setStep(step - 1);
   };
 
-  console.log(form,"form")
+  console.log(form, "form");
   // ---------- FORM RENDER ----------
   const renderForm = () => {
-    switch (step) {
-      case 0:
-        return (
-          <MetaForm
-            initialValues={form}
-            handleSave={handleSave}
-            step={step}
-            prevStep={prevStep}
-          />
-        );
+    if (form)
+      switch (step) {
+        case 0:
+          return (
+            <MetaForm
+              initialValues={form}
+              handleSave={handleSave}
+              step={step}
+              prevStep={prevStep}
+            />
+          );
 
-      case 1:
-        return (
-          <HeroForm
-            initialValues={form}
-            handleSave={handleSave}
-            step={step}
-            prevStep={prevStep}
-          />
-        );
-      case 2:
-        return (
-          <AboutForm
-            initialValues={form}
-            handleSave={handleSave}
-            step={step}
-            prevStep={prevStep}
-          />
-        );
-      case 3:
-        return (
-          <BusinessInfoForm
-            initialValues={form}
-            handleSave={handleSave}
-            step={step}
-            prevStep={prevStep}
-          />
-        );
-      case 4:
-        return (
-          <ProjectsForm
-            initialValues={form}
-            handleSave={handleSave}
-            step={step}
-            prevStep={prevStep}
-          />
-        );
-      case 5:
-        return (
-          <SkillsForm
-            initialValues={form}
-            handleSave={handleSave}
-            step={step}
-            prevStep={prevStep}
-          />
-        );
-      case 6:
-        return (
-          <CertificationsForm
-            initialValues={form}
-            handleSave={handleSave}
-            step={step}
-            prevStep={prevStep}
-          />
-        );
-      case 7:
-        return (
-          <GalleryForm
-            initialValues={form}
-            handleSave={handleSave}
-            step={step}
-            prevStep={prevStep}
-          />
-        );
-      case 8:
-        return (
-          <TestimonialsForm
-            initialValues={form}
-            handleSave={handleSave}
-            step={step}
-            prevStep={prevStep}
-          />
-        );
-      case 9:
-        return (
-          <FAQForm
-            initialValues={form}
-            handleSave={handleSave}
-            step={step}
-            prevStep={prevStep}
-          />
-        );
-      case 10:
-        return (
-          <ContactForm
-            initialValues={form}
-            handleSave={handleSave}
-            step={step}
-            prevStep={prevStep}
-          />
-        );
-      case 11:
-        return (
-          <SocialLinksForm
-            initialValues={form}
-            handleSave={handleSave}
-            step={step}
-            prevStep={prevStep}
-          />
-        );
-      default:
-        return null;
-    }
+        case 1:
+          return (
+            <HeroForm
+              initialValues={form}
+              handleSave={handleSave}
+              step={step}
+              prevStep={prevStep}
+            />
+          );
+        case 2:
+          return (
+            <AboutForm
+              initialValues={form}
+              handleSave={handleSave}
+              step={step}
+              prevStep={prevStep}
+            />
+          );
+        case 3:
+          return (
+            <BusinessInfoForm
+              initialValues={form}
+              handleSave={handleSave}
+              step={step}
+              prevStep={prevStep}
+            />
+          );
+        case 4:
+          return (
+            <ProjectsForm
+              initialValues={form}
+              handleSave={handleSave}
+              step={step}
+              prevStep={prevStep}
+            />
+          );
+        case 5:
+          return (
+            <SkillsForm
+              initialValues={form}
+              handleSave={handleSave}
+              step={step}
+              prevStep={prevStep}
+            />
+          );
+        case 6:
+          return (
+            <CertificationsForm
+              initialValues={form}
+              handleSave={handleSave}
+              step={step}
+              prevStep={prevStep}
+            />
+          );
+        case 7:
+          return (
+            <GalleryForm
+              initialValues={form}
+              handleSave={handleSave}
+              step={step}
+              prevStep={prevStep}
+            />
+          );
+        case 8:
+          return (
+            <TestimonialsForm
+              initialValues={form}
+              handleSave={handleSave}
+              step={step}
+              prevStep={prevStep}
+            />
+          );
+        case 9:
+          return (
+            <FAQForm
+              initialValues={form}
+              handleSave={handleSave}
+              step={step}
+              prevStep={prevStep}
+            />
+          );
+        case 10:
+          return (
+            <ContactForm
+              initialValues={form}
+              handleSave={handleSave}
+              step={step}
+              prevStep={prevStep}
+            />
+          );
+        case 11:
+          return (
+            <SocialLinksForm
+              initialValues={form}
+              handleSave={handleSave}
+              step={step}
+              prevStep={prevStep}
+            />
+          );
+        default:
+          return null;
+      }
   };
 
   return (
@@ -498,7 +506,7 @@ export default function Dashboard() {
         {/* <StepProgress step={step} /> */}
 
         {/* 🔥 Current Form */}
-        <div className="mt-6">{renderForm()}</div>
+        <div className="mt-6">{loading ? <Loading /> : renderForm()}</div>
 
         <MessageModal
           handleClose={handleClose}
