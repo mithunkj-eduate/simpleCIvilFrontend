@@ -66,6 +66,7 @@ export default function MetaForm({
         });
     },
   });
+console.log(meta.tagline,formik.values.meta.tagline,"meta")
 
   // ---------- KEYWORDS ----------
   const addKeyword = () => {

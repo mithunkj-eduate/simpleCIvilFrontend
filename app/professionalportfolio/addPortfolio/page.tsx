@@ -241,11 +241,11 @@ export default function Dashboard() {
           },
         });
 
-        console.log(res, "res");
         if (res.data) {
           setForm({
             ...res.data,
             meta: {
+              ...res.data.meta,
               slug: res.data.meta.slug,
             },
           });
@@ -371,6 +371,7 @@ export default function Dashboard() {
     if (step > 0) setStep(step - 1);
   };
 
+  console.log(form,"form")
   // ---------- FORM RENDER ----------
   const renderForm = () => {
     switch (step) {

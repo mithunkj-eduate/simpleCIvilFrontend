@@ -8,7 +8,10 @@ import BusinessInfo from "@/components/professionalPortfolioComponents/sections/
 import Services from "@/components/professionalPortfolioComponents/sections/Services";
 import Products from "@/components/professionalPortfolioComponents/sections/Products";
 import Projects from "@/components/professionalPortfolioComponents/sections/Projects";
-import { Skills, Certifications } from "@/components/professionalPortfolioComponents/sections/SkillsAndCerts";
+import {
+  Skills,
+  Certifications,
+} from "@/components/professionalPortfolioComponents/sections/SkillsAndCerts";
 import Gallery from "@/components/professionalPortfolioComponents/sections/Gallery";
 import Testimonials from "@/components/professionalPortfolioComponents/sections/Testimonials";
 import FAQSection from "@/components/professionalPortfolioComponents/sections/FAQ";
@@ -16,12 +19,14 @@ import Contact from "@/components/professionalPortfolioComponents/sections/Conta
 import Footer from "@/components/professionalPortfolioComponents/sections/Footer";
 import WhatsAppFAB from "@/components/professionalPortfolioComponents/ui/WhatsAppFAB";
 
-
 interface PortfolioPageClientProps {
   data: PortfolioData;
 }
 
-export default function PortfolioPageClient({ data }: PortfolioPageClientProps) {
+export default function PortfolioPageClient({
+  data,
+}: PortfolioPageClientProps) {
+  console.log(data, "data");
   return (
     <div
       className="min-h-screen"
@@ -66,9 +71,7 @@ export default function PortfolioPageClient({ data }: PortfolioPageClientProps) 
       )}
 
       {/* Skills */}
-      {data.skills && data.skills.length > 0 && (
-        <Skills skills={data.skills} />
-      )}
+      {data.skills && data.skills.length > 0 && <Skills skills={data.skills} />}
 
       {/* Certifications */}
       {data.certifications && data.certifications.length > 0 && (

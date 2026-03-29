@@ -222,7 +222,12 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       },
       {
         name: "Preview",
-        href: `/professionalportfolio/${state.user?.id}?v=${state.version}`,
+        href: `/professionalportfolio/?v=${state.version}`,
+        current: false,
+      },
+      {
+        name: "Publish",
+        href: `/professionalportfolio/publish?v=${state.version}`,
         current: false,
       },
     ],
