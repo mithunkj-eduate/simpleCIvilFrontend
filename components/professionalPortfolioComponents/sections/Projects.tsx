@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import { Project } from "@/lib/types";
-import { ExternalLink, Tag, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ExternalLink,
+  Tag,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { convertDriveToImageUrl } from "@/lib/utils";
+import { SafeImage } from "@/app/utils/SafeImage";
 
 interface ProjectsProps {
   projects: Project[];
@@ -16,17 +24,32 @@ function ProjectCard({ project }: { project: Project }) {
       {/* Gallery */}
       {project.images.length > 0 && (
         <div className="relative" style={{ paddingBottom: "56%" }}>
-          <img
-            src={project.images[imgIdx].url}
-            alt={project.images[imgIdx].alt}
-            className="absolute inset-0 w-full h-full object-cover"
-            loading="lazy"
-          />
+          {project.images[imgIdx].url &&
+          convertDriveToImageUrl(project.images[imgIdx].url) ? (
+            <SafeImage
+              height={200}
+              width={200}
+              src={convertDriveToImageUrl(project.images[imgIdx].url) ?? ""}
+              alt={project.images[imgIdx].alt}
+              className="w-12 h-12 rounded-full object-cover mb-2"
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={project.images[imgIdx].url}
+              alt={project.images[imgIdx].alt}
+              className="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+          )}
           {project.images.length > 1 && (
             <>
               <button
                 onClick={() =>
-                  setImgIdx((p) => (p - 1 + project.images.length) % project.images.length)
+                  setImgIdx(
+                    (p) =>
+                      (p - 1 + project.images.length) % project.images.length,
+                  )
                 }
                 className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-all"
               >
@@ -54,14 +77,19 @@ function ProjectCard({ project }: { project: Project }) {
             </>
           )}
           {project.category && (
-            <div className="absolute top-3 left-3 badge">{project.category}</div>
+            <div className="absolute top-3 left-3 badge">
+              {project.category}
+            </div>
           )}
         </div>
       )}
 
       <div className="p-5 flex flex-col flex-1">
         <div className="flex items-start justify-between gap-2 mb-2">
-          <h3 className="font-bold text-base" style={{ color: "var(--text-primary)" }}>
+          <h3
+            className="font-bold text-base"
+            style={{ color: "var(--text-primary)" }}
+          >
             {project.title}
           </h3>
           {project.link && (
@@ -86,7 +114,10 @@ function ProjectCard({ project }: { project: Project }) {
           </div>
         )}
 
-        <p className="text-sm leading-relaxed flex-1 mb-4" style={{ color: "var(--text-secondary)" }}>
+        <p
+          className="text-sm leading-relaxed flex-1 mb-4"
+          style={{ color: "var(--text-secondary)" }}
+        >
           {project.description}
         </p>
 

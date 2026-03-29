@@ -1,6 +1,7 @@
 import { Service } from "@/lib/types";
 import { CheckCircle, Clock, Tag } from "lucide-react";
-import { formatPrice } from "@/lib/utils";
+import { convertDriveToImageUrl, formatPrice } from "@/lib/utils";
+import { SafeImage } from "@/app/utils/SafeImage";
 
 interface ServicesProps {
   services: Service[];
@@ -12,12 +13,23 @@ function ServiceCard({ service }: { service: Service }) {
     <div className="card overflow-hidden flex flex-col h-full">
       {service.image && (
         <div className="relative" style={{ paddingBottom: "55%" }}>
-          <img
-            src={service.image}
-            alt={service.title}
-            className="absolute inset-0 w-full h-full object-cover"
-            loading="lazy"
-          />
+          {service.image && convertDriveToImageUrl(service.image) ? (
+            <SafeImage
+              height={200}
+              width={200}
+              src={convertDriveToImageUrl(service.image) ?? ""}
+              alt={service.title}
+              className="w-12 h-12 rounded-full object-cover mb-2"
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={service.image}
+              alt={service.title}
+              className="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+          )}
           {service.badge && (
             <div className="absolute top-3 left-3 badge">{service.badge}</div>
           )}
@@ -70,14 +82,20 @@ function ServiceCard({ service }: { service: Service }) {
 
         {/* Features */}
         {service.features && service.features.length > 0 && (
-          <ul className="space-y-1.5 pt-4 border-t" style={{ borderColor: "var(--border)" }}>
+          <ul
+            className="space-y-1.5 pt-4 border-t"
+            style={{ borderColor: "var(--border)" }}
+          >
             {service.features.map((feature, i) => (
               <li key={i} className="flex items-center gap-2">
                 <CheckCircle
                   size={13}
                   style={{ color: "var(--accent)", flexShrink: 0 }}
                 />
-                <span className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                <span
+                  className="text-xs"
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   {feature}
                 </span>
               </li>
@@ -107,8 +125,8 @@ export default function Services({ services, profession }: ServicesProps) {
               {profession === "doctor" || profession === "medical"
                 ? "Medical Services"
                 : profession === "lawyer"
-                ? "Legal Services"
-                : "Services"}
+                  ? "Legal Services"
+                  : "Services"}
             </span>
           </h2>
           <p

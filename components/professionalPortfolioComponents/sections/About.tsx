@@ -1,4 +1,6 @@
+import { SafeImage } from "@/app/utils/SafeImage";
 import { AboutSection as AboutSectionType } from "@/lib/types";
+import { convertDriveToImageUrl } from "@/lib/utils";
 import {
   GraduationCap,
   Award,
@@ -33,7 +35,11 @@ interface AboutProps {
 
 export default function About({ about }: AboutProps) {
   return (
-    <section id="about" className="section" style={{ background: "var(--surface)" }}>
+    <section
+      id="about"
+      className="section"
+      style={{ background: "var(--surface)" }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Image */}
@@ -43,13 +49,25 @@ export default function About({ about }: AboutProps) {
                 className="absolute inset-0 rounded-3xl rotate-3"
                 style={{ background: "var(--accent-light)" }}
               />
-              <img
+              
+
+              {about.image && convertDriveToImageUrl(about.image) ? (
+                <SafeImage
+                  height={200}
+                  width={200}
+                  src={convertDriveToImageUrl(about.image) ?? ""}
+                  alt={about.title}
+                  className="relative rounded-3xl w-full object-cover shadow-xl"
+                  // style={{ maxHeight: "500px" }}
+                />
+              // eslint-disable-next-line @next/next/no-img-element
+              ) : <img
                 src={about.image}
                 alt={about.title}
                 className="relative rounded-3xl w-full object-cover shadow-xl"
                 style={{ maxHeight: "500px" }}
                 loading="lazy"
-              />
+              />}
               <div
                 className="card absolute -bottom-5 -right-5 p-5 hidden sm:block"
                 style={{ maxWidth: "180px" }}

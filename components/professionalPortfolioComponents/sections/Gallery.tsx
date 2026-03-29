@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { GalleryImage } from "@/lib/types";
 import { X, ZoomIn } from "lucide-react";
+import { SafeImage } from "@/app/utils/SafeImage";
+import { convertDriveToImageUrl } from "@/lib/utils";
 
 interface GalleryProps {
   images: GalleryImage[];
@@ -74,12 +76,23 @@ export default function Gallery({ images }: GalleryProps) {
               style={{ paddingBottom: "75%", background: "var(--surface-3)" }}
               onClick={() => setSelected(img)}
             >
-              <img
-                src={img.url}
-                alt={img.alt}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                loading="lazy"
-              />
+              {img.url && convertDriveToImageUrl(img.url) ? (
+                <SafeImage
+                  height={200}
+                  width={200}
+                  src={convertDriveToImageUrl(img.url) ?? ""}
+                  alt={img.alt}
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={img.url}
+                  alt={img.alt}
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+              )}
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
                 <ZoomIn
                   className="text-white opacity-0 group-hover:opacity-100 transition-all duration-300 scale-75 group-hover:scale-100"
@@ -108,12 +121,25 @@ export default function Gallery({ images }: GalleryProps) {
           >
             <X size={20} />
           </button>
-          <img
-            src={selected.url}
-            alt={selected.alt}
-            className="max-w-full max-h-[85vh] rounded-xl shadow-2xl object-contain"
-            onClick={(e) => e.stopPropagation()}
-          />
+
+          {selected.url && convertDriveToImageUrl(selected.url) ? (
+            <SafeImage
+              height={200}
+              width={200}
+              src={convertDriveToImageUrl(selected.url) ?? selected.url}
+              alt={selected.alt}
+              className="max-w-full max-h-[85vh] rounded-xl shadow-2xl object-contain"
+              // onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={selected.url}
+              alt={selected.alt}
+              className="max-w-full max-h-[85vh] rounded-xl shadow-2xl object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
           {selected.alt && (
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/80 text-sm">
               {selected.alt}

@@ -1,4 +1,6 @@
+import { SafeImage } from "@/app/utils/SafeImage";
 import { Product } from "@/lib/types";
+import { convertDriveToImageUrl } from "@/lib/utils";
 import { ShoppingCart, Tag, PackageCheck, PackageX } from "lucide-react";
 
 interface ProductsProps {
@@ -9,13 +11,27 @@ function ProductCard({ product }: { product: Product }) {
   return (
     <div className="card overflow-hidden flex flex-col h-full group">
       {product.image && (
-        <div className="relative overflow-hidden" style={{ paddingBottom: "65%" }}>
-          <img
-            src={product.image}
-            alt={product.title}
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
-          />
+        <div
+          className="relative overflow-hidden"
+          style={{ paddingBottom: "65%" }}
+        >
+          {product.image && convertDriveToImageUrl(product.image) ? (
+            <SafeImage
+              height={200}
+              width={200}
+              src={convertDriveToImageUrl(product.image) ?? ""}
+              alt={product.title}
+              className="w-12 h-12 rounded-full object-cover mb-2"
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={product.image}
+              alt={product.title}
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              loading="lazy"
+            />
+          )}
           {product.badge && (
             <div className="absolute top-3 left-3 badge">{product.badge}</div>
           )}
@@ -28,7 +44,10 @@ function ProductCard({ product }: { product: Product }) {
       )}
       <div className="p-4 flex flex-col flex-1">
         {product.category && (
-          <div className="text-xs font-medium mb-1" style={{ color: "var(--accent)" }}>
+          <div
+            className="text-xs font-medium mb-1"
+            style={{ color: "var(--accent)" }}
+          >
             {product.category}
           </div>
         )}
@@ -44,7 +63,10 @@ function ProductCard({ product }: { product: Product }) {
         >
           {product.description}
         </p>
-        <div className="flex items-center justify-between mt-auto pt-3 border-t" style={{ borderColor: "var(--border)" }}>
+        <div
+          className="flex items-center justify-between mt-auto pt-3 border-t"
+          style={{ borderColor: "var(--border)" }}
+        >
           {product.price ? (
             <div className="flex items-center gap-1.5">
               <Tag size={13} style={{ color: "var(--accent)" }} />
@@ -52,17 +74,16 @@ function ProductCard({ product }: { product: Product }) {
                 {product.price}
               </span>
             </div>
-          ) : <div />}
+          ) : (
+            <div />
+          )}
           <div className="flex items-center gap-1.5">
             {product.inStock !== false ? (
               <PackageCheck size={13} className="text-emerald-500" />
             ) : (
               <PackageX size={13} className="text-red-400" />
             )}
-            <span
-              className="text-xs"
-              style={{ color: "var(--text-muted)" }}
-            >
+            <span className="text-xs" style={{ color: "var(--text-muted)" }}>
               {product.inStock !== false ? "In Stock" : "Out of Stock"}
             </span>
           </div>

@@ -1,6 +1,7 @@
 import { Testimonial } from "@/lib/types";
 import { Star } from "lucide-react";
-import { getInitials } from "@/lib/utils";
+import { convertDriveToImageUrl, getInitials } from "@/lib/utils";
+import { SafeImage } from "@/app/utils/SafeImage";
 
 interface TestimonialsProps {
   testimonials: Testimonial[];
@@ -33,13 +34,27 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           {testimonial.text}
         </p>
       </div>
-      <div className="flex items-center gap-3 mt-6 pt-4 border-t" style={{ borderColor: "var(--border)" }}>
+      <div
+        className="flex items-center gap-3 mt-6 pt-4 border-t"
+        style={{ borderColor: "var(--border)" }}
+      >
         {testimonial.avatar ? (
-          <img
-            src={testimonial.avatar}
-            alt={testimonial.name}
-            className="w-10 h-10 rounded-full object-cover"
-          />
+          testimonial.avatar && convertDriveToImageUrl(testimonial.avatar) ? (
+            <SafeImage
+              height={200}
+              width={200}
+              src={convertDriveToImageUrl(testimonial.avatar) ?? ""}
+              alt={testimonial.name}
+              className="w-12 h-12 rounded-full object-cover mb-2"
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={testimonial.avatar}
+              alt={testimonial.name}
+              className="w-10 h-10 rounded-full object-cover"
+            />
+          )
         ) : (
           <div
             className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white"
@@ -96,7 +111,10 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
           </h2>
           <div className="flex items-center justify-center gap-2 mt-4">
             <StarRating rating={Math.round(avgRating)} />
-            <span className="font-bold" style={{ color: "var(--text-primary)" }}>
+            <span
+              className="font-bold"
+              style={{ color: "var(--text-primary)" }}
+            >
               {avgRating.toFixed(1)}
             </span>
             <span className="text-sm" style={{ color: "var(--text-muted)" }}>

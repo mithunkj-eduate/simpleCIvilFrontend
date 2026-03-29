@@ -14,6 +14,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { SafeImage } from "@/app/utils/SafeImage";
+import { convertDriveToImageUrl } from "@/lib/utils";
 
 const iconMap: Record<string, React.ElementType> = {
   Calendar,
@@ -204,11 +205,22 @@ export default function Hero({ hero, name, tagline, profession }: HeroProps) {
               className="card absolute -bottom-6 -left-6 p-4 max-w-[200px] hidden sm:block"
               style={{ zIndex: 10 }}
             >
-              <img
+             
+
+              {hero.image && convertDriveToImageUrl(hero.image) ? (
+                <SafeImage
+                  height={200}
+                  width={200}
+                  src={convertDriveToImageUrl(hero.image) ?? ""}
+                  alt={hero.image}
+                  className="w-12 h-12 rounded-full object-cover mb-2"
+                />
+              // eslint-disable-next-line @next/next/no-img-element
+              ) :  <img
                 src={hero.image}
                 alt={name}
                 className="w-12 h-12 rounded-full object-cover mb-2"
-              />
+              />}
               <div
                 className="font-bold text-sm"
                 style={{ color: "var(--text-primary)" }}
