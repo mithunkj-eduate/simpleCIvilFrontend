@@ -84,6 +84,14 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         current: false,
       });
     }
+
+    if (state.user?.id) {
+      items.push({
+        name: "Website",
+        href: `/professionalportfolio?v=${state.version}`,
+        current: false,
+      });
+    }
     if (state.user?.id) {
       items.push({
         name: "Orders",
@@ -216,14 +224,9 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
   const websiteNavigation = useMemo(
     () => [
       {
-        name: "Dashboard",
+        name: "Create Website",
         href: `/professionalportfolio?v=${state.version}`,
         current: true,
-      },
-      {
-        name: "Preview",
-        href: `/professionalportfolio/?v=${state.version}`,
-        current: false,
       },
       {
         name: "Publish",
