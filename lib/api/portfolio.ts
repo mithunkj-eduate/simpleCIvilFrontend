@@ -14,7 +14,20 @@ export async function getPortfolio(slug: string) {
         },
       );
 
-      return res.json();
+      // Real HTTP error
+      if (!res.ok) {
+        return null;
+      }
+
+      const data = await res.json();
+
+      // Logical error from backend
+      if (!data || data.message) {
+        return null;
+      }
+
+      return data;
+
     }
     return;
   } catch (err) {

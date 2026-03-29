@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import { portfolioRegistry, samplePortfolioData } from "@/data/portfolios";
 import PortfolioPageClient from "@/components/professionalPortfolioComponents/PortfolioPageClient";
 import { getPortfolio } from "@/lib/api/portfolio";
+import NotFound from "@/app/not-found";
+import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -71,14 +73,12 @@ export default async function PortfolioPage({ params }: PageProps) {
   const { slug } = await params;
   // const data = portfolioRegistry[slug];
 
-  const apiData = await getPortfolio(slug);
-  console.log(apiData, "apiData");
-  const data = apiData ?? samplePortfolioData;
-  console.log(data, "apiData data");
+  const data = await getPortfolio(slug);
 
   if (!data) {
+    return notFound();
     // For demo, fall back to sample data instead of 404
-    return <PortfolioPageClient data={samplePortfolioData} />;
+    // return <PortfolioPageClient data={samplePortfolioData} />;
   }
 
   return <PortfolioPageClient data={data} />;
