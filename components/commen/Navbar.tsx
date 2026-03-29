@@ -76,7 +76,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       { name: "Wallet", href: `/wallet?v=${state.version}`, current: false },
       { name: "Games", href: `/games?v=${state.version}`, current: false },
     ];
-    
+
     if (state.user?.id) {
       items.push({
         name: "Portfolio",
@@ -212,6 +212,22 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     ],
     [state.version],
   );
+
+  const websiteNavigation = useMemo(
+    () => [
+      {
+        name: "Dashboard",
+        href: `/professionalportfolio?v=${state.version}`,
+        current: true,
+      },
+      {
+        name: "Preview",
+        href: `/professionalportfolio/${state.user?.id}?v=${state.version}`,
+        current: false,
+      },
+    ],
+    [state.version, state.user?.id],
+  );
   console.log(state.version);
   useEffect(() => {
     if (NavType === LicenseTypes.ADMIN && state.user) {
@@ -220,6 +236,8 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       setItems(Navigation);
     } else if (NavType === LicenseTypes.RAIDER) {
       setItems(ConsoleDelveryBoyNavigation);
+    } else if (NavType === LicenseTypes.WEBSIT) {
+      setItems(websiteNavigation);
     } else if (NavType === LicenseTypes.NONE) {
       setItems([]);
     }
@@ -230,6 +248,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     state.user,
     ConsoleDelveryBoyNavigation,
     state.version,
+    state.user?.id,
   ]);
 
   return (

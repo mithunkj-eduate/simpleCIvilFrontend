@@ -8,16 +8,19 @@ import { SafeImage } from "@/app/utils/SafeImage";
 import { convertDriveToImageUrl } from "@/lib/utils";
 import { PortfolioProps } from "./MetaForm";
 import { GalleryImage } from "@/lib/types";
+import { formStepsPortfolio } from "./StepProgress";
 
 export default function GalleryForm({
   initialValues,
   handleSave,
+  step,
+  prevStep,
 }: PortfolioProps) {
   const { gallery } = initialValues;
 
   const formik = useFormik({
     initialValues: {
-      gallery: gallery ??[
+      gallery: gallery ?? [
         {
           url: "",
           alt: "",
@@ -131,12 +134,39 @@ export default function GalleryForm({
         </button>
 
         {/* SUBMIT */}
-        <button
+        {/* <button
           type="submit"
           className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-500"
         >
           Save Gallery
-        </button>
+        </button> */}
+
+        <div className="flex justify-between mt-8">
+          <button
+            type="button"
+            onClick={prevStep}
+            disabled={step === 0}
+            className="px-6 py-2 bg-gray-200 rounded-lg disabled:opacity-50"
+          >
+            Previous
+          </button>
+
+          {step === formStepsPortfolio.length - 1 ? (
+            <button
+              type="submit"
+              className="px-6 py-2 bg-green-600 text-white rounded-lg"
+            >
+              ✅ Finish
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="px-6 py-2 bg-indigo-600 text-white rounded-lg"
+            >
+              Save & Next
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );

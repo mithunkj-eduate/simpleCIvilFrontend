@@ -7,6 +7,7 @@ import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
 import { PortfolioProps } from "./MetaForm";
 import { BusinessInfo } from "@/lib/types";
+import { formStepsPortfolio } from "./StepProgress";
 
 const businessSchema = Yup.object({
   ownerName: Yup.string().required("Owner name required"),
@@ -19,6 +20,8 @@ const businessSchema = Yup.object({
 export default function BusinessInfoForm({
   initialValues,
   handleSave,
+  step,
+  prevStep,
 }: PortfolioProps) {
   const { businessInfo } = initialValues;
 
@@ -183,12 +186,39 @@ export default function BusinessInfoForm({
         </div>
 
         {/* SUBMIT */}
-        <button
+        {/* <button
           type="submit"
           className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-500"
         >
           Save Business Info
-        </button>
+        </button> */}
+
+        <div className="flex justify-between mt-8">
+          <button
+            type="button"
+            onClick={prevStep}
+            disabled={step === 0}
+            className="px-6 py-2 bg-gray-200 rounded-lg disabled:opacity-50"
+          >
+            Previous
+          </button>
+
+          {step === formStepsPortfolio.length - 1 ? (
+            <button
+              type="submit"
+              className="px-6 py-2 bg-green-600 text-white rounded-lg"
+            >
+              ✅ Finish
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="px-6 py-2 bg-indigo-600 text-white rounded-lg"
+            >
+              Save & Next
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );

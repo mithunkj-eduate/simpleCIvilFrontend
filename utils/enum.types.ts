@@ -12,6 +12,8 @@ export enum LicenseTypes {
   PICE_WORKER = "PICE_WORKER",
   RAIDER = "raider",
   FARMER = "farmer",
+  WEBSIT = "website",
+
 }
 
 export enum AuthMethod {

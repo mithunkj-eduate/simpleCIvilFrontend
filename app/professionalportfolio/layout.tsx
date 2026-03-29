@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-page-custom-font */
 import type { Metadata } from "next";
 import "./globalsStyle.css";
 
@@ -14,7 +13,9 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+      <div
+      // style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+      >
         {children}
       </div>
     </>

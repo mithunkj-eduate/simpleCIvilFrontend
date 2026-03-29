@@ -6,16 +6,19 @@ import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
 import { PortfolioProps } from "./MetaForm";
 import { SocialLink } from "@/lib/types";
+import { formStepsPortfolio } from "./StepProgress";
 
 export default function SocialLinksForm({
   initialValues,
   handleSave,
+  step,
+  prevStep,
 }: PortfolioProps) {
   const { socialLinks } = initialValues;
 
   const formik = useFormik({
     initialValues: {
-      socialLinks: socialLinks ??[
+      socialLinks: socialLinks ?? [
         {
           platform: "",
           url: "",
@@ -119,12 +122,39 @@ export default function SocialLinksForm({
         </button>
 
         {/* SUBMIT */}
-        <button
+        {/* <button
           type="submit"
           className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-500"
         >
           Save Social Links
-        </button>
+        </button> */}
+
+        <div className="flex justify-between mt-8">
+          <button
+            type="button"
+            onClick={prevStep}
+            disabled={step === 0}
+            className="px-6 py-2 bg-gray-200 rounded-lg disabled:opacity-50"
+          >
+            Previous
+          </button>
+
+          {step === formStepsPortfolio.length - 1 ? (
+            <button
+              type="submit"
+              className="px-6 py-2 bg-green-600 text-white rounded-lg"
+            >
+              ✅ Finish
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="px-6 py-2 bg-indigo-600 text-white rounded-lg"
+            >
+              Save & Next
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );

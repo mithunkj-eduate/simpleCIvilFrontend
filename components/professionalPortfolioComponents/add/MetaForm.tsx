@@ -5,13 +5,21 @@ import { useFormik } from "formik";
 import { Input } from "@/stories/Input/Input";
 import { Label } from "@/stories/Label/Label";
 import { PortfolioData, PortfolioMeta } from "@/lib/types";
+import { formStepsPortfolio } from "./StepProgress";
 
 export interface PortfolioProps {
   initialValues: PortfolioData;
   handleSave: (value: PortfolioData) => Promise<void>;
+  step: number;
+  prevStep: () => void;
 }
-export default function MetaForm({ initialValues, handleSave }: PortfolioProps) {
-  const [loading, setLoading] = useState(false);
+
+export default function MetaForm({
+  initialValues,
+  handleSave,
+  step,
+  prevStep,
+}: PortfolioProps) {
   const { meta } = initialValues;
 
   const formik = useFormik({
@@ -78,58 +86,8 @@ export default function MetaForm({ initialValues, handleSave }: PortfolioProps) 
     formik.setFieldValue("meta.seo.keywords", arr);
   };
 
-  const generateSlug = (name) => name.toLowerCase().replace(/\s+/g, "-");
-
-  const save = async () => {
-    try {
-      setLoading(true);
-
-      const portfolioData = {
-        meta: {
-          slug: generateSlug(form.name),
-          profession: form.profession,
-          name: form.name,
-          tagline: form.tagline,
-          description: form.description,
-          accentColor: form.accentColor,
-          seo: {
-            title: form.seoTitle,
-            description: form.seoDescription,
-            keywords: form.keywords.split(",").map((k) => k.trim()),
-          },
-        },
-
-        about: {
-          description: form.about,
-        },
-
-        contact: {
-          phone: form.phone,
-          email: form.email,
-        },
-
-        services: [
-          {
-            id: "s1",
-            title: form.service,
-            description: form.service,
-          },
-        ],
-      };
-
-      // await fetch("/api/portfolio", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(portfolioData),
-      // });
-
-      alert("✅ Website Created Successfully!");
-    } catch (err) {
-      alert("❌ Error creating website");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const generateSlug = (name: string) =>
+    name.toLowerCase().replace(/\s+/g, "-");
 
   return (
     <div className="mx-auto max-w-5xl bg-white rounded-2xl shadow p-6 md:p-8 mt-6">
@@ -268,12 +226,39 @@ export default function MetaForm({ initialValues, handleSave }: PortfolioProps) 
         </div>
 
         {/* SUBMIT */}
-        <button
+        {/* <button
           type="submit"
           className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-500"
         >
           {loading ? "loading" : "Save Meta"}
-        </button>
+        </button> */}
+
+        <div className="flex justify-between mt-8">
+          <button
+            type="button"
+            onClick={prevStep}
+            disabled={step === 0}
+            className="px-6 py-2 bg-gray-200 rounded-lg disabled:opacity-50"
+          >
+            Previous
+          </button>
+
+          {step === formStepsPortfolio.length - 1 ? (
+            <button
+              type="submit"
+              className="px-6 py-2 bg-green-600 text-white rounded-lg"
+            >
+              ✅ Finish
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="px-6 py-2 bg-indigo-600 text-white rounded-lg"
+            >
+              Save & Next
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );
