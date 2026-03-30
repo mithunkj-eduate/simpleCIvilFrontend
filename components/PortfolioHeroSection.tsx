@@ -43,7 +43,7 @@ export default function PortfolioHeroSection() {
               near you.
             </p> */}
 
-            <h1 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">
+            <h1 className="text-3xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">
               Build Your Portfolio in Seconds with AI 🚀
             </h1>
 

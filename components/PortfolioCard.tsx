@@ -15,7 +15,7 @@ const callouts = [
     name: "Multiple Templates",
     description: "Choose from modern and minimal portfolio designs",
     imageSrc:
-      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f",
+      "/images/devloper.jpg",
     imageAlt: "UI design templates on screen",
     href: "#",
   },

@@ -378,7 +378,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         </div>
 
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {state.user && state.user.id ? (
+          {/* {state.user && state.user.id ? (
             <Link
               href={`/cart?v=${state.version}`}
               className={classNames(
@@ -401,7 +401,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                 />
               </svg>
             </Link>
-          ) : null}
+          ) : null} */}
 
           {state.user ? (
             <a
@@ -487,7 +487,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                   </a>
                 ))}
               </div>
-              <div className="py-6">
+              {/* <div className="py-6">
                 <a
                   href={`/cart?v=${state.version}`}
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
@@ -507,7 +507,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                     />
                   </svg>
                 </a>
-              </div>
+              </div> */}
               <div className="py-6">
                 {state.user ? (
                   <a
