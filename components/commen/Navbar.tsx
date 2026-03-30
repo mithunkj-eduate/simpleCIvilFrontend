@@ -163,14 +163,21 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       });
     }
 
+    // if (state.user?.id) {
+    //   items.push({
+    //     name: "Website",
+    //     href: `/professionalportfolio?v=${state.version}`,
+    //     current: false,
+    //   });
+    // }
+
     if (state.user?.id) {
       items.push({
-        name: "Website",
-        href: `/professionalportfolio?v=${state.version}`,
+        name: "Profile",
+        href: `/profile?v=${state.version}`,
         current: false,
       });
     }
-
     return items;
   }, [state.user, state.version]);
   const ConsoleNavigation = useMemo(() => {
