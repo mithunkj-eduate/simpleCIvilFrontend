@@ -4,22 +4,18 @@ import Card from "@/components/Card";
 // import DownloadApkShareMyInterst from "@/components/DownloadApkShareMyInterst";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
-import PortfoiloCard from "@/components/PortfolioCard";
-import PortfolioHeroSection from "@/components/PortfolioHeroSection";
 import VerstionChange from "@/components/VerstionChange";
 import Navbar from "@/components/commen/Navbar";
 import { LicenseTypes } from "@/utils/enum.types";
 
-export default function Home() {
+export default function Home1() {
   return (
     <>
       <Navbar NavType={LicenseTypes.USER} />
-      {/* ecommers */}
-      {/* <HeroSection /> */}
-      <PortfolioHeroSection />
+      <HeroSection />
 
       {/* ⭐ Categories */}
-      {/* <div className="bg-gray-50">
+      <div className="bg-gray-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl py-16 sm:py-24 lg:max-w-none lg:py-32">
             <h2 className="text-2xl font-bold text-gray-900 pb-8">
@@ -49,43 +45,8 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div> */}
-
-      {/* ⭐ Portfolio Templates */}
-      <div className="bg-gray-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl py-16 sm:py-24 lg:max-w-none lg:py-32">
-            <h2 className="text-2xl font-bold text-gray-900 pb-8">
-              Choose Your Portfolio Style
-            </h2>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {[
-                "Developer Portfolio",
-                "Designer Portfolio",
-                "Freelancer Profile",
-                "Startup Founder",
-                "Student Portfolio",
-                "Creative Showcase",
-                "Minimal Resume",
-                "Agency Portfolio",
-              ].map((category) => (
-                <div
-                  key={category}
-                  className="hover:shadow-xl cursor-pointer shadow-sm rounded-lg bg-white transition-all duration-200 hover:scale-105"
-                >
-                  <div className="py-6 text-center font-medium text-gray-900">
-                    {category}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
-      {/* ecommes */}
-      {/* <Card /> */}
-      <PortfoiloCard />
+      <Card />
 
       {/* <PriceCard />
       <div className="relative isolate bg-white px-6 py-24 sm:py-32 lg:px-8">

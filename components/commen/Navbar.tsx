@@ -65,18 +65,96 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     return pathname === cleanHref;
   };
 
+  // const Navigation = useMemo(() => {
+  //   const items = [
+  //     { name: "Home", href: `/?v=${state.version}`, current: true },
+  //     { name: "Product", href: `/products?v=${state.version}`, current: false },
+  //     { name: "Company", href: `/aboutus?v=${state.version}`, current: false },
+  //     { name: "Blog", href: `/blog?v=${state.version}`, current: false },
+  //     { name: "Wallet", href: `/wallet?v=${state.version}`, current: false },
+  //     { name: "Games", href: `/games?v=${state.version}`, current: false },
+  //   ];
+
+  //   if (state.user?.id) {
+  //     items.push({
+  //       name: "Portfolio",
+  //       href: `/portfolio?v=${state.version}`,
+  //       current: false,
+  //     });
+  //   }
+
+  //   if (state.user?.id) {
+  //     items.push({
+  //       name: "Website",
+  //       href: `/professionalportfolio?v=${state.version}`,
+  //       current: false,
+  //     });
+  //   }
+  //   if (state.user?.id) {
+  //     items.push({
+  //       name: "Orders",
+  //       href: `/orders?v=${state.version}`,
+  //       current: false,
+  //     });
+  //   }
+
+  //   if (state.user?.id) {
+  //     items.push({
+  //       name: "Profile",
+  //       href: `/profile?v=${state.version}`,
+  //       current: false,
+  //     });
+  //   }
+  //   if (
+  //     state.user &&
+  //     state.user.role &&
+  //     [
+  //       UserType.ADMIN,
+  //       UserType.PICE_WORKER,
+  //       UserType.PROJECT_MANAGER,
+  //       UserType.RESELLER,
+  //       UserType.SELLER,
+  //       UserType.SYSTEM_ADMIN,
+  //       UserType.FARMER,
+  //     ].includes(state.user.role as UserType)
+  //   ) {
+  //     items.push({
+  //       name: "Console",
+  //       href: `/console?v=${state.version}`,
+  //       current: false,
+  //     });
+  //   }
+
+  //   if (state.user && state.user?.role === UserType.RAIDER) {
+  //     items.push({
+  //       name: "Console",
+  //       href: `/dashboard?v=${state.version}`,
+  //       current: false,
+  //     });
+  //   }
+
+  //   if (
+  //     state.user &&
+  //     state.user.role &&
+  //     [UserType.ADMIN, UserType.SYSTEM_ADMIN, UserType.FARMER].includes(
+  //       state.user.role as UserType,
+  //     )
+  //   ) {
+  //     items.push({
+  //       name: "Farmer",
+  //       href: `/farmer/dashboard?v=${state.version}`,
+  //       current: false,
+  //     });
+  //   }
+
+  //   return items;
+  // }, [state.user, state.version]);
+
   const Navigation = useMemo(() => {
     const items = [
       { name: "Home", href: `/?v=${state.version}`, current: true },
-      { name: "Product", href: `/products?v=${state.version}`, current: false },
-      // { name: "Contact", href: "/contactus", current: false },
-      // { name: "Marketplace", href: "#", current: false },
-      { name: "Company", href: `/aboutus?v=${state.version}`, current: false },
-      { name: "Blog", href: `/blog?v=${state.version}`, current: false },
-      { name: "Wallet", href: `/wallet?v=${state.version}`, current: false },
-      { name: "Games", href: `/games?v=${state.version}`, current: false },
     ];
-    
+
     if (state.user?.id) {
       items.push({
         name: "Portfolio",
@@ -84,13 +162,14 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         current: false,
       });
     }
-    if (state.user?.id) {
-      items.push({
-        name: "Orders",
-        href: `/orders?v=${state.version}`,
-        current: false,
-      });
-    }
+
+    // if (state.user?.id) {
+    //   items.push({
+    //     name: "Website",
+    //     href: `/professionalportfolio?v=${state.version}`,
+    //     current: false,
+    //   });
+    // }
 
     if (state.user?.id) {
       items.push({
@@ -99,51 +178,8 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         current: false,
       });
     }
-    if (
-      state.user &&
-      state.user.role &&
-      [
-        UserType.ADMIN,
-        UserType.PICE_WORKER,
-        UserType.PROJECT_MANAGER,
-        UserType.RESELLER,
-        UserType.SELLER,
-        UserType.SYSTEM_ADMIN,
-        UserType.FARMER,
-      ].includes(state.user.role as UserType)
-    ) {
-      items.push({
-        name: "Console",
-        href: `/console?v=${state.version}`,
-        current: false,
-      });
-    }
-
-    if (state.user && state.user?.role === UserType.RAIDER) {
-      items.push({
-        name: "Console",
-        href: `/dashboard?v=${state.version}`,
-        current: false,
-      });
-    }
-
-    if (
-      state.user &&
-      state.user.role &&
-      [UserType.ADMIN, UserType.SYSTEM_ADMIN, UserType.FARMER].includes(
-        state.user.role as UserType,
-      )
-    ) {
-      items.push({
-        name: "Farmer",
-        href: `/farmer/dashboard?v=${state.version}`,
-        current: false,
-      });
-    }
-
     return items;
   }, [state.user, state.version]);
-
   const ConsoleNavigation = useMemo(() => {
     const items = [
       { name: "Dashboard", href: `/console?v=${state.version}`, current: true },
@@ -212,6 +248,48 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     ],
     [state.version],
   );
+
+  const websiteNavigation = useMemo(
+    () => [
+      {
+        name: "Create Website",
+        href: `/professionalportfolio?v=${state.version}`,
+        current: true,
+      },
+      {
+        name: "Create Website With AI",
+        href: `/professionalportfolio/generatewithai?v=${state.version}`,
+        current: false,
+      },
+      {
+        name: "Publish",
+        href: `/professionalportfolio/publish?v=${state.version}`,
+        current: false,
+      },
+    ],
+    [state.version, state.user?.id],
+  );
+
+  const portfolioNavigation = useMemo(
+    () => [
+      {
+        name: "Create Portfolio",
+        href: `/portfolio?v=${state.version}`,
+        current: true,
+      },
+      {
+        name: "Create Portfolio With AI",
+        href: `/portfolio/generatewithai?v=${state.version}`,
+        current: false,
+      },
+      {
+        name: "Publish",
+        href: `/portfolio/publish?v=${state.version}`,
+        current: false,
+      },
+    ],
+    [state.version, state.user?.id],
+  );
   console.log(state.version);
   useEffect(() => {
     if (NavType === LicenseTypes.ADMIN && state.user) {
@@ -220,6 +298,10 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
       setItems(Navigation);
     } else if (NavType === LicenseTypes.RAIDER) {
       setItems(ConsoleDelveryBoyNavigation);
+    } else if (NavType === LicenseTypes.PORTFOLIO && state.user?.id) {
+      setItems(portfolioNavigation);
+    } else if (NavType === LicenseTypes.WEBSIT && state.user?.id) {
+      setItems(websiteNavigation);
     } else if (NavType === LicenseTypes.NONE) {
       setItems([]);
     }
@@ -229,7 +311,10 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
     ConsoleNavigation,
     state.user,
     ConsoleDelveryBoyNavigation,
+    websiteNavigation,
+    portfolioNavigation,
     state.version,
+    state.user?.id,
   ]);
 
   return (
@@ -293,7 +378,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
         </div>
 
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {state.user && state.user.id ? (
+          {/* {state.user && state.user.id ? (
             <Link
               href={`/cart?v=${state.version}`}
               className={classNames(
@@ -316,7 +401,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                 />
               </svg>
             </Link>
-          ) : null}
+          ) : null} */}
 
           {state.user ? (
             <a
@@ -402,7 +487,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                   </a>
                 ))}
               </div>
-              <div className="py-6">
+              {/* <div className="py-6">
                 <a
                   href={`/cart?v=${state.version}`}
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
@@ -422,7 +507,7 @@ export default function Navbar({ NavType, className, pageForNav }: NavProps) {
                     />
                   </svg>
                 </a>
-              </div>
+              </div> */}
               <div className="py-6">
                 {state.user ? (
                   <a
