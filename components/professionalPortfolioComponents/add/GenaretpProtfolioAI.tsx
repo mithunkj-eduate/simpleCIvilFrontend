@@ -24,12 +24,26 @@ export default function GeneratePortfolioPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // ✅ Validate JSON Structure
+
   const validateJSON = (data: PortfolioData) => {
-    console.log(data, "data");
-    return (
-      data?.meta && data?.hero && data?.about && data?.services && data?.contact
+    const requiredFields = ["meta", "hero", "about", "services", "contact"];
+
+    // Find ALL fields that are missing or undefined
+    const missingFields = requiredFields.filter(
+      (field) => !data?.[field as keyof PortfolioData],
     );
+
+    // Return the string of missing fields (e.g., "services, contact")
+    // or null if none are missing
+    return missingFields.length > 0 ? missingFields.join(", ") : null;
+  };
+
+  const containsScript = (obj: any): boolean => {
+    const scriptPattern = /<script|javascript:|on\w+=/i;
+
+    // Convert the entire object to a string to scan all values at once
+    const jsonString = JSON.stringify(obj);
+    return scriptPattern.test(jsonString);
   };
 
   const handleSubmit = async () => {
@@ -41,18 +55,37 @@ export default function GeneratePortfolioPage() {
     // ✅ Step 1: Safe JSON Parse
     try {
       parsed = JSON.parse(jsonInput);
-
     } catch (error) {
-console.log(error,"valied")
 
       setError("Invalid JSON format ❌ (Check commas, quotes)");
       return;
     }
 
     // ✅ Step 2: Validate Structure
-    const isValid = validateJSON(parsed);
-    if (!isValid) {
-      setError("Invalid JSON structure ❌ (Missing required fields)");
+    const missingFieldsString = validateJSON(parsed);
+    if (missingFieldsString) {
+      setError(`Invalid JSON structure ❌ (Missing: ${missingFieldsString})`);
+      return;
+    }
+
+    // ✅ Step 2.5: Security Check (No Scripts Allowed)
+    if (containsScript(parsed)) {
+      setError("Security Error ❌ (Executable scripts are not allowed)");
+      return;
+    }
+
+
+    // check max size
+    const MAX_SIZE_KB = 50;
+    const jsonSize = new Blob([JSON.stringify(parsed)]).size;
+    const sizeInKb = jsonSize / 1024;
+
+    console.log(`${sizeInKb} KB`); // ~1.62 KB
+
+    if (sizeInKb > MAX_SIZE_KB) {
+      setError(
+        `File too large ❌ (${sizeInKb.toFixed(2)} KB). Max allowed is ${MAX_SIZE_KB} KB.`,
+      );
       return;
     }
 
@@ -106,21 +139,20 @@ console.log(error,"valied")
           setOperation(Operation.UPDATE);
         }
       } catch (error) {
-        console.log(error);
         const axiosError = error as AxiosError<ApiErrorResponse>;
 
         if (axiosError.response) {
-          setMessage({
-            flag: true,
-            message: axiosError.response.data.message,
-            operation: Operation.NONE,
-          });
+          // The server responded with a status code (e.g., 403)
+          const serverMessage = axiosError.response.data?.message;
+          const status = axiosError.response.status;
+
+          setError(serverMessage || `Error ${status}: Access Denied ❌`);
+        } else if (axiosError.request) {
+          // The request was made but no response was received (Network error)
+          setError("Network Error: Could not reach the server 🌐");
         } else {
-          setMessage({
-            flag: true,
-            message: "An unexpected error occurred",
-            operation: Operation.NONE,
-          });
+          // Something happened setting up the request
+          setError("An unexpected error occurred: " + axiosError.message);
         }
       } finally {
         setLoading(false);
