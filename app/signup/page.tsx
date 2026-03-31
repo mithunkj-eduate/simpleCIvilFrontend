@@ -50,12 +50,12 @@ export const UserTypeData: UserType[] = [
   // UserType.ADMIN,
   // UserType.PICE_WORKER,
   // UserType.PROJECT_MANAGER,
-  UserType.RESELLER,
-  UserType.SELLER,
+  // UserType.RESELLER,
+  // UserType.SELLER,
   // UserType.SYSTEM_ADMIN,
   UserType.USER,
-  UserType.RAIDER,
-  UserType.FARMER,
+  // UserType.RAIDER,
+  // UserType.FARMER,
 ];
 
 const Signup: React.FC = () => {
