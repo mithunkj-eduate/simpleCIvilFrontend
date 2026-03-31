@@ -9,6 +9,7 @@ import PortfolioHeroSection from "@/components/PortfolioHeroSection";
 export default function Home() {
   return (
     <>
+    
       <Navbar NavType={LicenseTypes.USER} />
       {/* ecommers */}
       {/* <HeroSection /> */}

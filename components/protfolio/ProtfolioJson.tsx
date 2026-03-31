@@ -10,7 +10,7 @@ import type { Metadata } from "next";
 
 // ─── 1. PORTFOLIO DATA (edit this to make it yours) ────────────────────────
 
-const PORTFOLIO_DATA = {
+const PORTFOLIO_DATA1 = {
   meta: {
     title: "Jordan Lee — Full-Stack Developer & Product Engineer",
     description:
@@ -217,6 +217,538 @@ const PORTFOLIO_DATA = {
   },
 } as const;
 
+const PORTFOLIO_DATA= {
+  meta: {
+    title: "Mithun K J — Full-Stack MERN Developer",
+    description:
+      "Personal portfolio of Mithun K J — a full-stack MERN developer specializing in building scalable web applications using React, Next.js, Node.js, and MongoDB.",
+    keywords: [
+      "portfolio",
+      "mern developer",
+      "full stack developer",
+      "react developer",
+      "nextjs developer",
+      "nodejs developer",
+      "hire developer",
+      "personal website",
+    ],
+    ogImage: "/og-image.png",
+    siteUrl: "https://mithunkj.dev",
+    twitterHandle: "@mithunkj_dev",
+  },
+
+  navbar: {
+    brand: "mithun.dev",
+    links: [
+      { label: "About", href: "#about" },
+      { label: "Services", href: "#services" },
+      { label: "Projects", href: "#projects" },
+      { label: "Skills", href: "#skills" },
+      { label: "Testimonials", href: "#testimonials" },
+      { label: "Contact", href: "#contact" },
+    ],
+    ctaLabel: "Hire Me",
+    ctaHref: "#contact",
+  },
+
+  hero: {
+    availabilityBadge: "Open to opportunities",
+    greeting: "Hi, I'm",
+    name: "Mithun K J",
+    tagline: "I build scalable, high-performance web applications.",
+    subTagline:
+      "2+ years · MERN Stack · Next.js · GraphQL · MongoDB",
+    primaryCta: { label: "View My Work →", href: "#projects" },
+    secondaryCta: { label: "Get In Touch", href: "#contact" },
+    stats: [
+      { value: "15+", label: "Projects" },
+      { value: "2+", label: "Years" },
+      { value: "100%", label: "Delivery" },
+    ],
+  },
+
+  about: {
+    sectionLabel: "About Me",
+    heading: "I build modern apps for the",
+    headingAccent: "web",
+    emoji: "💻",
+    paragraphs: [
+      "I'm a MERN stack developer with 2+ years of experience building scalable and production-ready applications. I specialize in React, Next.js, Node.js, and MongoDB, with strong experience in API integrations and performance optimization.",
+      "Currently working on real-world platforms like a civil construction marketplace and advanced Apollo GraphQL setups. I enjoy solving complex problems and building efficient systems.",
+    ],
+    highlights: [
+      "MERN Stack Expert",
+      "Next.js & SSR",
+      "GraphQL & Apollo",
+      "MongoDB & PostgreSQL",
+      "REST API Integration",
+      "Problem Solver",
+    ],
+    resumeLabel: "Download Resume ↓",
+    resumeHref: "#",
+    badge: { value: "2+", label: "Years exp." },
+  },
+
+  services: {
+    sectionLabel: "What I Do",
+    heading: "Services I",
+    headingAccent: "Offer",
+    subheading:
+      "End-to-end development from frontend UI to backend architecture.",
+    items: [
+      {
+        icon: "⚡",
+        title: "Frontend Development",
+        desc: "Responsive and high-performance UI using React, Next.js, Tailwind, and modern best practices.",
+      },
+      {
+        icon: "🔧",
+        title: "Backend Development",
+        desc: "Robust backend systems using Node.js, Express, MongoDB, and REST/GraphQL APIs.",
+      },
+      {
+        icon: "📡",
+        title: "API Integration",
+        desc: "Secure API integrations with authentication, token handling, and real-time data flows.",
+      },
+      {
+        icon: "☁️",
+        title: "Deployment",
+        desc: "Deploy applications using Vercel, Docker, and cloud services with CI/CD pipelines.",
+      },
+      {
+        icon: "📊",
+        title: "Database Design",
+        desc: "Efficient schema design using MongoDB & PostgreSQL with optimized queries.",
+      },
+      {
+        icon: "🤝",
+        title: "Consulting",
+        desc: "Helping startups choose the right tech stack and architecture for scalable systems.",
+      },
+    ],
+  },
+
+  projects: {
+    sectionLabel: "Portfolio",
+    heading: "My",
+    headingAccent: "Projects",
+    subheading:
+      "Real-world applications I have built and contributed to.",
+    items: [
+      {
+        emoji: "📸",
+        title: "ShareMyInterest",
+        desc: "Instagram-like social platform with posts, likes, comments, and user interactions.",
+        tags: ["React", "Node.js", "MongoDB"],
+        gradient: "from-cyan-500/20 to-blue-600/20",
+        border: "border-cyan-500/30",
+        liveUrl: "#",
+        repoUrl: "#",
+      },
+      {
+        emoji: "🏗️",
+        title: "Construction Marketplace",
+        desc: "Marketplace for rentals, material resale, vendor management, and order tracking.",
+        tags: ["Next.js", "MongoDB", "Express"],
+        gradient: "from-emerald-500/20 to-teal-600/20",
+        border: "border-emerald-500/30",
+        liveUrl: "#",
+        repoUrl: "#",
+      },
+      {
+        emoji: "📦",
+        title: "Inventory & Rental System",
+        desc: "System for equipment tracking, rental workflows, and vendor coordination.",
+        tags: ["Node.js", "MongoDB", "REST API"],
+        gradient: "from-violet-500/20 to-purple-600/20",
+        border: "border-violet-500/30",
+        liveUrl: "#",
+        repoUrl: "#",
+      },
+      {
+        emoji: "📊",
+        title: "Excel Report Generator",
+        desc: "Advanced Excel generation using ExcelJS with styling, images, and nested data.",
+        tags: ["Node.js", "ExcelJS"],
+        gradient: "from-amber-500/20 to-orange-600/20",
+        border: "border-amber-500/30",
+        liveUrl: "#",
+        repoUrl: "#",
+      },
+    ],
+  },
+
+  skills: {
+    sectionLabel: "Expertise",
+    heading: "My",
+    headingAccent: "Skills",
+    paragraphs: [
+      "Strong foundation in full-stack development with focus on real-world applications.",
+      "Experienced in modern tools, frameworks, and scalable architecture design.",
+    ],
+    items: [
+      { name: "React / Next.js", pct: 90, color: "#38bdf8" },
+      { name: "JavaScript / TypeScript", pct: 88, color: "#818cf8" },
+      { name: "Node.js / Express", pct: 85, color: "#34d399" },
+      { name: "MongoDB / PostgreSQL", pct: 80, color: "#f472b6" },
+      { name: "GraphQL / Apollo", pct: 75, color: "#fb923c" },
+      { name: "DevOps / Deployment", pct: 70, color: "#facc15" },
+    ],
+  },
+
+  testimonials: {
+    sectionLabel: "Social Proof",
+    heading: "What Clients",
+    headingAccent: "Say",
+    items: [
+      {
+        name: "Kiran",
+        role: "Team Member",
+        body: "Mithun is a highly reliable developer who consistently delivers clean and efficient code.",
+        avatar: "K",
+        gradient: "from-cyan-500 to-blue-600",
+      },
+      {
+        name: "Project Client",
+        role: "Startup Founder",
+        body: "Delivered our platform on time with excellent performance and scalability.",
+        avatar: "C",
+        gradient: "from-violet-500 to-purple-600",
+      },
+    ],
+  },
+
+  contact: {
+    sectionLabel: "Let's Work Together",
+    heading: "Ready to Build",
+    headingAccent: "Something?",
+    subheading:
+      "Feel free to reach out for collaborations or opportunities.",
+    cards: [
+      {
+        icon: "✉️",
+        label: "Email",
+        value: "mithunkj.dev@gmail.com",
+        href: "mailto:mithunkj.dev@gmail.com",
+      },
+      {
+        icon: "📞",
+        label: "Phone",
+        value: "+91-XXXXXXXXXX",
+        href: "tel:+91XXXXXXXXXX",
+      },
+    ],
+    primaryCta: {
+      label: "Send Message →",
+      href: "mailto:mithunkj.dev@gmail.com",
+    },
+    secondaryCta: { label: "View Projects", href: "#projects" },
+  },
+
+  footer: {
+    brand: "mithun.dev",
+    tagline: "Building scalable applications with MERN stack.",
+    social: [
+      {
+        label: "GitHub",
+        href: "https://github.com/mithunkj",
+        svgPath: "M12 .297c-6.63 0-12 5.373-12 12...",
+      },
+      {
+        label: "LinkedIn",
+        href: "https://linkedin.com",
+        svgPath: "M20.447 20.452h-3.554v-5.569...",
+      },
+    ],
+  },
+} as const;
+const PORTFOLIO_DATA3 = {
+  meta: {
+    title: "Mithun K J — Software Engineer | MERN | Node.js | Microservices",
+    description:
+      "Portfolio of Mithun K J — Software Engineer with 3.5 years of experience in MERN stack, Node.js, Golang, and microservices architecture. متخصص in scalable backend systems and full-stack applications.",
+    keywords: [
+      "Mithun K J",
+      "MERN developer",
+      "Node.js developer",
+      "Golang developer",
+      "full stack developer",
+      "microservices",
+      "GraphQL",
+      "MongoDB",
+      "portfolio",
+    ],
+    ogImage: "/og-image.png",
+    siteUrl: "https://mithun.shareurinterest.com/",
+    twitterHandle: "@mithunkj_dev",
+  },
+
+  navbar: {
+    brand: "mithun.dev",
+    links: [
+      { label: "About", href: "#about" },
+      { label: "Services", href: "#services" },
+      { label: "Projects", href: "#projects" },
+      { label: "Skills", href: "#skills" },
+      { label: "Experience", href: "#experience" },
+      { label: "Contact", href: "#contact" },
+    ],
+    ctaLabel: "Hire Me",
+    ctaHref: "#contact",
+  },
+
+  hero: {
+    availabilityBadge: "Open to opportunities",
+    greeting: "Hi, I'm",
+    name: "Mithun K J",
+    tagline:
+      "Software Engineer building scalable backend systems & modern web apps.",
+    subTagline:
+      "3.5 Years · MERN · Node.js · Golang · Microservices · GraphQL",
+    primaryCta: { label: "View Projects →", href: "#projects" },
+    secondaryCta: { label: "Contact Me", href: "#contact" },
+    stats: [
+      { value: "3.5+", label: "Years Experience" },
+      { value: "20+", label: "Projects" },
+      { value: "100%", label: "Delivery" },
+    ],
+  },
+
+  about: {
+    sectionLabel: "About Me",
+    heading: "I build scalable systems for the",
+    headingAccent: "web",
+    emoji: "🚀",
+    paragraphs: [
+      "Results-driven Software Engineer with 3.5 years of experience building scalable backend and full-stack applications using Node.js, MERN stack, and Golang.",
+      "Strong expertise in REST APIs, GraphQL services, and microservices architecture. Experienced with MongoDB and PostgreSQL fundamentals including schema design, indexing, and optimization.",
+      "Passionate about building high-performance systems and continuously learning new technologies like event-driven architecture and RabbitMQ.",
+    ],
+    highlights: [
+      "MERN Stack",
+      "Node.js & Golang",
+      "Microservices Architecture",
+      "GraphQL (Apollo)",
+      "MongoDB & PostgreSQL",
+      "AWS (EC2, S3)",
+    ],
+    resumeLabel: "Download Resume ↓",
+    resumeHref: "#",
+    badge: { value: "3.5+", label: "Years exp." },
+  },
+
+  services: {
+    sectionLabel: "What I Do",
+    heading: "Services I",
+    headingAccent: "Offer",
+    subheading:
+      "End-to-end product development with scalable architecture and clean UI.",
+    items: [
+      {
+        icon: "⚡",
+        title: "Full-Stack Development",
+        desc: "Building complete web applications using MERN stack with scalable architecture.",
+      },
+      {
+        icon: "🔧",
+        title: "Backend Engineering",
+        desc: "Designing RESTful and GraphQL APIs with Node.js, Golang, and microservices.",
+      },
+      {
+        icon: "📡",
+        title: "API & Integration",
+        desc: "Secure integrations with token-based auth, GraphQL Apollo, and third-party APIs.",
+      },
+      {
+        icon: "☁️",
+        title: "Cloud & Deployment",
+        desc: "Deploying applications using AWS (EC2, S3), Docker, and CI/CD pipelines.",
+      },
+      {
+        icon: "📊",
+        title: "Database Design",
+        desc: "Efficient schema design and optimization using MongoDB & PostgreSQL.",
+      },
+      {
+        icon: "🧩",
+        title: "Microservices",
+        desc: "Designing modular, scalable backend systems using microservices architecture.",
+      },
+    ],
+  },
+
+  projects: {
+    sectionLabel: "Portfolio",
+    heading: "Key",
+    headingAccent: "Projects",
+    subheading:
+      "Production-level applications and platforms I have built.",
+    items: [
+      {
+        emoji: "🏗️",
+        title: "Multi-Vendor Marketplace",
+        desc: "Platform for vendors, resellers, and rentals with wallet system, order lifecycle, and admin dashboard.",
+        tags: ["React", "Node.js", "MongoDB", "Express"],
+        gradient: "from-emerald-500/20 to-teal-600/20",
+        border: "border-emerald-500/30",
+        liveUrl: "https://apisr.shareurinterest.com/",
+        repoUrl: "#",
+      },
+      {
+        emoji: "📸",
+        title: "ShareMyInterest",
+        desc: "Instagram-like social platform with feeds, likes, authentication, and scalable backend APIs.",
+        tags: ["React", "Node.js", "MongoDB"],
+        gradient: "from-cyan-500/20 to-blue-600/20",
+        border: "border-cyan-500/30",
+        liveUrl: "https://snap.shareurinterest.com/",
+        repoUrl: "#",
+      },
+      {
+        emoji: "⚙️",
+        title: "TransformTMC",
+        desc: "Enterprise-grade app with GraphQL, Golang, and Entgo for structured relational data handling.",
+        tags: ["React", "TypeScript", "GraphQL", "Golang"],
+        gradient: "from-violet-500/20 to-purple-600/20",
+        border: "border-violet-500/30",
+        liveUrl: "#",
+        repoUrl: "#",
+      },
+      {
+        emoji: "🏢",
+        title: "SRH (Sriranganatha Hardwares)",
+        desc: "Business website with modern UI and backend integration.",
+        tags: ["Next.js", "MongoDB"],
+        gradient: "from-amber-500/20 to-orange-600/20",
+        border: "border-amber-500/30",
+        liveUrl: "#",
+        repoUrl: "#",
+      },
+    ],
+  },
+
+  skills: {
+    sectionLabel: "Expertise",
+    heading: "Technical",
+    headingAccent: "Skills",
+    paragraphs: [
+      "Strong experience across backend, frontend, and cloud technologies.",
+      "Focused on building scalable, maintainable, and high-performance systems.",
+    ],
+    items: [
+      { name: "Node.js / Express", pct: 90, color: "#34d399" },
+      { name: "React / Next.js", pct: 88, color: "#38bdf8" },
+      { name: "Golang", pct: 75, color: "#818cf8" },
+      { name: "GraphQL (Apollo)", pct: 85, color: "#fb923c" },
+      { name: "MongoDB", pct: 85, color: "#f472b6" },
+      { name: "AWS / DevOps", pct: 70, color: "#facc15" },
+    ],
+  },
+
+  experience: {
+    sectionLabel: "Experience",
+    heading: "Work",
+    headingAccent: "Experience",
+    items: [
+      {
+        company: "Eduate Pvt. Ltd.",
+        role: "Software Engineer",
+        duration: "Nov 2024 – Present",
+        points: [
+          "Developed scalable frontend apps using React.js & TypeScript",
+          "Integrated Google Maps API for real-time tracking",
+          "Built backend services using Golang & Entgo",
+          "Implemented secure auth with access/refresh tokens",
+          "Worked with GraphQL Apollo for optimized data fetching",
+          "Designed microservices-based backend architecture",
+        ],
+      },
+      {
+        company: "Bubblesort Tech LLP",
+        role: "Software Engineer",
+        duration: "Jan 2023 – Nov 2024",
+        points: [
+          "Built full-stack MERN applications",
+          "Implemented JWT authentication systems",
+          "Developed e-commerce features and REST APIs",
+          "Designed scalable database schemas",
+          "Worked across full SDLC lifecycle",
+        ],
+      },
+    ],
+  },
+
+
+  testimonials: {
+    sectionLabel: "Social Proof",
+    heading: "What Clients",
+    headingAccent: "Say",
+    items: [
+      {
+        name: "Kiran",
+        role: "Team Member",
+        body: "Mithun is a highly reliable developer who consistently delivers clean and efficient code.",
+        avatar: "K",
+        gradient: "from-cyan-500 to-blue-600",
+      },
+      {
+        name: "Project Client",
+        role: "Startup Founder",
+        body: "Delivered our platform on time with excellent performance and scalability.",
+        avatar: "C",
+        gradient: "from-violet-500 to-purple-600",
+      },
+    ],
+  },
+
+  contact: {
+    sectionLabel: "Contact",
+    heading: "Get In",
+    headingAccent: "Touch",
+    subheading:
+      "Let's connect and build something amazing together.",
+    cards: [
+      {
+        icon: "✉️",
+        label: "Email",
+        value: "mithunkj1996@gmail.com",
+        href: "mailto:mithunkj1996@gmail.com",
+      },
+      {
+        icon: "📞",
+        label: "Phone",
+        value: "+91 63618 49001",
+        href: "tel:+916361849001",
+      },
+    ],
+    primaryCta: {
+      label: "Send Email →",
+      href: "mailto:mithunkj1996@gmail.com",
+    },
+    secondaryCta: {
+      label: "GitHub",
+      href: "https://github.com/mithunkj-eduate",
+    },
+  },
+
+  footer: {
+    brand: "mithun.dev",
+    tagline: "Building scalable systems with modern technologies.",
+    social: [
+      {
+        label: "GitHub",
+        href: "https://github.com/mithunkj-eduate",
+        svgPath: "M12 .297c-6.63 0-12 5.373-12 12...",
+      },
+      {
+        label: "LinkedIn",
+        href: "https://linkedin.com/in/mithun-k-j-8118b9274",
+        svgPath: "M20.447 20.452h-3.554v-5.569...",
+      },
+    ],
+  },
+} as const;
 // ─── 2. METADATA (driven from JSON) ────────────────────────────────────────
 
 export const metadata: Metadata = {
