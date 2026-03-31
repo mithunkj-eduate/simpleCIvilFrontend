@@ -80,7 +80,7 @@ export default function HeroForm({
             <Label>Heading</Label>
             <Input
               name="heading"
-              value={formik.values.heading}
+              value={formik.values?.heading}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
@@ -93,7 +93,7 @@ export default function HeroForm({
             <Label>Hero Image</Label>
             <Input
               name="image"
-              value={formik.values.image}
+              value={formik.values?.image}
               onChange={formik.handleChange}
             />
             {formik.touched.image && formik.errors.image && (

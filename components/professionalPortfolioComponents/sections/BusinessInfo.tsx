@@ -49,7 +49,7 @@ export default function BusinessInfo({ info }: BusinessInfoProps) {
             </div>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {fields.map((field, i) => {
+            { Array.isArray(fields) && fields.map((field, i) => {
               const Icon = field.icon;
               return (
                 <div

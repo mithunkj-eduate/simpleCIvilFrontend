@@ -40,7 +40,7 @@ export default function PortfoiloCard() {
           </h2>
 
           <div className="mt-6 space-y-12 lg:grid lg:grid-cols-3 lg:space-y-0 lg:gap-x-6">
-            {callouts.map((callout) => (
+            {callouts && callouts.map((callout) => (
               <div key={callout.name} className="group relative">
                 <SafeImage
                   width={500}

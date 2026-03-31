@@ -135,13 +135,13 @@ export default function Hero({ hero, name, tagline, profession }: HeroProps) {
 
             {/* CTA Buttons */}
             <div className="flex flex-wrap gap-3 mb-10">
-              {hero.cta.map((btn, i) => (
+              {Array.isArray(hero.cta) && hero.cta.map((btn, i) => (
                 <CTAButtonComponent key={i} btn={btn} />
               ))}
             </div>
 
             {/* Stats */}
-            {hero.stats && hero.stats.length > 0 && (
+            {hero.stats && Array.isArray(hero.stats) && hero.stats.length > 0 && (
               <div
                 className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t"
                 style={{ borderColor: "var(--border)" }}
@@ -162,7 +162,7 @@ export default function Hero({ hero, name, tagline, profession }: HeroProps) {
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <div className="embla" ref={emblaRef}>
                 <div className="embla__container">
-                  {slides.map((src, i) => (
+                  {Array.isArray(slides) && slides.map((src, i) => (
                     <div key={i} className="embla__slide">
                       <div
                         className="relative"

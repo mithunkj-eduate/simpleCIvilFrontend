@@ -1,4 +1,8 @@
-import { ContactSection as ContactSectionType, SocialLink, WorkingHours } from "@/lib/types";
+import {
+  ContactSection as ContactSectionType,
+  SocialLink,
+  WorkingHours,
+} from "@/lib/types";
 import {
   Mail,
   Phone,
@@ -30,23 +34,27 @@ interface ContactProps {
 function WorkingHoursTable({ hours }: { hours: WorkingHours[] }) {
   return (
     <div className="space-y-2">
-      {hours.map((item, i) => (
-        <div
-          key={i}
-          className="flex items-center justify-between py-2 border-b last:border-0"
-          style={{ borderColor: "var(--border)" }}
-        >
-          <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
-            {item.day}
-          </span>
-          <span
-            className={`text-sm font-semibold ${item.closed ? "text-red-400" : ""}`}
-            style={!item.closed ? { color: "var(--text-primary)" } : {}}
+      {Array.isArray(hours) &&
+        hours?.map((item, i) => (
+          <div
+            key={i}
+            className="flex items-center justify-between py-2 border-b last:border-0"
+            style={{ borderColor: "var(--border)" }}
           >
-            {item.hours}
-          </span>
-        </div>
-      ))}
+            <span
+              className="text-sm font-medium"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              {item.day}
+            </span>
+            <span
+              className={`text-sm font-semibold ${item.closed ? "text-red-400" : ""}`}
+              style={!item.closed ? { color: "var(--text-primary)" } : {}}
+            >
+              {item.hours}
+            </span>
+          </div>
+        ))}
     </div>
   );
 }
@@ -68,8 +76,12 @@ export default function Contact({ contact, socialLinks, name }: ContactProps) {
           <h2 className="section-title">
             Contact <span className="gradient-text">Us</span>
           </h2>
-          <p className="mt-4 text-base max-w-xl mx-auto" style={{ color: "var(--text-secondary)" }}>
-            We&apos;re here to help. Reach out through any of the channels below and we&apos;ll get back to you promptly.
+          <p
+            className="mt-4 text-base max-w-xl mx-auto"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            We&apos;re here to help. Reach out through any of the channels below
+            and we&apos;ll get back to you promptly.
           </p>
         </div>
 
@@ -84,15 +96,24 @@ export default function Contact({ contact, socialLinks, name }: ContactProps) {
               >
                 <div
                   className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"
-                  style={{ background: "var(--accent-light)", color: "var(--accent)" }}
+                  style={{
+                    background: "var(--accent-light)",
+                    color: "var(--accent)",
+                  }}
                 >
                   <Mail size={20} />
                 </div>
                 <div>
-                  <div className="text-xs font-medium mb-0.5" style={{ color: "var(--text-muted)" }}>
+                  <div
+                    className="text-xs font-medium mb-0.5"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Email Us
                   </div>
-                  <div className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+                  <div
+                    className="text-sm font-semibold"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {contact.email}
                   </div>
                 </div>
@@ -107,15 +128,24 @@ export default function Contact({ contact, socialLinks, name }: ContactProps) {
               >
                 <div
                   className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"
-                  style={{ background: "var(--accent-light)", color: "var(--accent)" }}
+                  style={{
+                    background: "var(--accent-light)",
+                    color: "var(--accent)",
+                  }}
                 >
                   <Phone size={20} />
                 </div>
                 <div>
-                  <div className="text-xs font-medium mb-0.5" style={{ color: "var(--text-muted)" }}>
+                  <div
+                    className="text-xs font-medium mb-0.5"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Call Us
                   </div>
-                  <div className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+                  <div
+                    className="text-sm font-semibold"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {contact.phone}
                   </div>
                 </div>
@@ -126,7 +156,7 @@ export default function Contact({ contact, socialLinks, name }: ContactProps) {
               <a
                 href={getWhatsAppLink(
                   contact.whatsapp,
-                  `Hello ${name}, I'd like to get in touch.`
+                  `Hello ${name}, I'd like to get in touch.`,
                 )}
                 target="_blank"
                 rel="noreferrer"
@@ -137,10 +167,16 @@ export default function Contact({ contact, socialLinks, name }: ContactProps) {
                   <MessageCircle size={20} />
                 </div>
                 <div>
-                  <div className="text-xs font-medium mb-0.5" style={{ color: "var(--text-muted)" }}>
+                  <div
+                    className="text-xs font-medium mb-0.5"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     WhatsApp
                   </div>
-                  <div className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+                  <div
+                    className="text-sm font-semibold"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     Chat with us
                   </div>
                 </div>
@@ -151,15 +187,24 @@ export default function Contact({ contact, socialLinks, name }: ContactProps) {
               <div className="card p-5 flex items-start gap-4">
                 <div
                   className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: "var(--accent-light)", color: "var(--accent)" }}
+                  style={{
+                    background: "var(--accent-light)",
+                    color: "var(--accent)",
+                  }}
                 >
                   <MapPin size={20} />
                 </div>
                 <div>
-                  <div className="text-xs font-medium mb-0.5" style={{ color: "var(--text-muted)" }}>
+                  <div
+                    className="text-xs font-medium mb-0.5"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     Address
                   </div>
-                  <div className="text-sm leading-relaxed" style={{ color: "var(--text-primary)" }}>
+                  <div
+                    className="text-sm leading-relaxed"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {contact.address}
                   </div>
                 </div>
@@ -167,9 +212,12 @@ export default function Contact({ contact, socialLinks, name }: ContactProps) {
             )}
 
             {/* Social Links */}
-            {socialLinks && socialLinks.length > 0 && (
+            {socialLinks &&Array.isArray(socialLinks) && socialLinks.length > 0 && (
               <div className="card p-5">
-                <div className="text-xs font-medium mb-3" style={{ color: "var(--text-muted)" }}>
+                <div
+                  className="text-xs font-medium mb-3"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   Follow Us
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -203,11 +251,17 @@ export default function Contact({ contact, socialLinks, name }: ContactProps) {
               <div className="flex items-center gap-3 mb-6">
                 <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center"
-                  style={{ background: "var(--accent-light)", color: "var(--accent)" }}
+                  style={{
+                    background: "var(--accent-light)",
+                    color: "var(--accent)",
+                  }}
                 >
                   <Clock size={18} />
                 </div>
-                <h3 className="font-bold text-base" style={{ color: "var(--text-primary)" }}>
+                <h3
+                  className="font-bold text-base"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   Working Hours
                 </h3>
               </div>
@@ -215,7 +269,10 @@ export default function Contact({ contact, socialLinks, name }: ContactProps) {
 
               <div
                 className="mt-5 p-3 rounded-xl text-center text-sm font-medium"
-                style={{ background: "var(--accent-light)", color: "var(--accent)" }}
+                style={{
+                  background: "var(--accent-light)",
+                  color: "var(--accent)",
+                }}
               >
                 📞 Available for emergencies 24/7
               </div>
@@ -238,7 +295,10 @@ export default function Contact({ contact, socialLinks, name }: ContactProps) {
             ) : (
               <div className="map-placeholder h-full min-h-[300px]">
                 <MapPin size={32} style={{ color: "var(--accent)" }} />
-                <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
+                <span
+                  className="text-sm font-medium"
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   {contact.address || "Location"}
                 </span>
               </div>

@@ -67,7 +67,7 @@ export default function FAQSection({ faqs }: FAQProps) {
           </h2>
         </div>
         <div className="space-y-3">
-          {faqs.map((faq, i) => (
+          {Array.isArray(faqs) && faqs.map((faq, i) => (
             <FAQItem
               key={i}
               faq={faq}

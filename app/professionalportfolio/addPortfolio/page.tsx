@@ -321,13 +321,13 @@ export default function Dashboard() {
                 operation: Operation.CREATE,
               });
               setTimeout(() => {
-                setForm({
-                  ...res.data,
-                  meta: {
-                    ...res.data.meta,
-                    slug: res.data.meta.slug,
-                  },
-                });
+                // setForm({
+                //   ...res.data,
+                //   meta: {
+                //     ...res.data.meta,
+                //     slug: res.data?.meta?.slug,
+                //   },
+                // });
 
                 nextStep();
               }, 1000);
@@ -378,7 +378,7 @@ export default function Dashboard() {
     if (step > 0) setStep(step - 1);
   };
 
-  console.log(form, "form");
+
   // ---------- FORM RENDER ----------
   const renderForm = () => {
     if (form)

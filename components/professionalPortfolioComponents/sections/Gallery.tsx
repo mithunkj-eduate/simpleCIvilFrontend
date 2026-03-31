@@ -41,7 +41,7 @@ export default function Gallery({ images }: GalleryProps) {
         </div>
 
         {/* Filter tabs */}
-        {categories.length > 2 && (
+        {Array.isArray(categories) && categories.length > 2 && (
           <div className="flex flex-wrap justify-center gap-2 mb-8">
             {categories.map((cat) => (
               <button
@@ -69,7 +69,7 @@ export default function Gallery({ images }: GalleryProps) {
 
         {/* Grid */}
         <div className="gallery-grid">
-          {filtered.map((img, i) => (
+          {Array.isArray(filtered) && filtered.map((img, i) => (
             <div
               key={i}
               className="group relative rounded-xl overflow-hidden cursor-pointer"
