@@ -969,12 +969,20 @@ const PortfolioLink: React.FC<PortfolioLinkProps> = ({
 }) => {
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
 
-  const baseUrls = [
-    `https://portfolio.shareurinterest.com/${id}`,
-    `https://portfolio.shareurinterest.com/cursorportfolio/${id}`,
-    `https://portfolio.shareurinterest.com/bubbleportfolio/${id}`,
-    `https://portfolio.shareurinterest.com/developerportfolio/${id}`,
+  // const baseUrls = [
+  //   `https://portfolio.shareurinterest.com/${id}`,
+  //   `https://portfolio.shareurinterest.com/cursorportfolio/${id}`,
+  //   `https://portfolio.shareurinterest.com/bubbleportfolio/${id}`,
+  //   `https://portfolio.shareurinterest.com/developerportfolio/${id}`,
+  // ];
+
+    const baseUrls = [
+    `https://pf.shareurinterest.com/${id}`,
+    `https://pf.shareurinterest.com/cursorportfolio/${id}`,
+    `https://pf.shareurinterest.com/bubbleportfolio/${id}`,
+    `https://pf.shareurinterest.com/developerportfolio/${id}`,
   ];
+  
 
   const handleCopy = (url: string) => {
     navigator.clipboard.writeText(url);
