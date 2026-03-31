@@ -1,14 +1,10 @@
 "use client";
-import Card from "@/components/Card";
-// import DownloadApk from "@/components/DownloadApk";
-// import DownloadApkShareMyInterst from "@/components/DownloadApkShareMyInterst";
 import Footer from "@/components/Footer";
-import HeroSection from "@/components/HeroSection";
 import PortfoiloCard from "@/components/PortfolioCard";
-import PortfolioHeroSection from "@/components/PortfolioHeroSection";
 import VerstionChange from "@/components/VerstionChange";
 import Navbar from "@/components/commen/Navbar";
 import { LicenseTypes } from "@/utils/enum.types";
+import PortfolioHeroSection from "@/components/PortfolioHeroSection";
 
 export default function Home() {
   return (
