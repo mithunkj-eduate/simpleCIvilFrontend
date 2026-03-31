@@ -81,7 +81,7 @@ function ServiceCard({ service }: { service: Service }) {
         </div>
 
         {/* Features */}
-        {service.features && service.features.length > 0 && (
+        {service.features && Array.isArray(service.features) && service.features.length > 0 && (
           <ul
             className="space-y-1.5 pt-4 border-t"
             style={{ borderColor: "var(--border)" }}
@@ -139,7 +139,7 @@ export default function Services({ services, profession }: ServicesProps) {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {services.map((service) => (
+          {Array.isArray(services) && services.map((service) => (
             <ServiceCard key={service.id} service={service} />
           ))}
         </div>

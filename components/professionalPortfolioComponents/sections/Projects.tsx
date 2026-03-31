@@ -22,7 +22,7 @@ function ProjectCard({ project }: { project: Project }) {
   return (
     <div className="card overflow-hidden flex flex-col h-full">
       {/* Gallery */}
-      {project.images.length > 0 && (
+      {project.images && project.images.length > 0 && (
         <div className="relative" style={{ paddingBottom: "56%" }}>
           {project.images[imgIdx].url &&
           convertDriveToImageUrl(project.images[imgIdx].url) ? (
@@ -159,7 +159,7 @@ export default function Projects({ projects }: ProjectsProps) {
           </h2>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project) => (
+          {projects && Array.isArray(projects) &&  projects?.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
         </div>

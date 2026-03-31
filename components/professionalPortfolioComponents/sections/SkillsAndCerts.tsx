@@ -88,7 +88,7 @@ export function Skills({ skills }: SkillsProps) {
               >
                 {category}
               </h3>
-              {catSkills.map((skill, i) => (
+              {Array.isArray(catSkills) && catSkills.map((skill, i) => (
                 <SkillBar key={i} skill={skill} />
               ))}
             </div>
@@ -117,7 +117,7 @@ export function Certifications({ certifications }: CertificationsProps) {
           </h2>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {certifications.map((cert, i) => (
+          {Array.isArray(certifications) && certifications.map((cert, i) => (
             <div key={i} className="card p-5 flex flex-col items-start gap-3">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center"

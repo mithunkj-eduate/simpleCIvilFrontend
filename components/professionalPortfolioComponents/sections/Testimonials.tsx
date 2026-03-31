@@ -60,7 +60,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
             className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white"
             style={{ background: "var(--accent)" }}
           >
-            {getInitials(testimonial.name)}
+            {testimonial.name && getInitials(testimonial.name)}
           </div>
         )}
         <div>
@@ -124,7 +124,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {testimonials.map((t) => (
+          {Array.isArray(testimonials) && testimonials.map((t) => (
             <TestimonialCard key={t.id} testimonial={t} />
           ))}
         </div>

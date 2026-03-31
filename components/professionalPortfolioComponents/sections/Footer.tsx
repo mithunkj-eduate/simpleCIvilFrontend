@@ -60,7 +60,7 @@ export default function Footer({ data }: FooterProps) {
             <p className="text-sm leading-relaxed mb-5" style={{ color: "#94a3b8" }}>
               {meta.description}
             </p>
-            {socialLinks && socialLinks.length > 0 && (
+            {socialLinks && Array.isArray(socialLinks) && socialLinks.length > 0 && (
               <div className="flex gap-2 flex-wrap">
                 {socialLinks.map((link, i) => {
                   const Icon = socialIconMap[link.icon] || Globe;
@@ -88,7 +88,7 @@ export default function Footer({ data }: FooterProps) {
               Quick Links
             </h4>
             <ul className="space-y-2">
-              {navItems.map((item) => (
+              {Array.isArray(navItems) && navItems.map((item) => (
                 <li key={item.href}>
                   <a
                     href={item.href}

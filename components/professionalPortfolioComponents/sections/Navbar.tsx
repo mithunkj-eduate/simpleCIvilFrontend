@@ -72,7 +72,7 @@ export default function Navbar({ data }: NavbarProps) {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-1">
-            {filteredNav.map((item) => (
+            {Array.isArray(filteredNav) && filteredNav.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
@@ -114,7 +114,7 @@ export default function Navbar({ data }: NavbarProps) {
         {/* Mobile menu */}
         {open && (
           <div className="md:hidden py-4 border-t border-[var(--border)] bg-[var(--surface)]">
-            {filteredNav.map((item) => (
+            {Array.isArray(filteredNav) && filteredNav.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
