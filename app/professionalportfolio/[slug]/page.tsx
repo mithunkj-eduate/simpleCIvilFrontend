@@ -150,5 +150,6 @@ export default async function PortfolioPage({ params }: PageProps) {
     return notFound();
   }
 
+  // <PortfolioComponentsApp data={data}/>
   return <PortfolioPageClient data={data} />;
 }
