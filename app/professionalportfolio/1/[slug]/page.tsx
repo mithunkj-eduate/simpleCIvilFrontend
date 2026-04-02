@@ -76,7 +76,7 @@ export default async function PortfolioPage({ params }: PageProps) {
   // const data = portfolioRegistry[slug];
 
   if (slug === UrlID.DEMO) {
-    return <PortfolioPageClient data={portfolioData} />;
+    return <PortfolioComponentsApp data={portfolioData} />;
   } else {
     const data = await getPortfolio(slug);
 
