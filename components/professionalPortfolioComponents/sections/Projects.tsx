@@ -159,8 +159,8 @@ export default function Projects({ projects }: ProjectsProps) {
           </h2>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects && Array.isArray(projects) &&  projects?.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+          {projects && Array.isArray(projects) &&  projects?.map((project,i) => (
+            <ProjectCard key={i} project={project} />
           ))}
         </div>
       </div>
