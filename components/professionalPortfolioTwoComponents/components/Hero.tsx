@@ -1,7 +1,9 @@
-"use client"
+"use client";
 
-import React, { FC } from 'react';
-import type { Hero as HeroType, Meta } from '../types/portfolio';
+import React, { FC } from "react";
+import type { Hero as HeroType, Meta } from "../types/portfolio";
+import { SafeImage } from "@/app/utils/SafeImage";
+import { convertDriveToImageUrl } from "@/lib/utils";
 
 interface HeroProps {
   hero: HeroType;
@@ -29,7 +31,7 @@ const Hero: FC<HeroProps> = ({ hero, meta }) => {
             <a
               key={i}
               href={c.href}
-              className={c.variant === 'primary' ? 'btn-gold' : 'btn-outline'}
+              className={c.variant === "primary" ? "btn-gold" : "btn-outline"}
             >
               {c.label}
               {c.icon && <span className="btn-icon">{c.icon}</span>}
@@ -48,7 +50,19 @@ const Hero: FC<HeroProps> = ({ hero, meta }) => {
       </div>
 
       <div className="hero-right">
-        <img src={hero.image} alt={meta.name} />
+        {hero.image && convertDriveToImageUrl(hero.image) ? (
+          <SafeImage
+            height={500}
+            width={500}
+            src={convertDriveToImageUrl(hero.image) ?? hero.image}
+            alt={meta.name}
+            className="max-w-full max-h-[85vh] rounded-xl shadow-2xl object-contain"
+            // onClick={(e) => e.stopPropagation()}
+          />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={hero.image} alt={meta.name} />
+        )}
         <div className="hero-right-overlay" />
         <div className="hero-badge">
           <div className="badge-name">{meta.name}</div>

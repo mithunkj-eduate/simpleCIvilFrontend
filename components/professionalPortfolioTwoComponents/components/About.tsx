@@ -1,7 +1,9 @@
-"use client"
-import React, { FC } from 'react';
-import type { About as AboutType } from '../types/portfolio';
-import { Reveal, SectionTag } from './UI';
+"use client";
+import React, { FC } from "react";
+import type { About as AboutType } from "../types/portfolio";
+import { Reveal, SectionTag } from "./UI";
+import { SafeImage } from "@/app/utils/SafeImage";
+import { convertDriveToImageUrl } from "@/lib/utils";
 
 interface AboutProps {
   about: AboutType;
@@ -9,7 +11,7 @@ interface AboutProps {
 }
 
 const About: FC<AboutProps> = ({ about, yearsExperience = 14 }) => {
-  const [before, after] = about.title.split('inspire');
+  const [before, after] = about.title.split("inspire");
 
   return (
     <section className="sec" id="about">
@@ -17,7 +19,19 @@ const About: FC<AboutProps> = ({ about, yearsExperience = 14 }) => {
         <Reveal>
           <div className="about-img-wrap">
             <div className="about-frame">
-              <img src={about.image} alt="About" loading="lazy" />
+              {about.image && convertDriveToImageUrl(about.image) ? (
+                <SafeImage
+                  height={200}
+                  width={200}
+                  src={convertDriveToImageUrl(about.image) ?? about.image}
+                  alt={about.description}
+                  className="max-w-full max-h-[85vh] rounded-xl shadow-2xl object-contain"
+                  // onClick={(e) => e.stopPropagation()}
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={about.image} alt="About" loading="lazy" />
+              )}
             </div>
             <div className="about-accent" />
             <div className="yrs-badge">
