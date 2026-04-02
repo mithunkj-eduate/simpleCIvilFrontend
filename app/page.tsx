@@ -6,6 +6,8 @@ import {
 } from "@/components/portfolio/Home/SectionButtons";
 import { LicenseTypes } from "@/utils/enum.types";
 import type { Metadata } from "next";
+import Image from "next/image";
+import icon from "@/assets/icon.png";
 
 const metadata: Metadata = {
   title: "Create Portfolio Website in Seconds",
@@ -585,7 +587,7 @@ function Footer() {
       <div className="max-w-6xl mx-auto flex flex-col items-center gap-6">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center">
+          {/* <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center">
             <svg
               className="w-3.5 h-3.5 text-white"
               fill="none"
@@ -599,7 +601,14 @@ function Footer() {
                 d="M13 10V3L4 14h7v7l9-11h-7z"
               />
             </svg>
-          </div>
+          </div> */}
+          <Image
+            alt=""
+            src={icon ? icon : ""} // Adjust the path to your logo
+            className="h-5 w-auto"
+            width={200} // Adjust width as needed
+            height={200} // Adjust height as needed
+          />
           <span className="text-white/70 font-semibold text-sm">
             ShareUrInterest
           </span>
