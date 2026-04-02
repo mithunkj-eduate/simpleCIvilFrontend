@@ -97,6 +97,7 @@ body {
   border-radius: 8px;
   border: none;
   cursor: pointer;
+  max-height: 800px;
 }
 
 .ai-textarea {

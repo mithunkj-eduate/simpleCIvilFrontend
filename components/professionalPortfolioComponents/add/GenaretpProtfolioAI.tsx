@@ -293,24 +293,35 @@ export default function GeneratePortfolioPage() {
 }
 
 export const prompt = `{
-  "instruction": "Generate a complete professional portfolio website content in strict JSON format for any user input.",
+  "instruction": "You are an expert portfolio and business website content generator. Convert the provided user details into a complete, high-quality, production-ready JSON portfolio strictly matching the schema. Ensure the output is realistic, professional, SEO-optimized, and aligned with the user's profession.",
+  
   "rules": [
-    "Return ONLY valid JSON (no comments, no extra text, no explanation)",
-    "Do NOT change structure, keys, or nesting",
-    "Do NOT remove any field",
-    "Do NOT add new fields",
-    "Only update values based on user input (name, profession, location, etc.)",
-    "Ensure JSON is strictly valid (double quotes, no trailing commas, properly escaped text)",
-    "All arrays and objects must remain in same format",
-    "If data is unknown, generate realistic professional placeholder values",
-    "Maintain high-quality, professional, human-like content",
-    "Keep descriptions concise but premium quality",
+    "Return ONLY valid JSON (no explanation, no markdown, no extra text)",
+    "STRICTLY follow the provided schema structure (do NOT modify keys, nesting, or structure)",
+    "Do NOT add or remove any fields",
+    "Populate ALL fields with meaningful, non-empty values",
+    "If any data is missing, intelligently generate realistic and professional placeholder content",
+    "Maintain consistency across all sections (skills, projects, services must align with profession)",
+    "Use concise, modern, and human-like professional language (avoid generic AI phrases)",
+    "Descriptions should be clear, impactful, and limited to 1–2 lines where possible",
+    "Ensure all arrays meet minimum required counts",
+    "Use valid URLs for all images (prefer Unsplash or realistic placeholders)",
+    "Generate realistic contact details (email, phone, address)",
+    "Ensure SEO fields are optimized with relevant keywords",
     "Use industry-relevant terminology based on profession",
-    "Images must be valid URLs (use Unsplash if needed)",
-    "Phone numbers, emails, and links should look realistic",
-    "SEO fields must be optimized and relevant",
-    "Do not leave empty fields"
+    "Ensure JSON is strictly valid (double quotes, no trailing commas, properly escaped strings)"
   ],
+
+  "minimum_requirements": {
+    "services": 3,
+    "projects": 4,
+    "skills": 5,
+    "testimonials": 4,
+    "faq": 5,
+    "certifications": 3,
+    "gallery": 6
+  },
+
   "dynamic_inputs": {
     "name": "string",
     "profession": "string",
@@ -318,6 +329,19 @@ export const prompt = `{
     "experience_years": "number",
     "specialization": "string"
   },
+
+  "content_guidelines": {
+    "hero": "Strong personal branding with clear value proposition",
+    "services": "Clearly defined offerings with benefits and features",
+    "projects": "Realistic, slightly detailed, and tech-relevant",
+    "skills": "Grouped logically with accurate proficiency levels",
+    "testimonials": "Believable client feedback with roles and ratings",
+    "faq": "Common real-world client questions with helpful answers",
+    "gallery": "Relevant professional or work-related visuals",
+    "certifications": "Recognized or realistic industry certifications",
+    "seo": "Optimized title, description, and keywords for search ranking"
+  },
+
   "output_format": {
     "meta": {
       "slug": "string",
@@ -468,5 +492,7 @@ export const prompt = `{
         "icon": "string"
       }
     ]
-  }
+  },
+
+  "input": "{{PASTE USER DETAILS HERE}}"
 }`

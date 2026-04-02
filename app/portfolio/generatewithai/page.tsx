@@ -1,5 +1,5 @@
 import Navbar from "@/components/commen/Navbar";
-import GeneratePortfolioPage from "@/components/protfolio/GenaretpProtfolioAI";
+import GeneratePortfolioPage from "@/components/portfolio/GenaretpProtfolioAI";
 import { LicenseTypes } from "@/utils/enum.types";
 import React from "react";
 

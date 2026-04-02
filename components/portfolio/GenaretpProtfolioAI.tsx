@@ -24,7 +24,6 @@ export default function GeneratePortfolioPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-
   const validateJSON = (data: PortfolioData) => {
     const requiredFields = [
       "projects",
@@ -275,21 +274,40 @@ export default function GeneratePortfolioPage() {
   );
 }
 
-export const prompt = `You are a professional portfolio generator.
+export const prompt = `You are an expert portfolio content generator and resume parser.
 
-Convert the given resume / user details into a structured JSON portfolio.
+Your task is to convert the given resume or user input into a complete, modern, and professional portfolio JSON.
 
-IMPORTANT RULES:
-- Output ONLY valid JSON (no explanation, no extra text)
-- Follow EXACT structure provided below
-- Do NOT change keys or structure
-- Fill all fields with meaningful, realistic content
-- If data is missing, generate professional placeholder content
-- Keep descriptions short, clean, and modern
-- Use real-world professional tone
-- All arrays must contain at least 1 item
+GOAL:
+Generate a clean, realistic, and high-quality portfolio structure suitable for a developer/personal website.
 
-JSON STRUCTURE:
+STRICT RULES:
+- Output ONLY valid JSON (no explanation, no markdown, no code block)
+- Follow EXACT schema structure (do NOT add/remove/change keys)
+- Fill ALL fields with meaningful and realistic content
+- Do NOT leave empty strings
+- If data is missing, intelligently generate professional placeholder content
+- Keep descriptions concise, modern, and impactful (1–2 lines max)
+- Use real-world professional tone (no generic AI phrases)
+- Ensure consistency across sections (skills match projects, etc.)
+- Use relevant technologies based on role (e.g., MERN, Node.js, etc.)
+- Images can be placeholder paths like "/project1.png"
+
+CONTENT QUALITY RULES:
+- Hero section must feel strong and personal
+- Projects must be realistic and slightly detailed (not generic)
+- Skills must be grouped logically (e.g., Frontend, Backend, DevOps)
+- About section should reflect experience clearly
+- Experience must include real responsibilities + tech
+- Contact should look usable in real-world portfolio
+
+MINIMUM REQUIREMENTS:
+- At least 4 projects
+- At least 5 skills (grouped)
+- At least 2 experience entries
+- At least 2 social links
+
+OUTPUT FORMAT (STRICT JSON):
 
 {
   "hero": {
@@ -348,5 +366,5 @@ JSON STRUCTURE:
   }
 }
 
-INPUT (Resume / Details):
-{{PASTE USER DATA HERE}}`;
+INPUT:
+{{PASTE USER RESUME / DETAILS HERE}}`;
