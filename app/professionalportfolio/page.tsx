@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import Dashboard from "./addPortfolio/page";
 export default function Home() {
   // redirect("/professionalportfolio/dr-priya-sharma");

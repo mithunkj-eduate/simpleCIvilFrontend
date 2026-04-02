@@ -171,6 +171,34 @@ const nextConfig: NextConfig = {
         port: "9000",
         pathname: "/public/**",
       },
+
+      // portpolio design
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.cloudinary.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.googleapis.com",
+      },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+      },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+      },
+      // portpolio design close
+ 
     ],
   },
 
