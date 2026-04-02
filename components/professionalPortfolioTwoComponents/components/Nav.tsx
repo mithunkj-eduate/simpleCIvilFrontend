@@ -1,21 +1,33 @@
-import React, { FC } from 'react';
-import type { Meta } from '../types/portfolio';
-import { useScrolled } from '../hooks';
+"use client";
+
+import React, { FC } from "react";
+import type { Meta } from "../types/portfolio";
+// import { useScrolled } from '../hooks';
 
 interface NavProps {
   meta: Meta;
 }
 
-const NAV_SECTIONS = ['about', 'services', 'projects', 'gallery', 'testimonials', 'contact'] as const;
+const NAV_SECTIONS = [
+  "about",
+  "services",
+  "projects",
+  "gallery",
+  "testimonials",
+  "contact",
+] as const;
 
 const Nav: FC<NavProps> = ({ meta }) => {
-  const scrolled = useScrolled();
-  const [firstName, ...rest] = meta.name.split(' ');
+  // const scrolled = useScrolled();
+  const [firstName, ...rest] = meta.name.split(" ");
 
   return (
-    <nav className={`nav${scrolled ? ' scrolled' : ''}`}>
+    // <nav className={`nav${scrolled ? ' scrolled' : ''}`}>
+    <nav className={`nav scrolled`}>
       <div className="nav-logo">
-        {firstName}<span>.</span>{rest.join(' ')}
+        {firstName}
+        <span>.</span>
+        {rest.join(" ")}
       </div>
       <ul className="nav-links">
         {NAV_SECTIONS.map((section) => (
@@ -26,7 +38,7 @@ const Nav: FC<NavProps> = ({ meta }) => {
           </li>
         ))}
       </ul>
-      <a href="#contact" className="nav-hire">Hire Me</a>
+      {/* <a href="#contact" className="nav-hire">Hire Me</a> */}
     </nav>
   );
 };

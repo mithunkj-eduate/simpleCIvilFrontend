@@ -1,68 +1,74 @@
-"use client"
-import React, { FC } from 'react';
-import type { PortfolioData } from './types/portfolio';
+"use client";
+import React, { FC } from "react";
+import type { PortfolioData } from "./types/portfolio";
 
 // Data
-import portfolioData from './data/portfolioData';
+import portfolioData from "./data/portfolioData";
+import "./index.css";
 
 // Components
-import Nav from './components/Nav';
-import Hero from './components/Hero';
-import About from './components/About';
-import Services from './components/Services';
-import Projects from './components/Projects';
-import Skills from './components/Skills';
-import Gallery from './components/Gallery';
-import Testimonials from './components/Testimonials';
-import Certifications from './components/Certifications';
-import FAQ from './components/FAQ';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import { Divider } from './components/UI';
+import Nav from "./components/Nav";
+import Hero from "./components/Hero";
+import About from "./components/About";
+import { Divider } from "./components/UI";
+import Services from "./components/Services";
+import Projects from "./components/Projects";
+import Skills from "./components/Skills";
+import Gallery from "./components/Gallery";
+import Testimonials from "./components/Testimonials";
+import Certifications from "./components/Certifications";
+import FAQ from "./components/FAQ";
+import Contact from "./components/Contact";
+import Footer from "./components/Footer";
 
 const PortfolioComponentsApp: FC = () => {
   const d: PortfolioData = portfolioData;
 
   return (
     <>
-      <Nav meta={d.meta} />
+      {d.meta && <Nav meta={d.meta} />}
 
       <main>
-        <Hero hero={d.hero} meta={d.meta} />
+        {d.hero && d.meta && <Hero hero={d.hero} meta={d.meta} />}
 
         <Divider />
-        <About about={d.about} />
+
+        {d.about && <About about={d.about} />}
 
         <Divider />
-        <Services services={d.services} />
+        {d.services && <Services services={d.services} />}
 
         <Divider />
-        <Projects projects={d.projects} />
+        {d.projects && <Projects projects={d.projects} />}
 
         <Divider />
-        <Skills skills={d.skills} />
+        {d.skills && <Skills skills={d.skills} />}
 
         <Divider />
-        <Gallery gallery={d.gallery} />
+        {d.gallery && <Gallery gallery={d.gallery} />}
 
         <Divider />
-        <Testimonials testimonials={d.testimonials} />
+        {d.testimonials && <Testimonials testimonials={d.testimonials} />}
 
         <Divider />
-        <Certifications certifications={d.certifications} />
+        {d.certifications && (
+          <Certifications certifications={d.certifications} />
+        )}
 
         <Divider />
-        <FAQ faq={d.faq} />
+        {d.faq && <FAQ faq={d.faq} />}
 
         <Divider />
-        <Contact
-          contact={d.contact}
-          businessInfo={d.businessInfo}
-          socialLinks={d.socialLinks}
-        />
+        {d.contact && d.businessInfo && d.socialLinks && (
+          <Contact
+            contact={d.contact}
+            businessInfo={d.businessInfo}
+            socialLinks={d.socialLinks}
+          />
+        )}
       </main>
 
-      <Footer meta={d.meta} />
+      {d.meta && <Footer meta={d.meta} />}
     </>
   );
 };

@@ -1,3 +1,5 @@
+"use client"
+
 import React, { FC } from 'react';
 import type { Certification } from '../types/portfolio';
 import { Reveal, SectionTag } from './UI';

@@ -1,14 +1,16 @@
-import React, { FC } from 'react';
-import type { Skill } from '../types/portfolio';
-import { Reveal, SectionTag } from './UI';
-import { useSkillAnimation } from '../hooks';
+"use client";
+
+import React, { FC } from "react";
+import type { Skill } from "../types/portfolio";
+import { Reveal, SectionTag } from "./UI";
+// import { useSkillAnimation } from '../hooks';
 
 interface SkillsProps {
   skills: Skill[];
 }
 
 const Skills: FC<SkillsProps> = ({ skills }) => {
-  const [containerRef, animated] = useSkillAnimation<HTMLDivElement>();
+  // const [containerRef, animated] = useSkillAnimation<HTMLDivElement>();
   const categories = [...new Set(skills.map((s) => s.category))];
 
   return (
@@ -20,7 +22,8 @@ const Skills: FC<SkillsProps> = ({ skills }) => {
             Skills & <em>Proficiency</em>
           </h2>
         </Reveal>
-        <div ref={containerRef} className="skills-cols">
+        {/* <div ref={containerRef} className="skills-cols"> */}
+        <div className="skills-cols">
           {categories.map((category) => (
             <Reveal key={category}>
               <div className="skill-cat-title">{category}</div>
@@ -35,10 +38,11 @@ const Skills: FC<SkillsProps> = ({ skills }) => {
                     <div className="skill-track">
                       <div
                         className="skill-fill"
-                        style={{ width: animated ? `${skill.level}%` : '0%' }}
-                        aria-valuenow={skill.level}
-                        aria-valuemin={0}
-                        aria-valuemax={100}
+                        // style={{ width: animated ? `${skill.level}%` : '0%' }}
+                        style={{ width: `${skill.level}%` }}
+                        // aria-valuenow={skill.level}
+                        // aria-valuemin={0}
+                        // aria-valuemax={100}
                         role="progressbar"
                       />
                     </div>

@@ -1,3 +1,5 @@
+"use client"
+
 import React, { FC } from 'react';
 import type { Contact as ContactType, BusinessInfo, SocialLink } from '../types/portfolio';
 import { Reveal, SectionTag } from './UI';

@@ -1,3 +1,5 @@
+"use client"
+
 import React, { FC } from 'react';
 import type { Hero as HeroType, Meta } from '../types/portfolio';
 

@@ -1,3 +1,5 @@
+"use client"
+
 import React, { FC, ReactNode } from 'react';
 import { useReveal } from '../hooks';
 
