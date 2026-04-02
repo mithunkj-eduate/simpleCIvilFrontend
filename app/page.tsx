@@ -1,13 +1,12 @@
-import Navbar from "@/components/commen/Navbar";
 import { ExamplesSection } from "@/components/portfolio/Home/ExapleSection";
 import {
   CTASectionButton,
   HeroSectionButtons,
 } from "@/components/portfolio/Home/SectionButtons";
-import { LicenseTypes } from "@/utils/enum.types";
 import type { Metadata } from "next";
 import Image from "next/image";
 import icon from "@/assets/icon.png";
+import { NavbarProtfolio } from "@/components/portfolio/Home/NavbarProtfolio";
 
 const metadata: Metadata = {
   title: "Create Portfolio Website in Seconds",
@@ -525,59 +524,6 @@ function CTASection() {
   );
 }
 
-// ─── Component: Navbar ──────────────────────────────────────────────────────
-
-// function Navbar1() {
-//   return (
-//     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-black/60 backdrop-blur-xl border-b border-white/[0.06]">
-//       <div className="flex items-center gap-2">
-//         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center">
-//           <svg
-//             className="w-4 h-4 text-white"
-//             fill="none"
-//             viewBox="0 0 24 24"
-//             stroke="currentColor"
-//             strokeWidth={2.5}
-//           >
-//             <path
-//               strokeLinecap="round"
-//               strokeLinejoin="round"
-//               d="M13 10V3L4 14h7v7l9-11h-7z"
-//             />
-//           </svg>
-//         </div>
-//         <span className="text-white font-bold text-sm tracking-tight">
-//           ShareUrInterest
-//         </span>
-//       </div>
-
-//       <div className="hidden md:flex items-center gap-8 text-white/50 text-sm">
-//         <a
-//           href="#how-it-works"
-//           className="hover:text-white transition-colors duration-200"
-//         >
-//           How It Works
-//         </a>
-//         <a
-//           href="#features"
-//           className="hover:text-white transition-colors duration-200"
-//         >
-//           Features
-//         </a>
-//         <a
-//           href="#examples"
-//           className="hover:text-white transition-colors duration-200"
-//         >
-//           Examples
-//         </a>
-//       </div>
-
-//       <PrimaryButton className="text-xs px-5 py-2.5">
-//         Get Started Free
-//       </PrimaryButton>
-//     </nav>
-//   );
-// }
 
 // ─── Component: Footer ──────────────────────────────────────────────────────
 
@@ -647,7 +593,7 @@ export default function Home() {
   return (
     <>
       <main className="min-h-screen bg-black antialiased scroll-smooth selection:bg-violet-500/30 selection:text-violet-200">
-        <Navbar NavType={LicenseTypes.USER} />
+        <NavbarProtfolio />
 
         <HeroSection />
         <HowItWorksSection />
