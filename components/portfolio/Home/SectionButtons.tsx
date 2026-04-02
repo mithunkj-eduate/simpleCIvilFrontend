@@ -65,34 +65,7 @@ export const HeroSectionButtons = () => {
         </GhostButton>
       </div>
 
-      {/* Social proof */}
-      <div className="relative mt-14 flex flex-col sm:flex-row items-center gap-4 sm:gap-8 text-white/40 text-sm">
-        <div className="flex -space-x-2">
-          {[
-            "bg-violet-500",
-            "bg-fuchsia-500",
-            "bg-cyan-500",
-            "bg-pink-500",
-            "bg-indigo-500",
-          ].map((c, i) => (
-            <div
-              key={i}
-              className={`w-8 h-8 rounded-full border-2 border-black ${c} flex items-center justify-center text-[10px] font-bold text-white`}
-            >
-              {["A", "B", "C", "D", "E"][i]}
-            </div>
-          ))}
-        </div>
-        <span>
-          <span className="text-white font-semibold">12,000+</span> portfolios
-          published this month
-        </span>
-        <span className="hidden sm:block w-1 h-1 rounded-full bg-white/20" />
-        <span>
-          ⭐ <span className="text-white font-semibold">4.9/5</span> from 3,400+
-          reviews
-        </span>
-      </div>
+
     </>
   );
 };
