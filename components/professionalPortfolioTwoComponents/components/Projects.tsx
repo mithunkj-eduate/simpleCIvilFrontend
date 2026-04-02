@@ -24,7 +24,7 @@ const Projects: FC<ProjectsProps> = ({ projects }) => (
       </Reveal>
       <Reveal delay="d2">
         <div className="proj-list">
-          {projects.map((project, i) => (
+          {projects && projects?.images?.length && projects.map((project, i) => (
             <div
               key={project.id}
               className={`proj-row${i % 2 === 1 ? ' even' : ''}`}
@@ -34,10 +34,10 @@ const Projects: FC<ProjectsProps> = ({ projects }) => (
               onKeyDown={(e) => e.key === 'Enter' && window.open(project.link, '_blank')}
             >
               <div className="proj-img-col">
-                {project.images[0] && (
+                {project?.images[0] && (
                   <img
-                    src={project.images[0].url}
-                    alt={project.images[0].alt}
+                    src={project?.images[0]?.url}
+                    alt={project?.images[0]?.alt}
                     loading="lazy"
                   />
                 )}

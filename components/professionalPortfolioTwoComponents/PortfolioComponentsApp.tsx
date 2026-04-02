@@ -21,8 +21,12 @@ import FAQ from "./components/FAQ";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 
-const PortfolioComponentsApp: FC = () => {
-  const d: PortfolioData = portfolioData;
+interface Props {
+  data: PortfolioData;
+}
+
+const PortfolioComponentsApp = ({ data }: Props) => {
+  const d: PortfolioData = data ?? portfolioData;
 
   return (
     <>

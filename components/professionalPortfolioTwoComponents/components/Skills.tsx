@@ -24,8 +24,8 @@ const Skills: FC<SkillsProps> = ({ skills }) => {
         </Reveal>
         {/* <div ref={containerRef} className="skills-cols"> */}
         <div className="skills-cols">
-          {categories.map((category) => (
-            <Reveal key={category}>
+          {categories.map((category, index) => (
+            <Reveal key={index}>
               <div className="skill-cat-title">{category}</div>
               {skills
                 .filter((s) => s.category === category)
