@@ -23,7 +23,6 @@ import BusinessInfoSection from "@/components/portfoliodisignComponents/sections
 import { getPortfolio } from "@/lib/api/portfolio";
 import portfolioData from "@/components/portfoliodisignComponents/data/portfolio";
 import { UrlID } from "@/utils/commenTypes";
-import PortfolioPageClient from "@/components/professionalPortfolioComponents/PortfolioPageClient";
 
 interface PageProps {
   params: { username: string };
