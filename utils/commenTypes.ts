@@ -100,3 +100,7 @@ export interface commenTypes {
 export interface ApiErrorResponse {
   message: string;
 }
+
+export enum UrlID {
+  DEMO = "demo"
+}

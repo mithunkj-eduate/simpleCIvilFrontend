@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import { portfolioRegistry, samplePortfolioData } from "@/data/portfolios";
 import PortfolioPageClient from "@/components/professionalPortfolioComponents/PortfolioPageClient";
 import { getPortfolio } from "@/lib/api/portfolio";
-import NotFound from "@/app/not-found";
 import { notFound } from "next/navigation";
+import { UrlID } from "@/utils/commenTypes";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -73,6 +73,9 @@ export default async function PortfolioPage({ params }: PageProps) {
   const { slug } = await params;
   // const data = portfolioRegistry[slug];
 
+  if(slug === UrlID.DEMO){
+return <PortfolioPageClient data={samplePortfolioData} />;
+  }else{
   const data = await getPortfolio(slug);
 
   if (!data) {
@@ -82,4 +85,5 @@ export default async function PortfolioPage({ params }: PageProps) {
   }
 
   return <PortfolioPageClient data={data} />;
+}
 }
