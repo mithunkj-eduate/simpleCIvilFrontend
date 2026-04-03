@@ -593,8 +593,8 @@ export default function Home() {
   return (
     <>
       <main className="min-h-screen bg-black antialiased scroll-smooth selection:bg-violet-500/30 selection:text-violet-200">
-        <NavbarProtfolio />
-
+        <Navbar NavType={LicenseTypes.USER} />
+        {/* <NavbarProtfolio /> */}
         <HeroSection />
         <HowItWorksSection />
         <FeaturesSection />
