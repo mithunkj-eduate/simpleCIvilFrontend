@@ -15,6 +15,7 @@ import { ApiErrorResponse, msgType } from "@/utils/commenTypes";
 import { emptyMessage } from "@/utils/constants";
 import MessageModal from "@/customComponents/MessageModal";
 import { AppContext } from "@/context/context";
+import Loading from "@/components/helpers/Loading";
 
 // JSON Config
 export const LoginFormJson = [
@@ -50,6 +51,7 @@ const Login: React.FC = () => {
   const [step, setStep] = useState<stepEnum>(stepEnum.login);
   const [otp, setOtp] = useState("");
   const [email, setEmail] = useState(""); // store from backend
+  const [loading, setLoading] = useState(false);
 
   const formik = useFormik<LoginFormValues>({
     initialValues: {
@@ -121,6 +123,7 @@ const Login: React.FC = () => {
     // },
     onSubmit: async (values) => {
       try {
+        setLoading(true);
         const res = await api.post(`/users/login`, values);
 
         if (res.status === 200) {
@@ -131,17 +134,20 @@ const Login: React.FC = () => {
           setMessage({
             flag: true,
             message: "OTP sent to your email",
-            operation: Operation.NONE,
+            operation: Operation.CREATE,
           });
         }
       } catch (error) {
         handleError(error);
+      } finally {
+        setLoading(false);
       }
     },
   });
 
   const handleVerifyOtp = async () => {
     try {
+      setLoading(true);
       const res = await api.post(`/users/verifyLoginOtp`, {
         email,
         otp,
@@ -155,6 +161,8 @@ const Login: React.FC = () => {
       }
     } catch (error) {
       handleError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -186,6 +194,8 @@ const Login: React.FC = () => {
       });
     }
   };
+
+  if (loading) return <Loading />;
 
   return (
     <>

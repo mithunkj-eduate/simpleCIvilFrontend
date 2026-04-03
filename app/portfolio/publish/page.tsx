@@ -1,7 +1,7 @@
 "use client";
 
 import Navbar from "@/components/commen/Navbar";
-import Api, { api, BASE_URL_FRONTEND } from "@/components/helpers/apiheader";
+import Api, { api } from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import MessageModal from "@/customComponents/MessageModal";
 import { ApiErrorResponse, msgType } from "@/utils/commenTypes";

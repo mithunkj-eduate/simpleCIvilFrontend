@@ -1,6 +1,8 @@
 // ─── Section: Live Examples ─────────────────────────────────────────────────
-
+"use client";
 import { GlassCard, GradientText } from "@/app/page";
+import { BASE_URL_FRONTEND_PORTFOILIO } from "@/components/helpers/apiheader";
+import { useRouter } from "next/navigation";
 
 const examples = [
   {
@@ -10,6 +12,7 @@ const examples = [
     avatar: "AS",
     color: "from-violet-600 to-fuchsia-600",
     views: "2.4k",
+    url: `${BASE_URL_FRONTEND_PORTFOILIO}/alex-sharma`,
   },
   {
     username: "priya-design",
@@ -18,6 +21,7 @@ const examples = [
     avatar: "PD",
     color: "from-fuchsia-600 to-pink-600",
     views: "5.1k",
+    url: `${BASE_URL_FRONTEND_PORTFOILIO}/bubbleportfolio/priya-design`,
   },
   {
     username: "rahul-builds",
@@ -26,6 +30,7 @@ const examples = [
     avatar: "RB",
     color: "from-cyan-600 to-violet-600",
     views: "1.8k",
+    url: `${BASE_URL_FRONTEND_PORTFOILIO}/cursorportfolio/rahul-builds`,
   },
   {
     username: "sara-codes",
@@ -34,10 +39,12 @@ const examples = [
     avatar: "SC",
     color: "from-pink-600 to-rose-600",
     views: "3.7k",
+    url: `${BASE_URL_FRONTEND_PORTFOILIO}/developerportfolio/sara-codes`,
   },
 ];
 
 export function ExamplesSection() {
+  const nav = useRouter();
   return (
     <section id="examples" className="relative py-28 px-4">
       <div className="max-w-6xl mx-auto">
@@ -78,10 +85,14 @@ export function ExamplesSection() {
               </p>
 
               {/* Domain */}
-              <p className="text-white font-bold text-sm mb-4 truncate">
+              <p
+                className="text-white font-bold text-sm mb-4 truncate"
+                onClick={() => ex.url && nav.push(ex.url)}
+              >
                 <span className="text-white/40">🌐 </span>
-               
-                <span className="text-white/30">shareurinterest.com/</span>{ex.username}
+
+                <span className="text-white/30">shareurinterest.com/</span>
+                {ex.username}
               </p>
 
               {/* Tags */}

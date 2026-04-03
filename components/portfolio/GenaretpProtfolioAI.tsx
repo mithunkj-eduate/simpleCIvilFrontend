@@ -292,6 +292,11 @@ STRICT RULES:
 - Ensure consistency across sections (skills match projects, etc.)
 - Use relevant technologies based on role (e.g., MERN, Node.js, etc.)
 - Images can be placeholder paths like "/project1.png"
+- All URLs must be plain strings (no markdown, no brackets, no formatting)
+- Do NOT wrap links like [text](url)
+- Return raw URLs only (e.g., "https://example.com")
+
+IMPORTANT: Output must be pure JSON parsable by JSON.parse(). Any markdown-style links like [text](url) are invalid.
 
 CONTENT QUALITY RULES:
 - Hero section must feel strong and personal
