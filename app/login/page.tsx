@@ -38,79 +38,154 @@ interface LoginFormValues {
   password: string;
 }
 
+enum stepEnum {
+  login = "login",
+  otp = "otp",
+}
+
 const Login: React.FC = () => {
   const router = useRouter();
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const { state } = useContext(AppContext);
+  const [step, setStep] = useState<stepEnum>(stepEnum.login);
+  const [otp, setOtp] = useState("");
+  const [email, setEmail] = useState(""); // store from backend
+
   const formik = useFormik<LoginFormValues>({
     initialValues: {
       phoneNumber: "",
       password: "",
     },
     validationSchema: LoginSchema,
+    // onSubmit: async (values) => {
+    //   try {
+    //     const res = await api.post(`/users/login`, values, {
+    //       headers: { "Content-Type": "application/json" },
+    //     });
+
+    //     if (res.status === 200) {
+    //       localStorage.setItem("token", res.data.token);
+    //       Cookies.set("token", res.data.token, { expires: 7 });
+
+    //       router.push("/?v=2");
+    //     }
+    //   } catch (error) {
+    //     // if (axios.isAxiosError(error)) {
+    //     //   alert(error.response?.data.message || "Login failed");
+    //     // } else {
+    //     //   alert("Unexpected error occurred");
+    //     // }
+
+    //     const axiosError = error as AxiosError<ApiErrorResponse>;
+    //     console.log(axiosError, "axios");
+
+    //     if (axiosError.response) {
+    //       const { status } = axiosError.response;
+    //       // 1. Server responded (e.g., 429, 401)
+    //       if (status === 429) {
+    //         const retryAfter = axiosError.response.headers["retry-after"];
+    //         // console.error(
+    //         //   `Rate limited! Try again in ${retryAfter || "a few"} seconds.`,
+    //         // );
+    //         setMessage({
+    //           flag: true,
+    //           message: `Rate limited! Try again in ${retryAfter || "a few"} seconds.`,
+    //           operation: Operation.NONE,
+    //         });
+    //         // Show "Too many attempts" message to the user
+    //       } else {
+    //         setMessage({
+    //           flag: true,
+    //           message: axiosError.response.data?.message ?? "Login failed",
+    //           operation: Operation.NONE,
+    //         });
+    //       }
+    //     } else if (axiosError.request) {
+    //       // 2. No response received (Network error / CORS)
+    //       setMessage({
+    //         flag: true,
+    //         message:
+    //           axiosError?.message ??
+    //           "Network issue. Please check your connection.",
+    //         operation: Operation.NONE,
+    //       });
+    //     } else {
+    //       // 3. Something else happened during setup
+    //       setMessage({
+    //         flag: true,
+    //         message: axiosError?.message ?? "An unexpected error occurred",
+    //         operation: Operation.NONE,
+    //       });
+    //     }
+    //   }
+    // },
     onSubmit: async (values) => {
       try {
-        const res = await api.post(`/users/login`, values, {
-          headers: { "Content-Type": "application/json" },
-        });
+        const res = await api.post(`/users/login`, values);
 
         if (res.status === 200) {
-          localStorage.setItem("token", res.data.token);
-          Cookies.set("token", res.data.token, { expires: 7 });
+          // ✅ backend sends email or userId
+          setEmail(res.data.email); // or res.data.userId
+          setStep(stepEnum.otp);
 
-          router.push("/?v=2");
+          setMessage({
+            flag: true,
+            message: "OTP sent to your email",
+            operation: Operation.NONE,
+          });
         }
       } catch (error) {
-        // if (axios.isAxiosError(error)) {
-        //   alert(error.response?.data.message || "Login failed");
-        // } else {
-        //   alert("Unexpected error occurred");
-        // }
-
-        const axiosError = error as AxiosError<ApiErrorResponse>;
-        console.log(axiosError, "axios");
-
-        if (axiosError.response) {
-          const { status } = axiosError.response;
-          // 1. Server responded (e.g., 429, 401)
-          if (status === 429) {
-            const retryAfter = axiosError.response.headers["retry-after"];
-            // console.error(
-            //   `Rate limited! Try again in ${retryAfter || "a few"} seconds.`,
-            // );
-            setMessage({
-              flag: true,
-              message: `Rate limited! Try again in ${retryAfter || "a few"} seconds.`,
-              operation: Operation.NONE,
-            });
-            // Show "Too many attempts" message to the user
-          } else {
-            setMessage({
-              flag: true,
-              message: axiosError.response.data?.message ?? "Login failed",
-              operation: Operation.NONE,
-            });
-          }
-        } else if (axiosError.request) {
-          // 2. No response received (Network error / CORS)
-          setMessage({
-            flag: true,
-            message:
-              axiosError?.message ??
-              "Network issue. Please check your connection.",
-            operation: Operation.NONE,
-          });
-        } else {
-          // 3. Something else happened during setup
-          setMessage({
-            flag: true,
-            message: axiosError?.message ?? "An unexpected error occurred",
-            operation: Operation.NONE,
-          });
-        }
+        handleError(error);
       }
     },
   });
+
+  const handleVerifyOtp = async () => {
+    try {
+      const res = await api.post(`/users/verifyLoginOtp`, {
+        email,
+        otp,
+      });
+
+      if (res.status === 200) {
+        localStorage.setItem("token", res.data.token);
+        Cookies.set("token", res.data.token, { expires: 7 });
+
+        router.push("/?v=2");
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const handleError = (error: unknown) => {
+    const axiosError = error as AxiosError<ApiErrorResponse>;
+
+    if (axiosError.response) {
+      const { status } = axiosError.response;
+
+      if (status === 429) {
+        const retryAfter = axiosError.response.headers["retry-after"];
+        setMessage({
+          flag: true,
+          message: `Rate limited! Try again in ${retryAfter || "a few"} seconds.`,
+          operation: Operation.NONE,
+        });
+      } else {
+        setMessage({
+          flag: true,
+          message: axiosError.response.data?.message ?? "Request failed",
+          operation: Operation.NONE,
+        });
+      }
+    } else {
+      setMessage({
+        flag: true,
+        message: "Network error",
+        operation: Operation.NONE,
+      });
+    }
+  };
 
   return (
     <>
@@ -136,51 +211,85 @@ const Login: React.FC = () => {
         </div>
 
         {/* FORM */}
-        <form
-          onSubmit={formik.handleSubmit}
-          className="mx-auto mt-16 max-w-xl sm:mt-20"
-        >
-          <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
-            {LoginFormJson.map((item, idx) => (
-              <div key={idx} className="sm:col-span-3">
-                <Label className="block text-sm font-semibold text-gray-900">
-                  {item.labelName}
-                </Label>
+        {step === stepEnum.login ? (
+          <form
+            onSubmit={formik.handleSubmit}
+            className="mx-auto mt-16 max-w-xl sm:mt-20"
+          >
+            <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+              {LoginFormJson.map((item, idx) => (
+                <div key={idx} className="sm:col-span-3">
+                  <Label className="block text-sm font-semibold text-gray-900">
+                    {item.labelName}
+                  </Label>
 
-                <div className="mt-2">
-                  <Input
-                    type={item.dataType}
-                    name={item.inputName}
-                    value={formik.values[item.inputName]}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
+                  <div className="mt-2">
+                    <Input
+                      type={item.dataType}
+                      name={item.inputName}
+                      value={formik.values[item.inputName]}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                  </div>
+
+                  {/* Validation Error */}
+                  {formik.touched[item.inputName] &&
+                    formik.errors[item.inputName] && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formik.errors[item.inputName]}
+                      </p>
+                    )}
                 </div>
+              ))}
+            </div>
 
-                {/* Validation Error */}
-                {formik.touched[item.inputName] &&
-                  formik.errors[item.inputName] && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {formik.errors[item.inputName]}
-                    </p>
-                  )}
-              </div>
-            ))}
-          </div>
+            <div className="mt-10">
+              <button
+                type="submit"
+                className="block w-full rounded-md bg-indigo-600 px-4 py-2.5 text-white font-semibold hover:bg-indigo-500"
+              >
+                Login
+              </button>
+            </div>
 
-          <div className="mt-10">
-            <button
-              type="submit"
-              className="block w-full rounded-md bg-indigo-600 px-4 py-2.5 text-white font-semibold hover:bg-indigo-500"
-            >
-              Login
-            </button>
-          </div>
+            <p className="mt-4">
+              Not a member? <a href={`/signup?v=${state.version}`}>Signup</a>
+            </p>
+          </form>
+        ) : (
+          <>
+            <div className="mx-auto mt-16 max-w-xl text-center">
+              <h3 className="text-xl font-semibold">Enter OTP</h3>
+              <p className="text-sm text-gray-500 mt-2">
+                OTP sent to your email
+              </p>
 
-          <p className="mt-4">
-            Not a member? <a href={`/signup?v=${state.version}`}>Signup</a>
-          </p>
-        </form>
+              <input
+                type="text"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                maxLength={6}
+                className="mt-6 text-center text-2xl tracking-[10px] border p-3 rounded w-full"
+                placeholder="------"
+              />
+
+              <button
+                onClick={handleVerifyOtp}
+                className="mt-6 w-full bg-green-600 text-white py-2 rounded"
+              >
+                Verify OTP
+              </button>
+
+              <button
+                onClick={() => setStep(stepEnum.login)}
+                className="mt-3 text-sm text-gray-500"
+              >
+                Change login details
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       <MessageModal
