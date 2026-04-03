@@ -8,6 +8,7 @@ import { LicenseTypes } from "@/utils/enum.types";
 import type { Metadata } from "next";
 import Image from "next/image";
 import icon from "@/assets/icon.png";
+import { NavbarProtfolio } from "@/components/portfolio/Home/NavbarProtfolio";
 
 const metadata: Metadata = {
   title: "Create Portfolio Website in Seconds",
@@ -648,7 +649,7 @@ export default function Home() {
     <>
       <main className="min-h-screen bg-black antialiased scroll-smooth selection:bg-violet-500/30 selection:text-violet-200">
         <Navbar NavType={LicenseTypes.USER} />
-
+        {/* <NavbarProtfolio /> */}
         <HeroSection />
         <HowItWorksSection />
         <FeaturesSection />
