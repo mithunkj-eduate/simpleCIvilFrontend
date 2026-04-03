@@ -38,11 +38,16 @@ interface LoginFormValues {
   password: string;
 }
 
+enum stepEnum {
+  login = "login",
+  otp = "otp",
+}
+
 const Login: React.FC = () => {
   const router = useRouter();
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const { state } = useContext(AppContext);
-  const [step, setStep] = useState<"login" | "otp">("login");
+  const [step, setStep] = useState<stepEnum>(stepEnum.login);
   const [otp, setOtp] = useState("");
   const [email, setEmail] = useState(""); // store from backend
 
@@ -121,7 +126,7 @@ const Login: React.FC = () => {
         if (res.status === 200) {
           // ✅ backend sends email or userId
           setEmail(res.data.email); // or res.data.userId
-          setStep("otp");
+          setStep(stepEnum.otp);
 
           setMessage({
             flag: true,
@@ -206,7 +211,7 @@ const Login: React.FC = () => {
         </div>
 
         {/* FORM */}
-        {step === "login" ? (
+        {step === stepEnum.login ? (
           <form
             onSubmit={formik.handleSubmit}
             className="mx-auto mt-16 max-w-xl sm:mt-20"
@@ -277,7 +282,7 @@ const Login: React.FC = () => {
               </button>
 
               <button
-                onClick={() => setStep("login")}
+                onClick={() => setStep(stepEnum.login)}
                 className="mt-3 text-sm text-gray-500"
               >
                 Change login details
