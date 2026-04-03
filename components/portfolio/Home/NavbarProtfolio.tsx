@@ -63,7 +63,7 @@ d="M13 10V3L4 14h7v7l9-11h-7z"
 
         {state.user?.id && (
           <a
-            href={`/portfolio?v=${state.version}`}
+            href={`/portfolio/generatewithai?v=${state.version}`}
             className="hover:text-white transition-colors duration-200"
           >
             Portfolio
@@ -82,7 +82,13 @@ d="M13 10V3L4 14h7v7l9-11h-7z"
 
       <PrimaryButton
         className="text-xs px-5 py-2.5"
-        onClick={() => nav.push(`/portfolio?v=${state.version}`)}
+        onClick={() =>
+          nav.push(
+            state.user?.id
+              ? `/portfolio/generatewithai?v=${state.version}`
+              : `/signup?v=${state.version}`,
+          )
+        }
       >
         Get Started Free
       </PrimaryButton>

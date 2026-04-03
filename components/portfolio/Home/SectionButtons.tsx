@@ -18,7 +18,7 @@ export const HeroSectionButtons = () => {
           className="text-base px-8 py-4"
           onClick={() =>
             state.user
-              ? nav.push("/portfolio")
+              ? nav.push(`/portfolio/generatewithai?v=${state.version}`)
               : nav.push(`/signup?v=${state.version}`)
           }
         >
@@ -64,17 +64,22 @@ export const HeroSectionButtons = () => {
           View Demo
         </GhostButton>
       </div>
-
-
     </>
   );
 };
 
 export const CTASectionButton = () => {
-    const { state } = useContext(AppContext);
+  const { state } = useContext(AppContext);
   const nav = useRouter();
   return (
-    <PrimaryButton className="text-base px-10 py-4 text-base" onClick={() => nav.push(`/portfolio?v=${state.version}`)}>
+    <PrimaryButton
+      className="text-base px-10 py-4 text-base"
+      onClick={() =>
+        state.user
+          ? nav.push(`/portfolio/generatewithai?v=${state.version}`)
+          : nav.push(`/signup?v=${state.version}`)
+      }
+    >
       <svg
         className="w-4 h-4"
         fill="none"
