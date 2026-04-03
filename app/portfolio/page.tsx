@@ -106,7 +106,10 @@ const formStepsPortfolio = [
   { id: 7, label: "Footer" },
 ];
 
-import Api, { api } from "@/components/helpers/apiheader";
+import Api, {
+  api,
+  BASE_URL_FRONTEND_PORTFOILIO,
+} from "@/components/helpers/apiheader";
 import { AppContext } from "@/context/context";
 import MessageModal from "@/customComponents/MessageModal";
 import { ApiErrorResponse, msgType } from "@/utils/commenTypes";
@@ -912,7 +915,6 @@ const PortfolioForm = () => {
             </section>
           )}
 
-
           <div className="flex justify-between mt-8">
             <Button
               type="button"
@@ -976,13 +978,12 @@ const PortfolioLink: React.FC<PortfolioLinkProps> = ({
   //   `https://portfolio.shareurinterest.com/developerportfolio/${id}`,
   // ];
 
-    const baseUrls = [
-    `https://pf.shareurinterest.com/${id}`,
-    `https://pf.shareurinterest.com/cursorportfolio/${id}`,
-    `https://pf.shareurinterest.com/bubbleportfolio/${id}`,
-    `https://pf.shareurinterest.com/developerportfolio/${id}`,
+  const baseUrls = [
+    `${BASE_URL_FRONTEND_PORTFOILIO}/${id}`,
+    `${BASE_URL_FRONTEND_PORTFOILIO}/cursorportfolio/${id}`,
+    `${BASE_URL_FRONTEND_PORTFOILIO}/bubbleportfolio/${id}`,
+    `${BASE_URL_FRONTEND_PORTFOILIO}/developerportfolio/${id}`,
   ];
-  
 
   const handleCopy = (url: string) => {
     navigator.clipboard.writeText(url);
