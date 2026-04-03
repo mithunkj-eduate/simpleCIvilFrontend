@@ -72,6 +72,15 @@ d="M13 10V3L4 14h7v7l9-11h-7z"
 
         {state.user?.id && (
           <a
+            href={`/professionalportfolio/generatewithai?v=${state.version}`}
+            className="hover:text-white transition-colors duration-200"
+          >
+            Website
+          </a>
+        )}
+
+        {state.user?.id && (
+          <a
             href={`/profile?v=${state.version}`}
             className="hover:text-white transition-colors duration-200"
           >
