@@ -41,7 +41,7 @@ interface LoginFormValues {
 const Login: React.FC = () => {
   const router = useRouter();
   const [message, setMessage] = useState<msgType>(emptyMessage);
-const {state} = useContext(AppContext)
+  const { state } = useContext(AppContext);
   const formik = useFormik<LoginFormValues>({
     initialValues: {
       phoneNumber: "",
@@ -68,17 +68,43 @@ const {state} = useContext(AppContext)
         // }
 
         const axiosError = error as AxiosError<ApiErrorResponse>;
+        console.log(axiosError, "axios");
 
         if (axiosError.response) {
+          const { status } = axiosError.response;
+          // 1. Server responded (e.g., 429, 401)
+          if (status === 429) {
+            const retryAfter = axiosError.response.headers["retry-after"];
+            // console.error(
+            //   `Rate limited! Try again in ${retryAfter || "a few"} seconds.`,
+            // );
+            setMessage({
+              flag: true,
+              message: `Rate limited! Try again in ${retryAfter || "a few"} seconds.`,
+              operation: Operation.NONE,
+            });
+            // Show "Too many attempts" message to the user
+          } else {
+            setMessage({
+              flag: true,
+              message: axiosError.response.data?.message ?? "Login failed",
+              operation: Operation.NONE,
+            });
+          }
+        } else if (axiosError.request) {
+          // 2. No response received (Network error / CORS)
           setMessage({
             flag: true,
-            message: axiosError.response.data.message,
+            message:
+              axiosError?.message ??
+              "Network issue. Please check your connection.",
             operation: Operation.NONE,
           });
         } else {
+          // 3. Something else happened during setup
           setMessage({
             flag: true,
-            message: "An unexpected error occurred",
+            message: axiosError?.message ?? "An unexpected error occurred",
             operation: Operation.NONE,
           });
         }
