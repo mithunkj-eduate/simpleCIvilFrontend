@@ -1,4 +1,3 @@
-
 import { PortfolioData } from "../types/portfolio";
 
 const portfolioData: PortfolioData = {
@@ -60,7 +59,11 @@ const portfolioData: PortfolioData = {
       "With over 15 years of dedicated service in cardiology, I have built my practice on the foundation of patient-first care, evidence-based medicine, and continuous learning. My approach integrates the latest diagnostic technologies with a deeply human touch, ensuring every patient feels heard, understood, and cared for.\n\nI completed my MBBS from AIIMS Delhi, followed by MD in Internal Medicine and DM in Cardiology. I have been a Fellow of the American College of Cardiology (FACC) since 2014 and regularly present research at international conferences.",
     image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=600",
     highlights: [
-      { icon: "award", title: "FACC Certified", value: "American College of Cardiology" },
+      {
+        icon: "award",
+        title: "FACC Certified",
+        value: "American College of Cardiology",
+      },
       { icon: "users", title: "Patients Served", value: "12,000+" },
       { icon: "briefcase", title: "Experience", value: "15 Years" },
       { icon: "star", title: "Patient Rating", value: "4.9 / 5.0" },
@@ -84,7 +87,8 @@ const portfolioData: PortfolioData = {
       title: "Preventive Cardiology",
       description:
         "Comprehensive heart health assessments and lifestyle programs to prevent cardiovascular disease before it starts.",
-      image: "https://images.unsplash.com/photo-1666214276372-24e584e5542e?w=400",
+      image:
+        "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400",
       price: "₹2,500",
       duration: "60 min",
       badge: "Most Popular",
@@ -116,7 +120,8 @@ const portfolioData: PortfolioData = {
       title: "Cardiac Rehabilitation",
       description:
         "Structured recovery programs for patients recovering from heart attacks, surgeries, or managing chronic conditions.",
-      image: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400",
+      image:
+        "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400",
       price: "₹8,000 / month",
       duration: "4–12 weeks",
       badge: "",
@@ -208,14 +213,14 @@ const portfolioData: PortfolioData = {
       category: "Achievements",
     },
     {
-      url: "https://images.unsplash.com/photo-1579165466814-1cbfa2a23a93?w=600",
-      alt: "Medical conference",
-      category: "Events",
-    },
-    {
       url: "https://images.unsplash.com/photo-1511174511562-5f7f18b874f8?w=600",
       alt: "Team collaboration",
       category: "Team",
+    },
+    {
+      url: "https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600",
+      alt: "Medical conference",
+      category: "Events",
     },
   ],
   testimonials: [
@@ -270,7 +275,8 @@ const portfolioData: PortfolioData = {
     email: "dr.aisha@heartcare.in",
     phone: "+91-80-4567-8901",
     whatsapp: "+918045678901",
-    address: "Heart Care Clinic, 42 Indiranagar 100 Feet Road, Bengaluru, Karnataka 560038",
+    address:
+      "Heart Care Clinic, 42 Indiranagar 100 Feet Road, Bengaluru, Karnataka 560038",
     map: {
       lat: 12.9784,
       lng: 77.6408,

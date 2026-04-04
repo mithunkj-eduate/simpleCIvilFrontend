@@ -174,7 +174,7 @@ const portfolioData: PortfolioData = {
     { title: 'Passive House Designer Certification', issuer: 'Passive House Institute, Germany', year: '2019' },
   ],
   gallery: [
-    { url: 'https://images.unsplash.com/photo-1600607687939-ce8a6d9e3e46?w=400&q=75', alt: 'Living space', category: 'Interior' },
+    // { url: 'https://images.unsplash.com/photo-1600607687939-ce8a6d9e3e46?w=400&q=75', alt: 'Living space', category: 'Interior' },
     { url: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=400&q=75', alt: 'Kitchen', category: 'Residential' },
     { url: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=400&q=75', alt: 'Architecture detail', category: 'Detail' },
     { url: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=400&q=75', alt: 'Pool terrace', category: 'Luxury' },
