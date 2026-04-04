@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/context/context";
 import VersionRecovery from "@/components/VersionRecovery/VersionRecovery";
+import { ChunkErrorHandler } from "@/components/VersionRecovery/ChunkErrorHandler";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -75,6 +76,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ChunkErrorHandler />
         <VersionRecovery />
         <AppProvider>{children}</AppProvider>
       </body>
