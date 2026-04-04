@@ -524,7 +524,6 @@ function CTASection() {
   );
 }
 
-
 // ─── Component: Footer ──────────────────────────────────────────────────────
 
 function Footer() {
@@ -562,17 +561,20 @@ function Footer() {
 
         {/* Nav links */}
         <div className="flex flex-wrap justify-center gap-6 text-white/30 text-sm">
-          {["Privacy Policy", "Terms of Service", "Help Center", "Contact"].map(
-            (l) => (
-              <a
-                key={l}
-                href="#"
-                className="hover:text-white/60 transition-colors duration-200"
-              >
-                {l}
-              </a>
-            ),
-          )}
+          {[
+            { title: "Privacy Policy", url: "/legal/privacy-policy" },
+            { title: "Terms of Service", url: "/legal/terms-of-service" },
+            { title: "Help Center", url: "/legal/help-center" },
+            { title: "Contact", url: "/legal/contact" },
+          ].map((l, i) => (
+            <a
+              key={i}
+              href={l.url}
+              className="hover:text-white/60 transition-colors duration-200"
+            >
+              {l.title}
+            </a>
+          ))}
         </div>
 
         {/* Divider */}
