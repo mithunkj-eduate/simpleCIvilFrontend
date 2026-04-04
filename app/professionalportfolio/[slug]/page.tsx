@@ -88,20 +88,21 @@
 // }
 // }
 
-
 import { Metadata } from "next";
 import PortfolioPageClient from "@/components/professionalPortfolioComponents/PortfolioPageClient";
 import { getPortfolio } from "@/lib/api/portfolio";
 import { notFound } from "next/navigation";
 import { UrlID } from "@/utils/commenTypes";
 import { samplePortfolioData } from "@/data/portfolios";
+import PortfolioComponentsApp from "@/components/professionalPortfolioTwoComponents/PortfolioComponentsApp";
+import portfolioData from "@/components/professionalPortfolioTwoComponents/data/portfolioData";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
 // ✅ Force fully dynamic - This removes the error
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -109,7 +110,7 @@ export async function generateMetadata({
   const { slug } = await params;
 
   const apiData = await getPortfolio(slug);
-  const data = apiData ?? samplePortfolioData;   // Note: you used samplePortfolioData
+  const data = apiData ?? samplePortfolioData; // Note: you used samplePortfolioData
 
   return {
     title: data.meta.seo.title,
@@ -142,6 +143,8 @@ export default async function PortfolioPage({ params }: PageProps) {
 
   if (slug === UrlID.DEMO) {
     return <PortfolioPageClient data={samplePortfolioData} />;
+  } else if (slug === UrlID.DEMO2) {
+    return <PortfolioPageClient data={portfolioData} />;
   }
 
   const data = await getPortfolio(slug);

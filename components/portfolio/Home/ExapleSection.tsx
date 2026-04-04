@@ -1,7 +1,7 @@
 // ─── Section: Live Examples ─────────────────────────────────────────────────
 "use client";
 import { GlassCard, GradientText } from "@/app/page";
-import { BASE_URL_FRONTEND_PORTFOILIO } from "@/components/helpers/apiheader";
+import { BASE_URL_FRONTEND, BASE_URL_FRONTEND_PORTFOILIO } from "@/components/helpers/apiheader";
 import { useRouter } from "next/navigation";
 
 const examples = [
@@ -40,6 +40,24 @@ const examples = [
     color: "from-pink-600 to-rose-600",
     views: "3.7k",
     url: `${BASE_URL_FRONTEND_PORTFOILIO}/developerportfolio/sara-codes`,
+  },
+   {
+    username: "dr-aisha-sharma",
+    role: "Doctor",
+    tags: ["Interventional Cardiology"],
+    avatar: "SC",
+    color: "from-pink-600 to-rose-600",
+    views: "4.5k",
+    url: `${BASE_URL_FRONTEND}/portfoliodisign/demo`,
+  },
+  {
+    username: "arjun-mehta",
+    role: "Architect & Design Visionary",
+    tags: ['architect', 'sustainable design', 'luxury homes'],
+    avatar: "SC",
+    color: "from-pink-600 to-rose-600",
+    views: "3.9k",
+    url: `${BASE_URL_FRONTEND}/professionalportfolio/demo2`,
   },
 ];
 

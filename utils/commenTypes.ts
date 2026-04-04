@@ -102,5 +102,6 @@ export interface ApiErrorResponse {
 }
 
 export enum UrlID {
-  DEMO = "demo"
+  DEMO = "demo",
+ DEMO2= "demo2"
 }

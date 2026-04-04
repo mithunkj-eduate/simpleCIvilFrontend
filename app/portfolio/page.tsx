@@ -971,13 +971,6 @@ const PortfolioLink: React.FC<PortfolioLinkProps> = ({
 }) => {
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
 
-  // const baseUrls = [
-  //   `https://portfolio.shareurinterest.com/${id}`,
-  //   `https://portfolio.shareurinterest.com/cursorportfolio/${id}`,
-  //   `https://portfolio.shareurinterest.com/bubbleportfolio/${id}`,
-  //   `https://portfolio.shareurinterest.com/developerportfolio/${id}`,
-  // ];
-
   const baseUrls = [
     `${BASE_URL_FRONTEND_PORTFOILIO}/${id}`,
     `${BASE_URL_FRONTEND_PORTFOILIO}/cursorportfolio/${id}`,
