@@ -177,6 +177,6 @@ export const data = {
       general: "info@shareurinterest.com",
       technical: "tech@shareurinterest.com",
     },
-    website: "https://shareurinterest.com",
+    website: "https://ai.shareurinterest.com",
   },
 };
