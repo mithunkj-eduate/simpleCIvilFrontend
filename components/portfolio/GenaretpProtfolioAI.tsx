@@ -10,6 +10,7 @@ import { PortfolioData } from "@/lib/types";
 import { AxiosError } from "axios";
 import MessageModal from "@/customComponents/MessageModal";
 import Loading from "@/components/helpers/Loading";
+import { Button } from "@/stories/Button/Button";
 
 export default function GeneratePortfolioPage() {
   const [copied, setCopied] = useState(false);
@@ -127,6 +128,7 @@ export default function GeneratePortfolioPage() {
   const { state } = useContext(AppContext);
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const [operation, setOperation] = useState(Operation.CREATE);
+  const [showHow, setShowHow] = useState(false);
 
   useEffect(() => {
     if (!TOKEN || !state.user) return;
@@ -230,7 +232,18 @@ export default function GeneratePortfolioPage() {
 
   return (
     <div className="ai-container">
-      <h1 className="ai-title">Create Website with AI</h1>
+      {/* <h1 className="ai-title">Create Website with AI</h1> */}
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="ai-title">Create Portfolio with AI</h1>
+
+        <Button
+          onClick={() => setShowHow(true)}
+          mode="info"
+        >
+          How it works
+        </Button>
+      </div>
+      
 
       <p className="ai-subtitle">
         Copy the prompt → Generate JSON → Paste below
@@ -264,6 +277,34 @@ export default function GeneratePortfolioPage() {
         Create Website
       </button>
 
+
+      {showHow && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+          <div className="max-w-lg w-full bg-gray-900 border border-gray-800 rounded-2xl p-6 space-y-4">
+            <h2 className="text-xl font-semibold text-violet-300">
+              How it Works 🚀
+            </h2>
+
+            <ul className="text-gray-300 space-y-2 text-sm list-disc pl-4">
+              <li>Copy the prompt</li>
+              <li>Paste into ChatGPT</li>
+              <li>Add your resume/details</li>
+              <li>Copy the AI response</li>
+              <li>Paste it here</li>
+              <li>Click Create Website</li>
+              <li>Publish & get your link 🎉</li>
+            </ul>
+
+            <button
+              onClick={() => setShowHow(false)}
+              className="w-full mt-4 py-2 rounded-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:opacity-90"
+            >
+              Got it 👍
+            </button>
+          </div>
+        </div>
+      )}
+
       <MessageModal
         handleClose={handleClose}
         modalFlag={message.flag}
@@ -274,46 +315,56 @@ export default function GeneratePortfolioPage() {
   );
 }
 
-export const prompt = `You are an expert portfolio content generator and resume parser.
-
-Your task is to convert the given resume or user input into a complete, modern, and professional portfolio JSON.
-
-GOAL:
-Generate a clean, realistic, and high-quality portfolio structure suitable for a developer/personal website.
-
+export const prompt = `Use this strict production prompt 👇
+You are an expert portfolio content generator.
+Your task is to generate a complete, realistic, modern developer portfolio JSON.
 STRICT RULES:
-- Output ONLY valid JSON (no explanation, no markdown, no code block)
-- Follow EXACT schema structure (do NOT add/remove/change keys)
-- Fill ALL fields with meaningful and realistic content
-- Do NOT leave empty strings
-- If data is missing, intelligently generate professional placeholder content
-- Keep descriptions concise, modern, and impactful (1–2 lines max)
-- Use real-world professional tone (no generic AI phrases)
-- Ensure consistency across sections (skills match projects, etc.)
-- Use relevant technologies based on role (e.g., MERN, Node.js, etc.)
-- Images can be placeholder paths like "/project1.png"
-- All URLs must be plain strings (no markdown, no brackets, no formatting)
-- Do NOT wrap links like [text](url)
-- Return raw URLs only (e.g., "https://example.com")
 
-IMPORTANT: Output must be pure JSON parsable by JSON.parse(). Any markdown-style links like [text](url) are invalid.
+* Output ONLY valid JSON
 
-CONTENT QUALITY RULES:
-- Hero section must feel strong and personal
-- Projects must be realistic and slightly detailed (not generic)
-- Skills must be grouped logically (e.g., Frontend, Backend, DevOps)
-- About section should reflect experience clearly
-- Experience must include real responsibilities + tech
-- Contact should look usable in real-world portfolio
+* No explanation, no markdown, no extra text
 
-MINIMUM REQUIREMENTS:
-- At least 4 projects
-- At least 5 skills (grouped)
-- At least 2 experience entries
-- At least 2 social links
+* Follow EXACT structure provided
 
-OUTPUT FORMAT (STRICT JSON):
+* Do NOT add or remove fields
 
+* All links must be plain strings (no clickable formatting)
+
+* Fill all fields with realistic, professional data
+
+* Avoid placeholders like "lorem ipsum" or empty values
+
+MINIMUM REQUIREMENTS (MANDATORY):
+
+* At least 4 projects in "projects"
+
+* At least 5 skill groups in "skills"
+
+* At least 2 experience entries in "about.experience"
+
+* At least 2 social links in "contact.social"
+
+* "hero.stats" must contain at least 2 entries
+
+* "about.desc" must contain at least 2 paragraphs
+
+* Each project must include: title, desc, link, tech (min 2), image
+
+* Each skill group must contain at least 3 items
+
+CONTENT GUIDELINES:
+
+* Use real-world technologies (React, Next.js, Node.js, MongoDB, AWS, etc.)
+
+* Use realistic names, companies, and project ideas
+
+* Keep descriptions concise (1–2 sentences)
+
+* Use proper image URLs (e.g., https://images.unsplash.com/...)
+
+* Make portfolio sound professional and slightly premium
+
+OUTPUT FORMAT (STRICT):
 {
   "hero": {
     "name": "",
@@ -369,7 +420,4 @@ OUTPUT FORMAT (STRICT JSON):
       { "name": "", "link": "" }
     ]
   }
-}
-
-INPUT:
-{{PASTE USER RESUME / DETAILS HERE}}`;
+}`;

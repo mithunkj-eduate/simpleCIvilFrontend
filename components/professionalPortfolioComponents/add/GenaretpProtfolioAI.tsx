@@ -10,6 +10,7 @@ import { PortfolioData } from "@/lib/types";
 import { AxiosError } from "axios";
 import MessageModal from "@/customComponents/MessageModal";
 import Loading from "@/components/helpers/Loading";
+import { Button } from "@/stories/Button/Button";
 
 export default function GeneratePortfolioPage() {
   const [copied, setCopied] = useState(false);
@@ -23,7 +24,6 @@ export default function GeneratePortfolioPage() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
 
   const validateJSON = (data: PortfolioData) => {
     const requiredFields = ["meta", "hero", "about", "services", "contact"];
@@ -56,7 +56,6 @@ export default function GeneratePortfolioPage() {
     try {
       parsed = JSON.parse(jsonInput);
     } catch (error) {
-
       setError("Invalid JSON format ❌ (Check commas, quotes)");
       return;
     }
@@ -73,7 +72,6 @@ export default function GeneratePortfolioPage() {
       setError("Security Error ❌ (Executable scripts are not allowed)");
       return;
     }
-
 
     // check max size
     const MAX_SIZE_KB = 50;
@@ -120,6 +118,7 @@ export default function GeneratePortfolioPage() {
   const { state } = useContext(AppContext);
   const [message, setMessage] = useState<msgType>(emptyMessage);
   const [operation, setOperation] = useState(Operation.CREATE);
+  const [showHow, setShowHow] = useState(false);
 
   useEffect(() => {
     if (!TOKEN || !state.user) return;
@@ -248,7 +247,13 @@ export default function GeneratePortfolioPage() {
 
   return (
     <div className="ai-container">
-      <h1 className="ai-title">Create Website with AI</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="ai-title">Create Website with AI</h1>
+
+        <Button onClick={() => setShowHow(true)} mode="info">
+          How it works
+        </Button>
+      </div>
 
       <p className="ai-subtitle">
         Copy the prompt → Generate JSON → Paste below
@@ -281,6 +286,33 @@ export default function GeneratePortfolioPage() {
       <button onClick={handleSubmit} className="ai-submit">
         Create Website
       </button>
+
+      {showHow && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+          <div className="max-w-lg w-full bg-gray-900 border border-gray-800 rounded-2xl p-6 space-y-4">
+            <h2 className="text-xl font-semibold text-violet-300">
+              How it Works 🚀
+            </h2>
+
+            <ul className="text-gray-300 space-y-2 text-sm list-disc pl-4">
+              <li>Copy the prompt</li>
+              <li>Paste into ChatGPT</li>
+              <li>Add your resume/details</li>
+              <li>Copy the AI response</li>
+              <li>Paste it here</li>
+              <li>Click Create Website</li>
+              <li>Publish & get your link 🎉</li>
+            </ul>
+
+            <button
+              onClick={() => setShowHow(false)}
+              className="w-full mt-4 py-2 rounded-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:opacity-90"
+            >
+              Got it 👍
+            </button>
+          </div>
+        </div>
+      )}
 
       <MessageModal
         handleClose={handleClose}
@@ -493,6 +525,4 @@ export const prompt = `{
       }
     ]
   },
-
-  "input": "{{PASTE USER DETAILS HERE}}"
-}`
+}`;

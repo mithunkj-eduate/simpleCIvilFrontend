@@ -18,7 +18,9 @@ export const HeroSectionButtons = () => {
           className="text-base px-8 py-4"
           onClick={() =>
             state.user
-              ? nav.push(`/portfolio/generatewithai?v=${state.version}`)
+              ? nav.push(
+                  `/professionalportfolio/generatewithai?v=${state.version}`,
+                )
               : nav.push(`/signup?v=${state.version}`)
           }
         >

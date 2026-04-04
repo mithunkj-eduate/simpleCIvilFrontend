@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/context/context";
+import VersionRecovery from "@/components/VersionRecovery/VersionRecovery";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +26,9 @@ const geistMono = Geist_Mono({
 //   },
 // };
 
-export const metadata:Metadata = {
+export const metadata: Metadata = {
+  metadataBase: new URL("https://ai.shareurinterest.com"),
+
   title: "ShareUrInterest AI",
   description: "Create and share your professional portfolio instantly.",
 
@@ -35,13 +38,12 @@ export const metadata:Metadata = {
 
   openGraph: {
     title: "ShareUrInterest AI 🚀",
-    description:
-      "Build and share stunning portfolios in seconds with AI.",
-    url: "https://ai.shreurinterest.com",
+    description: "Build and share stunning portfolios in seconds with AI.",
+    url: "/",
     siteName: "ShareUrInterest",
     images: [
       {
-        url: "https://ai.shreurinterest.com/og/og-image.png",
+        url: "/og/og-image.png",
         width: 1200,
         height: 630,
         alt: "ShareUrInterest AI Preview",
@@ -53,9 +55,8 @@ export const metadata:Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "ShareUrInterest AI 🚀",
-    description:
-      "Build and share stunning portfolios in seconds with AI.",
-    images: ["https://ai.shreurinterest.com/og/og-image.png"],
+    description: "Build and share stunning portfolios in seconds with AI.",
+    images: ["/og/og-image.png"],
   },
 };
 
@@ -74,7 +75,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* <VersionRecovery /> */}
+        <VersionRecovery />
         <AppProvider>{children}</AppProvider>
       </body>
     </html>
