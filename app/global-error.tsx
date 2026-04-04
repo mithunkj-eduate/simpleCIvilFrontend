@@ -7,6 +7,8 @@ type GlobalErrorProps = {
   reset: () => void;
 };
 
+// if get error this page showing no affect seo Uncaught ChunkLoadError: Loading chunk 1132 failed. (error: https://ai.shareurinterest.com/_next/static/chunks/1132-a041d15d97109a4e.js)
+
 export default function GlobalError({ error, reset }: GlobalErrorProps) {
   useEffect(() => {
     if (
